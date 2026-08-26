@@ -1,4 +1,4 @@
-"""Tests for portable repository-root discovery."""
+"""Tests for repository-root discovery."""
 
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -8,7 +8,7 @@ from _source_path import add_source_root
 
 add_source_root()
 
-from g2dtool.repository import RepositoryNotFoundError, find_repository_root
+from g2dtool.repository import RepositoryNotFoundError, discover_repository_layout, find_repository_root
 
 
 class RepositoryRootTests(unittest.TestCase):
@@ -29,11 +29,17 @@ class RepositoryRootTests(unittest.TestCase):
 
             self.assertEqual(find_repository_root(root), root.resolve())
 
+    def test_repository_layout_contains_expected_paths(self) -> None:
+        with TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory) / "layout"
+            (root / ".git").mkdir(parents=True)
+            layout = discover_repository_layout(root)
+            self.assertEqual(layout.repository_root, root.resolve())
+            self.assertEqual(layout.project_config, root / "config" / "project.toml")
+            self.assertEqual(layout.toolchain_config, root / "config" / "toolchain.toml")
+            self.assertEqual(layout.venv_directory, root / ".venv")
+
     def test_reports_missing_repository(self) -> None:
         with TemporaryDirectory() as temporary_directory:
             with self.assertRaises(RepositoryNotFoundError):
                 find_repository_root(Path(temporary_directory))
-
-
-if __name__ == "__main__":
-    unittest.main()

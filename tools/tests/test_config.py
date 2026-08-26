@@ -1,4 +1,4 @@
-"""Tests for project configuration loading and validation."""
+"""Tests for project and toolchain configuration validation."""
 
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -9,16 +9,20 @@ from _source_path import add_source_root
 
 add_source_root()
 
-from g2dtool.config import ProjectConfigError, load_project_config
+from g2dtool.config import (
+    ProjectConfigError,
+    ToolchainConfigError,
+    load_project_config,
+    load_toolchain_config,
+)
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 
 
 class ProjectConfigTests(unittest.TestCase):
-    def test_loads_and_validates_baseline_configuration(self) -> None:
+    def test_loads_and_validates_baseline_project_configuration(self) -> None:
         config = load_project_config(REPOSITORY_ROOT / "config" / "project.toml")
-
         self.assertEqual(config.schema_version, 1)
         self.assertEqual(config.template_id, "forge2d")
         self.assertEqual(config.display_name, "Forge2D")
@@ -63,5 +67,27 @@ class ProjectConfigTests(unittest.TestCase):
             load_project_config(config_path)
 
 
-if __name__ == "__main__":
-    unittest.main()
+class ToolchainConfigTests(unittest.TestCase):
+    def test_toolchain_config_loads_expected_fields(self) -> None:
+        config = load_toolchain_config(REPOSITORY_ROOT / "config" / "toolchain.toml")
+        self.assertEqual(config.minimum_python_major, 3)
+        self.assertEqual(config.minimum_python_minor, 11)
+        self.assertEqual(config.required_godot_major, 4)
+        self.assertEqual(config.godot_executable_candidates, ("godot4", "godot"))
+
+    def test_toolchain_config_rejects_invalid_minimum_python(self) -> None:
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "toolchain.toml"
+            path.write_text(
+                """\
+[python]
+minimum_version = "invalid"
+
+[godot]
+required_major = 4
+executable_candidates = ["godot4", "godot"]
+""",
+                encoding="utf-8",
+            )
+            with self.assertRaises(ToolchainConfigError):
+                load_toolchain_config(path)

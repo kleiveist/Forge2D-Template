@@ -1,9 +1,10 @@
-"""Tests for stable CLI output and exit codes."""
+"""Tests for CLI behavior and command dispatch."""
 
-from contextlib import redirect_stderr, redirect_stdout
+from __future__ import annotations
+
+from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
-import tomllib
 import unittest
 from unittest.mock import patch
 
@@ -11,73 +12,130 @@ from _source_path import add_source_root
 
 add_source_root()
 
-from g2dtool.cli import main, welcome
-from g2dtool.doctor import DoctorCheck, DoctorReport
+from g2dtool.cli import main
+from g2dtool import __version__
+from g2dtool.repository import RepositoryLayout
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 
 
 class CliTests(unittest.TestCase):
-    def test_help_exits_zero(self) -> None:
+    def test_help_contains_control_examples(self) -> None:
         output = StringIO()
-        with redirect_stdout(output), self.assertRaises(SystemExit) as exit_context:
-            main(["--help"])
+        with redirect_stdout(output):
+            with self.assertRaises(SystemExit) as context:
+                main(["--help"], prog="python tools/control.py")
 
-        self.assertEqual(exit_context.exception.code, 0)
-        self.assertIn("usage: g2d", output.getvalue())
+        self.assertEqual(context.exception.code, 0)
+        text = output.getvalue()
+        self.assertIn("python tools/control.py doctor", text)
+        self.assertIn("python tools/control.py godot4 test", text)
+        self.assertIn("python tools/control.py Forge2D run", text)
 
-    def test_version_has_stable_output_and_exit_code(self) -> None:
+    def test_version_has_stable_output(self) -> None:
         output = StringIO()
         with redirect_stdout(output):
             exit_code = main(["version"])
 
         self.assertEqual(exit_code, 0)
-        self.assertEqual(output.getvalue(), "g2d 0.1.0\n")
+        self.assertEqual(output.getvalue().strip(), f"g2d {__version__}")
 
-    def test_forge2d_welcome_lists_beginner_commands_with_emojis(self) -> None:
-        output = StringIO()
-        with redirect_stdout(output):
-            exit_code = welcome()
-
-        rendered = output.getvalue()
-        self.assertEqual(exit_code, 0)
-        self.assertTrue(rendered.startswith("🧭 Forge2D developer entry point\n"))
-        self.assertIn("🛠️  Prepare or activate the tooling environment", rendered)
-        self.assertIn("g2d doctor", rendered)
-        self.assertIn("python -m unittest discover -s tools/tests -v", rendered)
-        self.assertIn("godot4 --headless --path game -- --test-mode", rendered)
-
-    def test_packaging_exposes_forge2d_welcome_command(self) -> None:
-        with (REPOSITORY_ROOT / "pyproject.toml").open("rb") as project_file:
-            project = tomllib.load(project_file)
-
-        scripts = project["project"]["scripts"]
-        self.assertEqual(scripts["Forge2D"], "g2dtool.cli:welcome")
-        self.assertEqual(scripts["g2d"], "g2dtool.cli:main")
-
-    def test_invalid_command_exits_with_usage_code(self) -> None:
-        with redirect_stderr(StringIO()), self.assertRaises(SystemExit) as context:
+    def test_invalid_command_uses_cli_error_code(self) -> None:
+        with self.assertRaises(SystemExit) as context:
             main(["unknown"])
-
         self.assertEqual(context.exception.code, 2)
 
-    def test_doctor_returns_zero_when_all_checks_pass(self) -> None:
-        report = DoctorReport((DoctorCheck("godot", "ok", "4.3.stable"),))
-        with patch("g2dtool.cli.collect_doctor_report", return_value=report):
-            with redirect_stdout(StringIO()):
-                exit_code = main(["doctor"])
-
-        self.assertEqual(exit_code, 0)
-
-    def test_doctor_returns_one_for_a_missing_requirement(self) -> None:
-        report = DoctorReport((DoctorCheck("godot", "missing", "not found"),))
-        with patch("g2dtool.cli.collect_doctor_report", return_value=report):
-            with redirect_stdout(StringIO()):
-                exit_code = main(["doctor"])
+    def test_doctor_output_is_printed_and_exit_code_is_reported(self) -> None:
+        with (
+            patch(
+                "g2dtool.cli.collect_doctor_report",
+                return_value=type(
+                    "report",
+                    (),
+                    {"exit_code": 1, "checks": ()},
+                )(),
+            ),
+            patch("g2dtool.cli.format_doctor_report", return_value="DONE"),
+            redirect_stdout(StringIO()) as output,
+        ):
+            exit_code = main(["doctor"])
+            self.assertEqual(output.getvalue(), "DONE\n")
 
         self.assertEqual(exit_code, 1)
 
+    def test_forge2d_and_case_alias_run_the_same_mode(self) -> None:
+        layout = RepositoryLayout(
+            repository_root=REPOSITORY_ROOT,
+            pyproject_toml=REPOSITORY_ROOT / "pyproject.toml",
+            project_config=REPOSITORY_ROOT / "config" / "project.toml",
+            toolchain_config=REPOSITORY_ROOT / "config" / "toolchain.toml",
+            tools_directory=REPOSITORY_ROOT / "tools",
+            tools_source_directory=REPOSITORY_ROOT / "tools" / "src",
+            game_directory=REPOSITORY_ROOT / "game",
+            venv_directory=REPOSITORY_ROOT / ".venv",
+        )
+        with (
+            patch("g2dtool.cli.discover_repository_layout", return_value=layout),
+            patch(
+                "g2dtool.cli.discover_godot",
+                return_value=type(
+                    "Result",
+                    (),
+                    {
+                        "status": "pass",
+                        "executable": Path("/fake/godot"),
+                        "version": "4.3",
+                    },
+                )(),
+            ),
+            patch(
+                "g2dtool.cli.build_godot_run_command",
+                return_value=["/fake/godot", "--path", str(layout.game_directory)],
+            ) as build_command,
+            patch("g2dtool.cli._run_external_command", return_value=42) as runner,
+        ):
+            exit_lower = main(["forge2d", "run"])
+            exit_upper = main(["Forge2D", "run"])
 
-if __name__ == "__main__":
-    unittest.main()
+        self.assertEqual(build_command.call_count, 2)
+        self.assertEqual(exit_lower, 42)
+        self.assertEqual(exit_upper, 42)
+        self.assertEqual(runner.call_count, 2)
+
+    def test_missing_godot_prints_install_guidance(self) -> None:
+        layout = RepositoryLayout(
+            repository_root=REPOSITORY_ROOT,
+            pyproject_toml=REPOSITORY_ROOT / "pyproject.toml",
+            project_config=REPOSITORY_ROOT / "config" / "project.toml",
+            toolchain_config=REPOSITORY_ROOT / "config" / "toolchain.toml",
+            tools_directory=REPOSITORY_ROOT / "tools",
+            tools_source_directory=REPOSITORY_ROOT / "tools" / "src",
+            game_directory=REPOSITORY_ROOT / "game",
+            venv_directory=REPOSITORY_ROOT / ".venv",
+        )
+        with (
+            patch("g2dtool.cli.discover_repository_layout", return_value=layout),
+            patch(
+                "g2dtool.cli.discover_godot",
+                return_value=type(
+                    "Result",
+                    (),
+                    {
+                        "status": "fail",
+                        "executable": None,
+                        "version": None,
+                    },
+                )(),
+            ),
+        ):
+            from io import StringIO
+            from contextlib import redirect_stdout
+            output = StringIO()
+
+            with redirect_stdout(output):
+                exit_code = main(["godot4", "run"])
+
+        self.assertEqual(exit_code, 1)
+        self.assertIn("Godot 4 wurde nicht gefunden.", output.getvalue())
+        self.assertIn("python tools/control.py install", output.getvalue())

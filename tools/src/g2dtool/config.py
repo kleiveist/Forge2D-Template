@@ -13,10 +13,15 @@ SUPPORTED_SCHEMA_VERSION = 1
 LICENSE_STATUSES = frozenset({"undecided", "selected"})
 IDENTIFIER_PATTERN = re.compile(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)*\Z")
 LANGUAGE_PATTERN = re.compile(r"[a-z]{2}(?:-[A-Za-z0-9]+)*\Z")
+VERSION_PATTERN = re.compile(r"(?P<major>\d+)\.(?P<minor>\d+)(?:\.\d+)?")
 
 
 class ProjectConfigError(ValueError):
     """Raised when project configuration is missing or invalid."""
+
+
+class ToolchainConfigError(ValueError):
+    """Raised when project toolchain configuration is invalid."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -30,6 +35,19 @@ class ProjectConfig:
     default_cli_name: str
     godot_project_path: PurePosixPath
     license_status: str
+
+
+@dataclass(frozen=True, slots=True)
+class ToolchainConfig:
+    """Validated toolchain requirements."""
+
+    minimum_python_major: int
+    minimum_python_minor: int
+    runtime_dependencies: tuple[str, ...]
+    development_dependencies: tuple[str, ...]
+    required_godot_major: int
+    godot_binary: str | None
+    godot_executable_candidates: tuple[str, ...]
 
 
 def load_project_config(path: Path) -> ProjectConfig:
@@ -95,6 +113,53 @@ def load_project_config(path: Path) -> ProjectConfig:
     )
 
 
+def load_toolchain_config(path: Path) -> ToolchainConfig:
+    """Load toolchain requirements from `config/toolchain.toml`."""
+
+    try:
+        with path.open("rb") as config_file:
+            document = tomllib.load(config_file)
+    except (OSError, tomllib.TOMLDecodeError) as error:
+        raise ToolchainConfigError(f"Cannot read toolchain configuration: {error}") from error
+
+    python = document.get("python")
+    if not isinstance(python, dict):
+        raise ToolchainConfigError("`python` table is missing or invalid.")
+
+    minimum_version = _required_string(python, "minimum_version")
+    minimum_python = _parse_version_tuple(minimum_version)
+
+    runtime_dependencies = _normalize_string_list(
+        python.get("runtime_dependencies"), default=()
+    )
+
+    dev_dependencies = _normalize_string_list(
+        python.get("development_dependencies"), default=()
+    )
+
+    godot = document.get("godot")
+    if not isinstance(godot, dict):
+        raise ToolchainConfigError("`godot` table is missing or invalid.")
+
+    required_major = _required_int(godot, "required_major")
+    godot_binary = godot.get("executable")
+    godot_binary = godot_binary.strip() if isinstance(godot_binary, str) else None
+    if godot_binary == "":
+        godot_binary = None
+
+    candidates = _normalize_string_list(godot.get("executable_candidates"), default=("godot4", "godot"))
+
+    return ToolchainConfig(
+        minimum_python_major=minimum_python[0],
+        minimum_python_minor=minimum_python[1],
+        runtime_dependencies=runtime_dependencies,
+        development_dependencies=dev_dependencies,
+        required_godot_major=required_major,
+        godot_binary=godot_binary,
+        godot_executable_candidates=tuple(candidates),
+    )
+
+
 def _required_string(table: dict[str, Any], key: str) -> str:
     value = table.get(key)
     if not isinstance(value, str) or not value.strip():
@@ -102,6 +167,31 @@ def _required_string(table: dict[str, Any], key: str) -> str:
     if value != value.strip():
         raise ProjectConfigError(f"project.{key} must not have surrounding whitespace")
     return value
+
+
+def _required_string_or_error(message_key: str, value: Any, *, key: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ToolchainConfigError(f"{message_key}.{key} must be a non-empty string")
+    if value != value.strip():
+        raise ToolchainConfigError(
+            f"{message_key}.{key} must not have surrounding whitespace"
+        )
+    return value
+
+
+def _normalize_string_list(value: Any, *, default: tuple[str, ...] = ()) -> tuple[str, ...]:
+    if value is None:
+        return tuple(default)
+    if isinstance(value, str):
+        return (value,)
+    if not isinstance(value, list):
+        raise ToolchainConfigError("Expected a list of dependency names.")
+    normalized: list[str] = []
+    for entry in value:
+        normalized.append(
+            _required_string_or_error("toolchain.python", entry, key="dependency")
+        )
+    return tuple(dict.fromkeys(normalized))
 
 
 def _validate_relative_posix_path(value: str) -> PurePosixPath:
@@ -116,3 +206,19 @@ def _validate_relative_posix_path(value: str) -> PurePosixPath:
             "project.godot_project_path must be a repository-relative path"
         )
     return path
+
+
+def _parse_version_tuple(value: str) -> tuple[int, int]:
+    match = VERSION_PATTERN.match(value.strip())
+    if match is None:
+        raise ToolchainConfigError(
+            "python.minimum_version must be in the form <major>.<minor>"
+        )
+    return int(match.group("major")), int(match.group("minor"))
+
+
+def _required_int(table: dict[str, Any], key: str) -> int:
+    value = table.get(key)
+    if not isinstance(value, int):
+        raise ToolchainConfigError(f"{key} must be an integer")
+    return value

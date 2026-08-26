@@ -38,6 +38,25 @@ class SourceHygieneTests(unittest.TestCase):
 
         self.assertEqual(violations, [])
 
+    def test_source_does_not_use_shell_true(self) -> None:
+        targets = (
+            REPOSITORY_ROOT / "tools" / "src" / "g2dtool" / "cli.py",
+            REPOSITORY_ROOT / "tools" / "src" / "g2dtool" / "doctor.py",
+            REPOSITORY_ROOT / "tools" / "src" / "g2dtool" / "install.py",
+            REPOSITORY_ROOT / "tools" / "src" / "g2dtool" / "godot.py",
+        )
+        for target in targets:
+            self.assertNotIn("shell=True", target.read_text(encoding="utf-8"))
+
+    def test_source_does_not_use_break_system_packages(self) -> None:
+        targets = (
+            REPOSITORY_ROOT / "tools" / "src" / "g2dtool" / "install.py",
+            REPOSITORY_ROOT / "tools" / "src" / "g2dtool" / "cli.py",
+            REPOSITORY_ROOT / "tools" / "src" / "g2dtool" / "doctor.py",
+        )
+        for target in targets:
+            self.assertNotIn("--break-system-packages", target.read_text(encoding="utf-8"))
+
 
 if __name__ == "__main__":
     unittest.main()

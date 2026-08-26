@@ -16,6 +16,7 @@ alternative = "An in-tree custom backend was rejected because it would add maint
 
 [godot]
 required_major = 4
+executable = ""
 exact_version_resolved = false
 executable_candidates = ["godot4", "godot"]
 addons = []
