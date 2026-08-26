@@ -6,6 +6,7 @@ import unittest
 
 from g2dtool.godot import (
     PASS,
+    FAIL,
     CommandResult,
     discover_godot,
     build_godot_editor_command,
@@ -88,6 +89,52 @@ class GodotTests(unittest.TestCase):
             )
         self.assertEqual(result.status, PASS)
         self.assertIn("4", result.version)
+
+    def test_discovery_accepts_godot_version_on_non_zero_exit(self) -> None:
+        calls: list[tuple[str, ...]] = []
+
+        def run_command(arguments):
+            calls.append(tuple(arguments))
+            return CommandResult(1, "Godot Engine v4.7.2.stable", "")
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            fake_godot = Path(temporary_directory) / "godot4"
+            fake_godot.write_text("", encoding="utf-8")
+            result = discover_godot(
+                REPOSITORY_ROOT,
+                find_tool=lambda name: str(fake_godot) if name == "godot4" else None,
+                run_command=run_command,
+            )
+
+        self.assertEqual(result.status, PASS)
+        self.assertEqual(result.version, "Godot Engine v4.7.2.stable")
+        self.assertEqual(calls[0][0], str(fake_godot))
+
+    def test_discovery_ignores_runtime_linker_noise_when_extracting_version(self) -> None:
+        calls: list[tuple[str, ...]] = []
+
+        def run_command(arguments):
+            calls.append(tuple(arguments))
+            return CommandResult(
+                1,
+                "",
+                "/usr/bin/godot: /usr/lib/libm.so.6: version `GLIBC_2.44' not found (required by /usr/bin/godot)",
+            )
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            fake_godot = Path(temporary_directory) / "godot4"
+            fake_godot.write_text("", encoding="utf-8")
+            result = discover_godot(
+                REPOSITORY_ROOT,
+                find_tool=lambda name: str(fake_godot) if name == "godot4" else None,
+                run_command=run_command,
+            )
+
+        self.assertEqual(result.status, FAIL)
+        self.assertIsNone(result.version)
+        self.assertIn("Godot 4 was not found", result.detail)
+        self.assertIn("runtime library mismatch", result.detail.lower())
+        self.assertEqual(calls[0][0], str(fake_godot))
 
     def test_detects_fallback_candidates(self) -> None:
         calls: list[tuple[str, ...]] = []

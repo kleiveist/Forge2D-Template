@@ -106,6 +106,9 @@ def _handle_system_dependencies(
     probe = discover_godot(layout.repository_root, find_tool=find_tool, run_command=run_command)
     if probe.status == PASS:
         return
+    info(f"Godot probe failed: {probe.detail}")
+    if probe.status != PASS and "runtime library mismatch" in probe.detail.lower():
+        print_help_line("Possible binary/runtime mismatch: install a matching Godot 4 package or use flatpak/appimage.")
 
     pacman_command = ["sudo", "pacman", "-S", "--needed", "godot"]
     if distribution == "arch":

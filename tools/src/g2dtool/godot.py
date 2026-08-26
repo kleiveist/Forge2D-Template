@@ -59,7 +59,13 @@ PROJECT_MAIN_SCENE_RE = re.compile(r'^run/main_scene="res://([^"]+)"', re.MULTIL
 SCENE_SCRIPT_RE = re.compile(r'path="res://([^"]+\.gd)"')
 TEST_MODE_RE = re.compile(r'const\s+TEST_MODE_ARGUMENT\s*:\s*"([^"]+)"')
 TEST_MODE_ALT_RE = re.compile(r'const\s+TEST_MODE_ARGUMENT\s*:=\s*"([^"]+)"')
-GODOT_MAJOR_RE = re.compile(r"(\d+)\.")
+GODOT_LABELED_VERSION_RE = re.compile(
+    r"(?i)\bgodot\b.*?\bv?(?P<major>\d+)\.(?P<minor>\d+)"
+)
+GODOT_VERSION_TOKEN_RE = re.compile(r"(?<![A-Za-z0-9_])(v?\d+\.\d+)")
+GODOT_RUNTIME_LOAD_ERROR_RE = re.compile(
+    r"(?i)(GLIBC_|libc\.so|libm\.so|libstdc\+\+|cannot open shared object file|not found)"
+)
 
 
 def discover_godot(
@@ -100,6 +106,7 @@ def discover_godot(
 
     seen: set[str] = set()
     attempts: list[str] = []
+    failures: list[str] = []
     for candidate in ordered_candidates:
         if candidate in seen:
             continue
@@ -110,12 +117,15 @@ def discover_godot(
             continue
         attempts.append(str(executable))
         result = runner((str(executable), "--version"))
-        if result.returncode != 0:
-            continue
-
-        version = _first_line((result.stdout or result.stderr).strip())
+        version_text = _combined_version_output(result)
+        version = _extract_version_line(version_text)
         major_version = _extract_major_version(version)
         if major_version is None:
+            if result.returncode != 0:
+                failures.append(
+                    _probe_failure_detail(str(executable), result.returncode, version_text)
+                )
+                continue
             return GodotProbeResult(
                 executable=executable,
                 version=version,
@@ -134,6 +144,17 @@ def discover_godot(
                 ),
             )
 
+        if result.returncode != 0:
+            return GodotProbeResult(
+                executable=executable,
+                version=version,
+                status=PASS,
+                detail=(
+                    f"Godot {version} at {executable} (exit code {result.returncode}, "
+                    "assuming compatibility from version output)."
+                ),
+            )
+
         return GodotProbeResult(
             executable=executable,
             version=version,
@@ -145,11 +166,16 @@ def discover_godot(
         executable=None,
         version=None,
         status=FAIL,
-        detail=(
-            "Godot 4 was not found. "
-            f"Attempted candidates: {', '.join(attempts) if attempts else ', '.join(ordered_candidates)}"
+        detail=_build_not_found_detail(
+            attempts,
+            ordered_candidates,
+            failures,
         ),
     )
+
+
+def _combined_version_output(result: CommandResult) -> str:
+    return (result.stdout or result.stderr).strip()
 
 
 def build_godot_editor_command(
@@ -286,8 +312,58 @@ def _first_line(output: str) -> str:
     return output.splitlines()[0] if output else ""
 
 
+def _extract_version_line(output: str) -> str:
+    if not output:
+        return ""
+    for line in output.splitlines():
+        if _extract_major_version(line):
+            return line
+    return _first_line(output)
+
+
 def _extract_major_version(version: str) -> int | None:
-    match = GODOT_MAJOR_RE.search(version)
-    if match is None:
-        return None
-    return int(match.group(1))
+    labeled = GODOT_LABELED_VERSION_RE.search(version)
+    if labeled is not None:
+        return int(labeled.group("major"))
+
+    for match in GODOT_VERSION_TOKEN_RE.finditer(version):
+        token = match.group(1).removeprefix("v")
+        if _looks_like_godot_version_token(token):
+            return int(token.split(".", 1)[0])
+    return None
+
+
+def _looks_like_godot_version_token(token: str) -> bool:
+    if "_" in token or "/" in token:
+        return False
+    if not re.fullmatch(r"\d+\.\d+\w*", token):
+        return False
+    major = int(token.split(".", 1)[0])
+    return major >= 3
+
+
+def _build_not_found_detail(
+    attempts: list[str],
+    candidates: list[str],
+    failures: list[str],
+) -> str:
+    candidate_report = ", ".join(attempts) if attempts else ", ".join(candidates)
+    detail = f"Godot 4 was not found. Attempted candidates: {candidate_report}"
+    if failures:
+        detail += f". Runtime errors: {' ; '.join(failures[:3])}"
+
+    if any(GODOT_RUNTIME_LOAD_ERROR_RE.search(failure) for failure in failures):
+        detail += (
+            ". A runtime library mismatch was detected (for example GLIBC). "
+            "Use a binary matching your system libc or a containerized distribution."
+        )
+    return detail
+
+
+def _probe_failure_detail(candidate: str, returncode: int, output: str) -> str:
+    if not output:
+        return f"{candidate}: exit code {returncode} without version output."
+    message = _first_line(output)
+    if not message:
+        message = output
+    return f"{candidate}: exit code {returncode}: {message}"
