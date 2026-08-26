@@ -1,39 +1,50 @@
-# Forge2D
+# Forge2D Template
 
-Forge2D is a minimal Godot 4 + Python repository template with repository-local
-tooling entry points.
+Forge2D Template is a minimal Godot 4 + Python repository template with
+repository-local tooling entry points.
+
+- Repository: `Forge2D-Template`
+- Template ID: `forge2d-template`
+- Version: `0.1.0`
+- License: MIT
+- Tested Godot version: `4.7.2`
 
 ## Quick start
 
 ```text
 git clone <repository-url>
-cd Forge2D
+cd Forge2D-Template
 python tools/control.py doctor
 python tools/control.py install
-python tools/control.py Forge2D run
+python tools/control.py check
+python tools/control.py forge2d-template run
 ```
 
 ## Useful commands
 
 ```text
 python tools/control.py --help
+python tools/control.py version
 python tools/control.py doctor
 python tools/control.py install
 python tools/control.py install --dry-run
 python tools/control.py install --yes
+python tools/control.py check
 python tools/control.py godot4
 python tools/control.py godot4 run
 python tools/control.py godot4 test
-python tools/control.py forge2d run
-python tools/control.py Forge2D run
+python tools/control.py forge2d-template run
+python tools/control.py Forge2D-Template run
 ```
 
 ## Notes
 
 - `python tools/control.py` is the repository-local primary entry point.
-- The old global scripts (`g2d`, `Forge2D`) are optional compatibility entry
-  points when installed.
+- `g2d` is the main installed command. `Forge2D-Template` is an optional
+  onboarding entry point when installed.
 - Do not manually `source .venv/bin/activate` for repository setup. The tooling can
   operate directly from `python tools/control.py`.
-- On Arch Linux, Godot 4 is typically installed with `sudo pacman -S --needed godot`.
+- `python tools/control.py check` runs Doctor, Python tests, and the Godot
+  headless smoke test.
+- Godot 4.7.2 is the version verified for `v0.1.0`.
 - This repository does not currently assume a specific game runtime workflow.

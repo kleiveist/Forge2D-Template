@@ -1,4 +1,4 @@
-"""Provide the command-line interface for Forge2D repository tooling."""
+"""Provide the command-line interface for Forge2D Template repository tooling."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import argparse
 import textwrap
 
 from g2dtool import __version__
+from g2dtool.check import run_check
 from g2dtool.config import ProjectConfigError
 from g2dtool.doctor import collect_doctor_report, format_doctor_report
 from g2dtool.logger import error, print_help_line
@@ -29,18 +30,19 @@ EXIT_INTERRUPTED = 130
 
 WELCOME_TEXT = textwrap.dedent(
     """\
-    🧭 Forge2D developer entry point
+    🧭 Forge2D Template developer entry point
 
     🔍 Inspect the repository
       python tools/control.py --help
       python tools/control.py doctor
       python tools/control.py install
+      python tools/control.py check
 
     🎮 Run or test the project
       python tools/control.py godot4
       python tools/control.py godot4 test
-      python tools/control.py Forge2D run
-      python tools/control.py forge2d run
+      python tools/control.py forge2d-template run
+      python tools/control.py Forge2D-Template run
     """
 )
 
@@ -48,7 +50,7 @@ WELCOME_TEXT = textwrap.dedent(
 def build_parser(prog: str = "g2d") -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog=prog,
-        description="Inspect and maintain a Forge2D repository.",
+        description="Inspect and maintain a Forge2D Template repository.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent(
             """\
@@ -56,9 +58,10 @@ def build_parser(prog: str = "g2d") -> argparse.ArgumentParser:
               python tools/control.py doctor
               python tools/control.py install
               python tools/control.py install --dry-run
+              python tools/control.py check
               python tools/control.py godot4 test
-              python tools/control.py forge2d run
-              python tools/control.py Forge2D run
+              python tools/control.py forge2d-template run
+              python tools/control.py Forge2D-Template run
             """
         ),
     )
@@ -68,9 +71,14 @@ def build_parser(prog: str = "g2d") -> argparse.ArgumentParser:
     version_parser.set_defaults(handler=_show_version)
 
     doctor_parser = commands.add_parser(
-        "doctor", help="diagnose the Forge2D local and external tooling"
+        "doctor", help="diagnose the Forge2D Template local and external tooling"
     )
     doctor_parser.set_defaults(handler=_run_doctor)
+
+    check_parser = commands.add_parser(
+        "check", help="run doctor, Python tests, and Godot smoke test"
+    )
+    check_parser.set_defaults(handler=_run_check)
 
     install_parser = commands.add_parser(
         "install", help="prepare a local development environment"
@@ -92,18 +100,20 @@ def build_parser(prog: str = "g2d") -> argparse.ArgumentParser:
     godot_parser.add_argument("args", nargs=argparse.REMAINDER)
     godot_parser.set_defaults(handler=_run_godot_command)
 
-    forge2d_parser = commands.add_parser(
-        "forge2d", aliases=["Forge2D"], help="alias for running the game"
+    template_parser = commands.add_parser(
+        "forge2d-template",
+        aliases=["Forge2D-Template"],
+        help="alias for running the template project",
     )
-    forge2d_parser.add_argument(
+    template_parser.add_argument(
         "mode",
         nargs="?",
         choices=("run",),
         default="run",
         help="run mode",
     )
-    forge2d_parser.add_argument("args", nargs=argparse.REMAINDER)
-    forge2d_parser.set_defaults(handler=_run_forge2d)
+    template_parser.add_argument("args", nargs=argparse.REMAINDER)
+    template_parser.set_defaults(handler=_run_template_project)
 
     return parser
 
@@ -143,6 +153,10 @@ def _run_doctor(_options: argparse.Namespace) -> int:
     report = collect_doctor_report()
     print(format_doctor_report(report))
     return report.exit_code
+
+
+def _run_check(_options: argparse.Namespace) -> int:
+    return run_check()
 
 
 def _run_install(options: argparse.Namespace) -> int:
@@ -188,7 +202,7 @@ def _run_godot_command(options: argparse.Namespace) -> int:
     return _run_external_command(command)
 
 
-def _run_forge2d(options: argparse.Namespace) -> int:
+def _run_template_project(options: argparse.Namespace) -> int:
     options.mode = "run"
     return _run_godot_command(options)
 

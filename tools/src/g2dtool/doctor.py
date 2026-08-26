@@ -1,4 +1,4 @@
-"""Run environment checks for the Forge2D repository."""
+"""Run environment checks for the Forge2D Template repository."""
 
 from __future__ import annotations
 
@@ -115,14 +115,14 @@ def collect_doctor_report(
         _check_local_import(repository),
         _check_godot(repository, find_tool=find_tool, run_command=runner),
         _check_project_dependencies(repository),
-        _check_optional_dev_tools(find_tool),
+        _check_optional_dev_tools(repository, find_tool, runner),
     ]
 
     return DoctorReport(tuple(checks))
 
 
 def format_doctor_report(report: DoctorReport) -> str:
-    lines = ["🧾 Forge2D environment doctor"]
+    lines = ["🧾 Forge2D Template environment doctor"]
     lines.extend(check.printable for check in report.checks)
     passed = sum(1 for check in report.checks if check.status == PASS)
     warnings = sum(1 for check in report.checks if check.status == WARN)
@@ -323,8 +323,16 @@ def _check_project_dependencies(repository: RepositoryLayout) -> DoctorCheck:
     )
 
 
-def _check_optional_dev_tools(find_tool: ToolFinder) -> DoctorCheck:
-    missing = [name for name in ("pytest",) if find_tool(name) is None]
+def _check_optional_dev_tools(
+    repository: RepositoryLayout,
+    find_tool: ToolFinder,
+    run_command: CommandRunner,
+) -> DoctorCheck:
+    missing = [
+        name
+        for name in ("pytest",)
+        if find_tool(name) is None and not _venv_module_available(repository, name, run_command)
+    ]
     if missing:
         return DoctorCheck(
             "optional development tools",
@@ -332,6 +340,20 @@ def _check_optional_dev_tools(find_tool: ToolFinder) -> DoctorCheck:
             "Optional tool(s) missing: " + ", ".join(missing),
         )
     return DoctorCheck("optional development tools", PASS, "optional dev tools available.")
+
+
+def _venv_module_available(
+    repository: RepositoryLayout,
+    module_name: str,
+    run_command: CommandRunner,
+) -> bool:
+    venv_python = repository.venv_directory / (
+        "Scripts" if os.name == "nt" else "bin"
+    ) / ("python.exe" if os.name == "nt" else "python")
+    if not venv_python.exists():
+        return False
+    result = run_command((str(venv_python), "-m", module_name, "--version"))
+    return result.returncode == 0
 
 
 def _run_command(arguments: Sequence[str]) -> CommandResult:

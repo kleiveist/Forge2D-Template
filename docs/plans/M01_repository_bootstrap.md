@@ -19,7 +19,8 @@ rules, documentation index, lockfiles, CI workflows, milestone reports, or local
 changes existed. Implementation used a local repository on
 `feat/m01-repository-bootstrap` without a remote. After M01 validation, the
 maintainer explicitly requested a commit and sync; `origin` now points to the
-private `kleiveist/Forge2D` repository and the baseline is on remote `main`.
+private `kleiveist/Forge2D-Template` repository and the baseline is on remote
+`main`.
 
 The observed local tools at the start are Python 3.11.2 and Git 2.39.5. Neither
 `godot4` nor `godot` is on `PATH`. The system Python has no `pip` or `setuptools`,
@@ -38,7 +39,8 @@ Out of scope are gameplay design, a final runtime architecture, save systems,
 asset pipelines, release builds, installers, broad demos, runtime AI, external
 Godot add-ons, and merges. Remote creation, commits, and pushes were outside the
 original milestone contract, then separately authorized by the maintainer after
-validation. Selecting an open-source license is explicitly deferred.
+validation. The license was deferred during M01 and selected as MIT for the
+v0.1.0 public template release.
 
 ## Milestones
 
@@ -93,8 +95,8 @@ All commands are run from the repository root, `/workspace`.
   `node` while commands run as `root`. Validation therefore uses the per-command
   option `git -c safe.directory=/workspace`; no global Git setting or ownership
   is changed.
-- Godot is unavailable, so its smoke command must be documented for later rather
-  than reported as executed successfully.
+- Godot was unavailable during M01, so its smoke command was documented for
+  later rather than reported as executed successfully.
 - The system Python lacks both `pip` and `setuptools`. Runtime and tests will use
   only the standard library; install/build validation remains a separate check.
 - The first Python test run exposed a fault in the negative-test helper: it
@@ -114,21 +116,20 @@ All commands are run from the repository root, `/workspace`.
 
 ## Decision Log
 
-- 2026-08-26: Use `forge2d` as the stable template identifier and `Forge2D` as
-  the display name, based on the user-provided product name.
+- 2026-08-26: Use `forge2d-template` as the stable template identifier and
+  `Forge2D Template` as the display name for public release.
 - 2026-08-26: Require Python 3.11 or newer so configuration parsing can use
   standard-library `tomllib` with no runtime dependency.
-- 2026-08-26: Target Godot major version 4 but leave the exact editor version
-  explicitly unresolved until it can be verified and pinned.
+- 2026-08-26: Target Godot major version 4; M03 later verified Godot 4.7.2 for
+  v0.1.0.
 - 2026-08-26: Use standard-library `argparse` and `unittest`; no runtime or test
   dependencies are justified for M01.
-- 2026-08-26: Keep the license status `undecided`; do not create a license file.
+- 2026-08-26: Select the MIT License for public v0.1.0 release.
 - 2026-08-26: Following explicit maintainer direction, keep every Python file,
   including tests, under `tools/` and update packaging and documentation paths
   before final validation.
-- 2026-08-26: Create `kleiveist/Forge2D` as private for the requested sync because
-  the license decision is unresolved; publish only after an explicit visibility
-  and license decision.
+- 2026-08-26: Publish under `kleiveist/Forge2D-Template` after the explicit
+  template naming and MIT license decision.
 
 ## Validation
 
@@ -177,9 +178,10 @@ deleting unknown files.
 M01 delivered the intended minimal repository, dependency-free runtime CLI,
 deterministic tests, and neutral Godot bootstrap without introducing gameplay or
 release architecture. All 18 tests and every locally available audit pass. Godot
-engine parsing and installed-entry-point checks remain deferred solely because
-their external prerequisites are absent. The exact Godot version, build-backend
-pin, license, and future `g2d check` implementation remain deliberate follow-up
-decisions. The baseline commits are synchronized to private `origin/main`.
+engine parsing and installed-entry-point checks were deferred in M01 because
+their external prerequisites were absent. M03 later added the release gate and
+verified Godot 4.7.2 for v0.1.0. The build-backend pin and future export workflow
+remain deliberate follow-up decisions. The baseline commits are synchronized to
+`origin/main`.
 Detailed evidence is in
 `docs/reports/M01_repository_bootstrap.md`.

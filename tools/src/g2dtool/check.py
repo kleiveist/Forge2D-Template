@@ -1,0 +1,104 @@
+"""Run the Forge2D Template release gate."""
+
+from __future__ import annotations
+
+from collections.abc import Callable, Sequence
+from dataclasses import dataclass
+from pathlib import Path
+import os
+import subprocess
+import sys
+
+from g2dtool.doctor import collect_doctor_report, format_doctor_report
+from g2dtool.godot import PASS, build_godot_test_command, discover_godot
+from g2dtool.logger import error, join_command, print_status_line, success
+from g2dtool.repository import discover_repository_layout
+
+
+ProcessRunner = Callable[[Sequence[str], Path], int]
+
+
+@dataclass(frozen=True, slots=True)
+class GateStep:
+    name: str
+    exit_code: int
+
+
+def run_check(
+    *,
+    start: Path | None = None,
+    run_process: ProcessRunner | None = None,
+) -> int:
+    """Run Doctor, Python tests, and the Godot headless smoke test."""
+
+    layout = discover_repository_layout(start)
+    runner = run_process or _run_process
+    steps: list[GateStep] = []
+
+    print_status_line("running", "Doctor", "checking local requirements")
+    doctor_report = collect_doctor_report(start=layout.repository_root)
+    print(format_doctor_report(doctor_report))
+    steps.append(GateStep("Doctor", doctor_report.exit_code))
+
+    python = _test_python(layout)
+    pytest_command = [str(python), "-m", "pytest", "tools/tests"]
+    print_status_line("running", "Python tests", join_command(pytest_command))
+    steps.append(
+        GateStep(
+            "Python tests",
+            runner(pytest_command, layout.repository_root),
+        )
+    )
+
+    godot_result = discover_godot(layout.repository_root)
+    if godot_result.status != PASS or godot_result.executable is None:
+        error(f"Godot smoke test skipped as failure: {godot_result.detail}")
+        steps.append(GateStep("Godot headless smoke", 1))
+    else:
+        godot_command = build_godot_test_command(
+            godot_result.executable,
+            layout.game_directory,
+            layout.game_project_path,
+        )
+        print_status_line("running", "Godot headless smoke", join_command(godot_command))
+        steps.append(
+            GateStep(
+                "Godot headless smoke",
+                runner(godot_command, layout.repository_root),
+            )
+        )
+
+    failures = [step for step in steps if step.exit_code != 0]
+    if failures:
+        for step in failures:
+            error(f"{step.name} failed with exit code {step.exit_code}.")
+        return 1
+
+    success("Release gate passed.")
+    return 0
+
+
+def _test_python(layout) -> Path:
+    candidate = layout.venv_directory / (
+        "Scripts" if os.name == "nt" else "bin"
+    ) / ("python.exe" if os.name == "nt" else "python")
+    if candidate.exists():
+        return candidate
+    return Path(sys.executable)
+
+
+def _run_process(command: Sequence[str], cwd: Path) -> int:
+    try:
+        completed = subprocess.run(
+            list(command),
+            cwd=str(cwd),
+            check=False,
+            timeout=180,
+        )
+    except FileNotFoundError as exc:
+        error(f"Command not found: {exc.filename}")
+        return 1
+    except subprocess.TimeoutExpired:
+        error(f"Command timed out: {join_command(command)}")
+        return 1
+    return int(completed.returncode)

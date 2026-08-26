@@ -24,18 +24,19 @@ class ProjectConfigTests(unittest.TestCase):
     def test_loads_and_validates_baseline_project_configuration(self) -> None:
         config = load_project_config(REPOSITORY_ROOT / "config" / "project.toml")
         self.assertEqual(config.schema_version, 1)
-        self.assertEqual(config.template_id, "forge2d")
-        self.assertEqual(config.display_name, "Forge2D")
+        self.assertEqual(config.template_id, "forge2d-template")
+        self.assertEqual(config.display_name, "Forge2D Template")
+        self.assertEqual(config.version, "0.1.0")
         self.assertEqual(config.repository_language, "en")
         self.assertEqual(config.default_cli_name, "g2d")
         self.assertEqual(config.godot_project_path.as_posix(), "game/project.godot")
-        self.assertEqual(config.license_status, "undecided")
+        self.assertEqual(config.license_status, "selected")
 
     def test_rejects_unsupported_schema(self) -> None:
         self.assert_invalid_config("schema_version = 2", "schema_version")
 
     def test_rejects_absolute_godot_path(self) -> None:
-        replacement = 'godot_project_path = "/opt/forge2d/project.godot"'
+        replacement = 'godot_project_path = "/opt/forge2d-template/project.godot"'
         self.assert_invalid_config(replacement, "repository-relative")
 
     def assert_invalid_config(self, replacement: str, message: str) -> None:
@@ -44,12 +45,13 @@ class ProjectConfigTests(unittest.TestCase):
             schema_version = 1
 
             [project]
-            template_id = "forge2d"
-            display_name = "Forge2D"
+            template_id = "forge2d-template"
+            display_name = "Forge2D Template"
+            version = "0.1.0"
             repository_language = "en"
             default_cli_name = "g2d"
             godot_project_path = "game/project.godot"
-            license_status = "undecided"
+            license_status = "selected"
             """
         )
         if replacement.startswith("schema_version"):
@@ -72,6 +74,7 @@ class ToolchainConfigTests(unittest.TestCase):
         config = load_toolchain_config(REPOSITORY_ROOT / "config" / "toolchain.toml")
         self.assertEqual(config.minimum_python_major, 3)
         self.assertEqual(config.minimum_python_minor, 11)
+        self.assertEqual(config.development_dependencies, ("pytest>=8,<9",))
         self.assertEqual(config.required_godot_major, 4)
         self.assertEqual(config.godot_executable_candidates, ("godot4", "godot"))
 

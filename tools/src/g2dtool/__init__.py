@@ -1,4 +1,4 @@
-"""Forge2D repository tooling package."""
+"""Forge2D Template repository tooling package."""
 
 __version__ = "0.1.0"
 

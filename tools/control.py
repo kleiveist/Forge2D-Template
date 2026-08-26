@@ -1,4 +1,4 @@
-"""Repository-local bootstrap for Forge2D tooling."""
+"""Repository-local bootstrap for Forge2D Template tooling."""
 
 from __future__ import annotations
 

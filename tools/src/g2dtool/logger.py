@@ -1,4 +1,4 @@
-"""Emoji-aware logging helpers for Forge2D tooling."""
+"""Emoji-aware logging helpers for Forge2D Template tooling."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ STATUS_ICONS: dict[str, str] = {
 
 
 def _print(message: str, *, stream: object = sys.stdout) -> None:
-    print(message, file=stream)  # noqa: T201 - user-facing command output
+    print(message, file=stream, flush=True)  # noqa: T201 - user-facing command output
 
 
 def _stream() -> object:

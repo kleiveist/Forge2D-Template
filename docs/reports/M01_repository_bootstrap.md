@@ -7,7 +7,7 @@
 ## Ziel und Ergebnis
 
 M01 liefert aus einem leeren Workspace ein kleines, startfähiges
-Repository-Fundament für Forge2D. Enthalten sind zentrale Konfiguration, ein
+Repository-Fundament für Forge2D Template. Enthalten sind zentrale Konfiguration, ein
 installierbares Python-Paket mit `g2d`-CLI, deterministische Tests, ein neutrales
 Godot-4-Bootstrap-Projekt, Repository-Regeln, ein ExecPlan-Standard und die
 Baseline-Dokumentation. Gameplay-, Release- und Installationsarchitektur wurden
@@ -16,21 +16,21 @@ nicht vorweggenommen.
 Das Repository wurde für die Implementierung lokal ohne Remote initialisiert.
 Nach erfolgreicher M01-Verifikation hat der Maintainer Commit und Sync separat
 autorisiert. `origin/main` liegt nun im privaten GitHub-Repository
-`kleiveist/Forge2D`. Alle Python-Quellen und Python-Tests liegen gemäß
+`kleiveist/Forge2D-Template`. Alle Python-Quellen und Python-Tests liegen gemäß
 Maintainer-Vorgabe unter `tools/`.
 
 ## Getroffene und vertagte Entscheidungen
 
 | Entscheidung | Status | Begründung |
 | --- | --- | --- |
-| Template-ID `forge2d`, Anzeigename `Forge2D` | getroffen | Stabile technische Identität bei lesbarem Produktnamen |
+| Template-ID `forge2d-template`, Anzeigename `Forge2D Template` | getroffen | Stabile technische Identität bei lesbarem Produktnamen |
 | Repository-Sprache Englisch | getroffen | Einheitliche Code- und Dokumentationssprache |
 | Python ab 3.11 | getroffen | `tomllib` erlaubt TOML-Verarbeitung ohne Runtime-Abhängigkeit |
 | `argparse` und `unittest` | getroffen | Für M01 genügen Standardbibliothek und kleine Module |
 | Python-Quellen und Tests unter `tools/` | getroffen | Explizite Maintainer-Vorgabe; eine Ownership-Grenze für sämtliches Python |
 | Godot-Hauptversion 4 | getroffen | Projektformat und APIs zielen ausschließlich auf Godot 4 |
 | Exakte Godot-Version | vertagt | Kein kompatibler Editor war lokal verfügbar; keine Zahl wurde erfunden |
-| Open-Source-Lizenz | offen | `config/project.toml` führt `license_status = "undecided"`; keine Lizenzdatei wurde erzeugt |
+| Open-Source-Lizenz | getroffen | MIT-Lizenz für die öffentliche v0.1.0-Veröffentlichung |
 | Exakte setuptools-Version | vertagt | setuptools ist nur Build-Backend; Nutzen, MIT-Lizenz, Risiko und Alternative sind in `config/toolchain.toml` dokumentiert |
 
 Es bestehen keine Runtime- oder Testabhängigkeiten außerhalb der
@@ -74,7 +74,7 @@ generierten Cache-Dateien wurden hinzugefügt.
 | `git -c safe.directory=/workspace diff --cached --check` | 0 | Der vollständige gestagte Bootstrap-Diff war sauber |
 | Bedingter Godot-4-Smoke-Aufruf | 0 (Prüfskript) | Engine-Test als nicht ausgeführt gemeldet, weil weder `godot4` noch kompatibles `godot` verfügbar ist |
 | Temporäres `python3 -m venv` für Installationssmoke | 1 | Debian-Python enthält kein `ensurepip`; kein globales Paket wurde nachinstalliert |
-| `gh repo create kleiveist/Forge2D --private` | 0 | Privates Ziel wegen offener Lizenzentscheidung erzeugt |
+| `gh repo create kleiveist/Forge2D-Template --private` | 0 | Zielrepository für die Template-Veröffentlichung erzeugt oder umbenannt |
 | Erster HTTPS-Push | 128 | Vor Transfer abgebrochen, weil Git den bestehenden `gh`-Login nicht als Credential-Helper nutzte |
 | Push mit auf den Einzelaufruf begrenztem `gh`-Credential-Helper | 0 | Root-Commit ohne Force nach `origin/main` übertragen |
 | Vergleich von lokalem Commit und Remote-Ref | 0 | Beide zeigten exakt auf `d1a70de8c65c778f0952abc30061b414c3e99515` |
@@ -121,8 +121,7 @@ interner Fehler.
 - Externe Formatter oder Linter: nicht ausgeführt, weil in M01 bewusst keiner
   konfiguriert wurde. AST-Parse, Unit-Tests und Textaudit bilden die lokale
   statische Baseline.
-- `g2d check`: noch nicht ausgeführt, weil das Standard-Gate erst für einen
-  späteren Milestone angekündigt ist.
+- `g2d check`: in M03 implementiert und als Standard-Gate verwendet.
 
 ## Bekannte Risiken und offene Punkte
 
@@ -148,7 +147,7 @@ Engine-Ablage entfernt werden; unbekannte Dateien dürfen nicht gelöscht werden
 
 Für den aktuellen Zero-Start als zusammenhängender Baseline-Commit:
 
-- `✨ feat: bootstrap Forge2D repository foundation`
+- `feat: bootstrap Forge2D Template repository foundation`
 
 Bei einer späteren Aufteilung wären folgende Grenzen nachvollziehbar:
 
@@ -162,4 +161,4 @@ Bei einer späteren Aufteilung wären folgende Grenzen nachvollziehbar:
 erfolgreich. Die zwei nicht verfügbaren externen Laufzeitprüfungen—Godot und der
 installierte Python-Entry-Point—sind mit Grund, ehrlichem Status und
 reproduzierbarem Nachholbefehl dokumentiert. Die Baseline ist im privaten
-Repository `kleiveist/Forge2D` auf `main` synchronisiert.
+Repository `kleiveist/Forge2D-Template` auf `main` synchronisiert.

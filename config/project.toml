@@ -1,9 +1,10 @@
 schema_version = 1
 
 [project]
-template_id = "forge2d"
-display_name = "Forge2D"
+template_id = "forge2d-template"
+display_name = "Forge2D Template"
+version = "0.1.0"
 repository_language = "en"
 default_cli_name = "g2d"
 godot_project_path = "game/project.godot"
-license_status = "undecided"
+license_status = "selected"

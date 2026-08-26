@@ -25,9 +25,9 @@ class InstallTests(unittest.TestCase):
         (self.root / ".git").mkdir(parents=True)
         (self.root / "config").mkdir()
         (self.root / "config" / "project.toml").write_text(
-            "schema_version = 1\n\n[project]\ntemplate_id = \"forge2d\"\n"
-            'display_name = "Forge2D"\nrepository_language = "en"\n'
-            'default_cli_name = "g2d"\ngodot_project_path = "game/project.godot"\nlicense_status = "undecided"\n',
+            "schema_version = 1\n\n[project]\ntemplate_id = \"forge2d-template\"\n"
+            'display_name = "Forge2D Template"\nversion = "0.1.0"\nrepository_language = "en"\n'
+            'default_cli_name = "g2d"\ngodot_project_path = "game/project.godot"\nlicense_status = "selected"\n',
             encoding="utf-8",
         )
         (self.root / "config" / "toolchain.toml").write_text(

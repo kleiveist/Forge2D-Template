@@ -1,0 +1,96 @@
+"""Tests for the release gate orchestration."""
+
+from pathlib import Path
+from tempfile import TemporaryDirectory
+import unittest
+from unittest.mock import patch
+
+from _source_path import add_source_root
+
+add_source_root()
+
+from g2dtool.check import run_check
+from g2dtool.doctor import DoctorReport, DoctorCheck
+from g2dtool.repository import RepositoryLayout
+
+
+class CheckTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name) / "repository"
+        (self.root / ".git").mkdir(parents=True)
+        (self.root / "tools" / "tests").mkdir(parents=True)
+        (self.root / "tools" / "src").mkdir(parents=True)
+        (self.root / "game").mkdir()
+        (self.root / "game" / "project.godot").write_text("", encoding="utf-8")
+        self.layout = RepositoryLayout(
+            repository_root=self.root,
+            pyproject_toml=self.root / "pyproject.toml",
+            project_config=self.root / "config" / "project.toml",
+            toolchain_config=self.root / "config" / "toolchain.toml",
+            tools_directory=self.root / "tools",
+            tools_source_directory=self.root / "tools" / "src",
+            game_directory=self.root / "game",
+            venv_directory=self.root / ".venv",
+        )
+
+    def test_runs_all_gate_steps_when_available(self) -> None:
+        executed: list[tuple[str, ...]] = []
+
+        def runner(command, _cwd):
+            executed.append(tuple(command))
+            return 0
+
+        with (
+            patch("g2dtool.check.discover_repository_layout", return_value=self.layout),
+            patch(
+                "g2dtool.check.collect_doctor_report",
+                return_value=DoctorReport((DoctorCheck("repository", "pass", "ok"),)),
+            ),
+            patch(
+                "g2dtool.check.discover_godot",
+                return_value=type(
+                    "GodotResult",
+                    (),
+                    {"status": "pass", "executable": Path("/fake/godot4")},
+                )(),
+            ),
+        ):
+            code = run_check(start=self.root, run_process=runner)
+
+        self.assertEqual(code, 0)
+        self.assertTrue(any(command[1:3] == ("-m", "pytest") for command in executed))
+        self.assertTrue(any("--headless" in command for command in executed))
+
+    def test_returns_failure_after_running_python_tests_when_godot_is_missing(self) -> None:
+        executed: list[tuple[str, ...]] = []
+
+        def runner(command, _cwd):
+            executed.append(tuple(command))
+            return 0
+
+        with (
+            patch("g2dtool.check.discover_repository_layout", return_value=self.layout),
+            patch(
+                "g2dtool.check.collect_doctor_report",
+                return_value=DoctorReport((DoctorCheck("repository", "pass", "ok"),)),
+            ),
+            patch(
+                "g2dtool.check.discover_godot",
+                return_value=type(
+                    "GodotResult",
+                    (),
+                    {"status": "fail", "executable": None, "detail": "missing"},
+                )(),
+            ),
+        ):
+            code = run_check(start=self.root, run_process=runner)
+
+        self.assertEqual(code, 1)
+        self.assertTrue(any(command[1:3] == ("-m", "pytest") for command in executed))
+        self.assertFalse(any("--headless" in command for command in executed))
+
+
+if __name__ == "__main__":
+    unittest.main()

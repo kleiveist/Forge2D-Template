@@ -1,23 +1,24 @@
 # Documentation
 
-This index is the documentation entry point until M02 expands the architecture
-and testing guides.
+This index is the documentation entry point for Forge2D Template.
 
 ## Plans
 
 - [M01 repository bootstrap](plans/M01_repository_bootstrap.md)
-- [M02 tooling entrypoint (in progress)](plans/M02_control_entrypoint.md)
+- [M02 tooling entrypoint](plans/M02_control_entrypoint.md)
+- [M03 release v0.1.0](plans/M03_release_v0_1_0.md)
 
 ## Reports
 
 - [M01 repository bootstrap report](reports/M01_repository_bootstrap.md)
+- [M02 control entrypoint report](reports/M02_control_entrypoint.md)
+- [M03 release v0.1.0 report](reports/M03_release_v0_1_0.md)
 
 ## Decisions
 
 - [ADR-0001: Repository layout](decisions/ADR-0001-repository-layout.md)
 
-The license choice is still open. See `config/project.toml` for its authoritative
-status; do not infer a license from repository visibility.
+Forge2D Template is licensed under the MIT License. See `LICENSE`.
 
 ## Tooling
 
@@ -25,4 +26,5 @@ status; do not infer a license from repository visibility.
 - Common bootstrap flow:
   - `python tools/control.py doctor`
   - `python tools/control.py install`
-  - `python tools/control.py Forge2D run`
+  - `python tools/control.py check`
+  - `python tools/control.py forge2d-template run`

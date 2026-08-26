@@ -1,4 +1,4 @@
-"""Run the Forge2D repository CLI as a Python module."""
+"""Run the Forge2D Template repository CLI as a Python module."""
 
 from g2dtool.cli import main
 

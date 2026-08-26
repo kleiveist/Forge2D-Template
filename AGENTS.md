@@ -1,6 +1,6 @@
-# Forge2D Repository Rules
+# Forge2D Template Repository Rules
 
-Forge2D is a general 2D Godot template with small, repository-local Python
+Forge2D Template is a general 2D Godot template with small, repository-local Python
 tooling. Start with `docs/README.md`, then read the relevant plans, decisions,
 reports, configuration, and tests before changing their component.
 
@@ -12,7 +12,6 @@ reports, configuration, and tests before changing their component.
   dependency. Record each dependency's purpose, maintenance risk, license, and
   considered alternative before adoption.
 - Keep generated caches, local binaries, and machine-specific paths out of Git.
-- `g2d check` is the planned standard repository gate. Until it is implemented,
-  use the component checks linked from the current milestone plan and report.
+- `g2d check` is the standard repository gate. Report only checks actually run.
 
 Keep this file concise; detailed guidance belongs in the documentation it links.

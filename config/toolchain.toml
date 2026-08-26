@@ -3,7 +3,14 @@ schema_version = 1
 [python]
 minimum_version = "3.11"
 runtime_dependencies = []
+development_dependencies = ["pytest>=8,<9"]
 policy = "Use Python 3.11 or newer so standard-library tomllib can parse configuration."
+
+[python.development_dependency.pytest]
+purpose = "Run the repository Python test suite through the release gate and CI."
+license = "MIT"
+risk = "A major pytest upgrade can change collection, assertion output, or plugin behavior."
+alternative = "The existing unittest suite was considered, but pytest provides the requested standard developer test runner while still collecting unittest tests."
 
 [python.build_backend]
 name = "setuptools.build_meta"
@@ -17,10 +24,11 @@ alternative = "An in-tree custom backend was rejected because it would add maint
 [godot]
 required_major = 4
 executable = ""
-exact_version_resolved = false
+tested_version = "4.7.2"
+exact_version_resolved = true
 executable_candidates = ["godot4", "godot"]
 addons = []
-policy = "Pin an exact stable Godot 4 editor only after compatibility is verified; use official distributions and record provenance before automating downloads."
+policy = "Forge2D Template v0.1.0 is validated with Godot 4.7.2. Use official distributions and record provenance before automating downloads."
 
 [git]
 required = true
@@ -28,5 +36,5 @@ policy = "Use non-destructive commands and never rewrite shared history as part 
 
 [validation]
 standard_gate = "g2d check"
-standard_gate_status = "planned"
-policy = "Until the gate exists, run the documented M01 checks directly."
+standard_gate_status = "implemented"
+policy = "Run `python tools/control.py check` or installed `g2d check` before release."

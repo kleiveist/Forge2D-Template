@@ -31,7 +31,7 @@ class CliTests(unittest.TestCase):
         text = output.getvalue()
         self.assertIn("python tools/control.py doctor", text)
         self.assertIn("python tools/control.py godot4 test", text)
-        self.assertIn("python tools/control.py Forge2D run", text)
+        self.assertIn("python tools/control.py Forge2D-Template run", text)
 
     def test_version_has_stable_output(self) -> None:
         output = StringIO()
@@ -64,7 +64,14 @@ class CliTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 1)
 
-    def test_forge2d_and_case_alias_run_the_same_mode(self) -> None:
+    def test_check_dispatches_release_gate(self) -> None:
+        with patch("g2dtool.cli.run_check", return_value=0) as run_gate:
+            exit_code = main(["check"])
+
+        self.assertEqual(exit_code, 0)
+        run_gate.assert_called_once_with()
+
+    def test_template_aliases_run_the_same_mode(self) -> None:
         layout = RepositoryLayout(
             repository_root=REPOSITORY_ROOT,
             pyproject_toml=REPOSITORY_ROOT / "pyproject.toml",
@@ -95,8 +102,8 @@ class CliTests(unittest.TestCase):
             ) as build_command,
             patch("g2dtool.cli._run_external_command", return_value=42) as runner,
         ):
-            exit_lower = main(["forge2d", "run"])
-            exit_upper = main(["Forge2D", "run"])
+            exit_lower = main(["forge2d-template", "run"])
+            exit_upper = main(["Forge2D-Template", "run"])
 
         self.assertEqual(build_command.call_count, 2)
         self.assertEqual(exit_lower, 42)

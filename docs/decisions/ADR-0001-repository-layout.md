@@ -32,5 +32,5 @@ directory.
   in either implementation.
 - Future directories require a demonstrated responsibility that does not fit an
   existing boundary.
-- This decision does not define gameplay architecture, asset processing, release
-  packaging, or an open-source license.
+- This decision does not define gameplay architecture, asset processing, or
+  release packaging. The MIT License was selected later for v0.1.0.

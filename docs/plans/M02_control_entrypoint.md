@@ -12,8 +12,10 @@ launch or test the Godot project without manual virtual-environment activation.
 - [x] Centralize repository path detection and tool discovery in `g2dtool`.
 - [x] Implement `doctor`, `install`, and Godot command handling in CLI.
 - [x] Add tests for new command paths and compatibility aliases.
+- [x] Close milestone for Forge2D Template v0.1.0.
 
 ## Notes
 
-- `g2d` and `Forge2D` remain legacy/global script compatibility entry points when
-  installed; they are no longer required for first-run.
+- `g2d` remains the primary installed command.
+- `forge2d-template` and `Forge2D-Template` are template run aliases; the old
+  standalone `forge2d`/`Forge2D` aliases are no longer public entry points.

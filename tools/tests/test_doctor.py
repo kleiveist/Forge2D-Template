@@ -1,6 +1,7 @@
 """Tests for environment checks with controlled external-tool doubles."""
 
 from pathlib import Path
+import os
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -70,6 +71,29 @@ class DoctorTests(unittest.TestCase):
 
         self.assertEqual(report.exit_code, 0)
         self.assertTrue(all(check.status != "fail" for check in report.checks))
+
+    def test_accepts_pytest_from_repository_venv(self) -> None:
+        tools = {"git": "fake-git", "godot4": "fake-godot4"}
+        venv_bin = self.repository / ".venv" / ("Scripts" if os.name == "nt" else "bin")
+        venv_bin.mkdir(parents=True)
+        (venv_bin / "python").write_text("", encoding="utf-8")
+
+        def run_command(arguments):
+            if str(arguments[0]).endswith("godot4"):
+                return CommandResult(0, "4.7.2.stable.test\n", "")
+            if tuple(arguments[1:]) == ("-m", "pytest", "--version"):
+                return CommandResult(0, "pytest 8.0.0\n", "")
+            return CommandResult(0, "git 2.42.0\n", "")
+
+        report = collect_doctor_report(
+            self.repository,
+            find_tool=tools.get,
+            run_command=run_command,
+            python_version="3.11.0",
+        )
+
+        check = next(item for item in report.checks if item.name == "optional development tools")
+        self.assertEqual(check.status, "pass")
 
     def test_report_has_failure_when_godot_missing(self) -> None:
         tools = {"git": "fake-git"}

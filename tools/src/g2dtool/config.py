@@ -1,4 +1,4 @@
-"""Read and validate the Forge2D baseline project configuration."""
+"""Read and validate the Forge2D Template baseline project configuration."""
 
 from __future__ import annotations
 
@@ -31,6 +31,7 @@ class ProjectConfig:
     schema_version: int
     template_id: str
     display_name: str
+    version: str
     repository_language: str
     default_cli_name: str
     godot_project_path: PurePosixPath
@@ -76,6 +77,9 @@ def load_project_config(path: Path) -> ProjectConfig:
         )
 
     display_name = _required_string(project, "display_name")
+    version = _required_string(project, "version")
+    if VERSION_PATTERN.fullmatch(version) is None:
+        raise ProjectConfigError("project.version must be a semantic version")
     repository_language = _required_string(project, "repository_language")
     if LANGUAGE_PATTERN.fullmatch(repository_language) is None:
         raise ProjectConfigError(
@@ -106,6 +110,7 @@ def load_project_config(path: Path) -> ProjectConfig:
         schema_version=schema_version,
         template_id=template_id,
         display_name=display_name,
+        version=version,
         repository_language=repository_language,
         default_cli_name=default_cli_name,
         godot_project_path=godot_project_path,

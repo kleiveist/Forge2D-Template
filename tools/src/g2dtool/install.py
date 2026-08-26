@@ -1,4 +1,4 @@
-"""Prepare and verify a local Forge2D development environment."""
+"""Prepare and verify a local Forge2D Template development environment."""
 
 from __future__ import annotations
 
@@ -68,7 +68,7 @@ def run_install(
     runner = run_command or _run_command
     prompt = confirm or (lambda text: input(text))
 
-    info(f"Preparing Forge2D environment in {layout.repository_root}")
+    info(f"Preparing Forge2D Template environment in {layout.repository_root}")
     distribution = _linux_distribution() or "not detected"
     info(f"Detected platform: {platform.system()} ({distribution})")
 
@@ -139,14 +139,24 @@ def _ensure_venv(
     run_command: CommandRunner,
 ) -> None:
     venv_python = _venv_python_path(venv_directory)
-    if venv_python.exists():
+    if _venv_has_pip(venv_python, run_command):
         return
 
-    command = [sys.executable, "-m", "venv", str(venv_directory)]
+    command = [sys.executable, "-m", "venv"]
+    if venv_directory.exists():
+        command.append("--clear")
+    command.append(str(venv_directory))
     if dry_run:
         _print_dry_run(command)
         return
     _run_or_fail(command, "Create .venv", run_command)
+
+
+def _venv_has_pip(venv_python: Path, run_command: CommandRunner) -> bool:
+    if not venv_python.exists():
+        return False
+    result = run_command((str(venv_python), "-m", "pip", "--version"))
+    return result.returncode == 0
 
 
 def _install_local_tooling(

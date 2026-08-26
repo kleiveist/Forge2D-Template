@@ -1,4 +1,4 @@
-"""Locate the Forge2D repository and its canonical local paths."""
+"""Locate the Forge2D Template repository and its canonical local paths."""
 
 from __future__ import annotations
 
