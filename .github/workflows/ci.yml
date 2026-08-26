@@ -4,33 +4,356 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GODOT_VERSION: "4.7.2"
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  native-platforms:
+    name: ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.11", "3.14"]
+
     steps:
-      - name: Checkout
+      - name: Check out repository
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: ${{ matrix.python-version }}
+          cache: pip
 
-      - name: Install Python tooling
+      - name: Verify Python
+        run: python --version
+
+      - name: Install verified Godot editor
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: python
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install -e ".[dev]"
+          import hashlib
+          import json
+          import os
+          import platform
+          import shutil
+          import stat
+          import urllib.request
+          import zipfile
+          from pathlib import Path
 
-      - name: Run Python tests
-        run: python -m pytest tools/tests
+          version = os.environ["GODOT_VERSION"]
+          tag = f"{version}-stable"
+          api_url = (
+              "https://api.github.com/repos/godotengine/"
+              f"godot-builds/releases/tags/{tag}"
+          )
+          request = urllib.request.Request(
+              api_url,
+              headers={
+                  "Accept": "application/vnd.github+json",
+                  "Authorization": f"Bearer {os.environ['GITHUB_TOKEN']}",
+                  "User-Agent": "Forge2D-Template-CI",
+              },
+          )
+          with urllib.request.urlopen(request) as response:
+              release = json.load(response)
 
-      - name: Install Godot 4.7.2
+          assets = {
+              asset["name"]: asset["browser_download_url"]
+              for asset in release["assets"]
+          }
+          system = platform.system()
+          suffixes = {
+              "Linux": "_linux.x86_64.zip",
+              "Windows": "_win64.exe.zip",
+              "Darwin": "_macos.universal.zip",
+          }
+          try:
+              suffix = suffixes[system]
+          except KeyError as error:
+              raise SystemExit(f"Unsupported CI platform: {system}") from error
+
+          archive_name = next(
+              (
+                  name
+                  for name in assets
+                  if name.endswith(suffix) and "_mono_" not in name
+              ),
+              None,
+          )
+          sums_name = next(
+              (name for name in assets if name.upper() == "SHA512-SUMS.TXT"),
+              None,
+          )
+          if archive_name is None or sums_name is None:
+              raise SystemExit(
+                  f"Required Godot assets were not found for {system}: "
+                  f"archive={archive_name!r}, checksums={sums_name!r}"
+              )
+
+          downloads = Path(".ci-downloads")
+          downloads.mkdir(exist_ok=True)
+          archive_path = downloads / archive_name
+          urllib.request.urlretrieve(assets[archive_name], archive_path)
+          with urllib.request.urlopen(assets[sums_name]) as response:
+              sums = response.read().decode("utf-8")
+
+          expected = None
+          for line in sums.splitlines():
+              parts = line.split()
+              if len(parts) >= 2 and parts[-1].lstrip("*") == archive_name:
+                  expected = parts[0].lower()
+                  break
+          if expected is None:
+              raise SystemExit(f"No SHA-512 entry found for {archive_name}")
+
+          digest = hashlib.sha512()
+          with archive_path.open("rb") as archive_file:
+              for chunk in iter(lambda: archive_file.read(1024 * 1024), b""):
+                  digest.update(chunk)
+          actual = digest.hexdigest().lower()
+          if actual != expected:
+              raise SystemExit(
+                  f"SHA-512 mismatch for {archive_name}: "
+                  f"expected {expected}, got {actual}"
+              )
+
+          extracted = downloads / "godot"
+          with zipfile.ZipFile(archive_path) as archive:
+              archive.extractall(extracted)
+
+          patterns = {
+              "Linux": "Godot_v*_linux.x86_64",
+              "Windows": "Godot_v*_win64.exe",
+              "Darwin": "Godot.app/Contents/MacOS/Godot",
+          }
+          executable = next(extracted.rglob(patterns[system]), None)
+          if executable is None:
+              raise SystemExit(f"Godot executable was not found for {system}")
+
+          if system != "Windows":
+              executable.chmod(
+                  executable.stat().st_mode
+                  | stat.S_IXUSR
+                  | stat.S_IXGRP
+                  | stat.S_IXOTH
+              )
+
+          ci_bin = Path(".ci-bin").resolve()
+          ci_bin.mkdir(exist_ok=True)
+          alias = ci_bin / ("godot4.exe" if system == "Windows" else "godot4")
+          if alias.exists() or alias.is_symlink():
+              alias.unlink()
+          if system == "Windows":
+              shutil.copy2(executable, alias)
+          else:
+              alias.symlink_to(executable.resolve())
+
+          with open(os.environ["GITHUB_PATH"], "a", encoding="utf-8") as path_file:
+              path_file.write(f"{ci_bin}{os.linesep}")
+
+      - name: Verify Godot
+        run: godot4 --version
+
+      - name: Install repository environment
+        run: python tools/control.py install --yes
+
+      - name: Diagnose environment
+        run: python tools/control.py doctor
+
+      - name: Run repository checks
+        run: python tools/control.py check
+
+  linux-distributions:
+    name: Linux / ${{ matrix.distro }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: Debian 13
+            image: debian:13-slim
+            package-family: apt
+          - distro: Arch Linux
+            image: archlinux:base
+            package-family: pacman
+
+    container:
+      image: ${{ matrix.image }}
+
+    steps:
+      - name: Install Debian system dependencies
+        if: matrix.package-family == 'apt'
         run: |
-          curl -L -o godot.zip https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_linux.x86_64.zip
-          unzip godot.zip
-          chmod +x Godot_v4.7.2-stable_linux.x86_64
-          sudo mv Godot_v4.7.2-stable_linux.x86_64 /usr/local/bin/godot4
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends \
+            bash \
+            ca-certificates \
+            git \
+            python3 \
+            python3-pip \
+            python3-venv \
+            libasound2 \
+            libfontconfig1 \
+            libgl1 \
+            libx11-6 \
+            libxcursor1 \
+            libxi6 \
+            libxinerama1 \
+            libxrandr2
+          ln -sf /usr/bin/python3 /usr/local/bin/python
 
-      - name: Run Godot headless smoke test
-        run: godot4 --headless --path game -- --test-mode
+      - name: Install Arch Linux system dependencies
+        if: matrix.package-family == 'pacman'
+        run: |
+          pacman -Syu --noconfirm \
+            alsa-lib \
+            bash \
+            ca-certificates \
+            fontconfig \
+            git \
+            libglvnd \
+            libx11 \
+            libxcursor \
+            libxi \
+            libxinerama \
+            libxrandr \
+            python \
+            python-pip
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Verify distribution and Python
+        run: |
+          cat /etc/os-release
+          python --version
+
+      - name: Install verified Godot editor
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        shell: python
+        run: |
+          import hashlib
+          import json
+          import os
+          import shutil
+          import stat
+          import urllib.request
+          import zipfile
+          from pathlib import Path
+
+          version = os.environ["GODOT_VERSION"]
+          tag = f"{version}-stable"
+          api_url = (
+              "https://api.github.com/repos/godotengine/"
+              f"godot-builds/releases/tags/{tag}"
+          )
+          request = urllib.request.Request(
+              api_url,
+              headers={
+                  "Accept": "application/vnd.github+json",
+                  "Authorization": f"Bearer {os.environ['GITHUB_TOKEN']}",
+                  "User-Agent": "Forge2D-Template-CI",
+              },
+          )
+          with urllib.request.urlopen(request) as response:
+              release = json.load(response)
+
+          assets = {
+              asset["name"]: asset["browser_download_url"]
+              for asset in release["assets"]
+          }
+          archive_name = next(
+              (
+                  name
+                  for name in assets
+                  if name.endswith("_linux.x86_64.zip")
+                  and "_mono_" not in name
+              ),
+              None,
+          )
+          sums_name = next(
+              (name for name in assets if name.upper() == "SHA512-SUMS.TXT"),
+              None,
+          )
+          if archive_name is None or sums_name is None:
+              raise SystemExit(
+                  "Required Linux Godot archive or checksum file was not found"
+              )
+
+          downloads = Path(".ci-downloads")
+          downloads.mkdir(exist_ok=True)
+          archive_path = downloads / archive_name
+          urllib.request.urlretrieve(assets[archive_name], archive_path)
+          with urllib.request.urlopen(assets[sums_name]) as response:
+              sums = response.read().decode("utf-8")
+
+          expected = None
+          for line in sums.splitlines():
+              parts = line.split()
+              if len(parts) >= 2 and parts[-1].lstrip("*") == archive_name:
+                  expected = parts[0].lower()
+                  break
+          if expected is None:
+              raise SystemExit(f"No SHA-512 entry found for {archive_name}")
+
+          digest = hashlib.sha512()
+          with archive_path.open("rb") as archive_file:
+              for chunk in iter(lambda: archive_file.read(1024 * 1024), b""):
+                  digest.update(chunk)
+          actual = digest.hexdigest().lower()
+          if actual != expected:
+              raise SystemExit(
+                  f"SHA-512 mismatch for {archive_name}: "
+                  f"expected {expected}, got {actual}"
+              )
+
+          extracted = downloads / "godot"
+          with zipfile.ZipFile(archive_path) as archive:
+              archive.extractall(extracted)
+          executable = next(extracted.rglob("Godot_v*_linux.x86_64"), None)
+          if executable is None:
+              raise SystemExit("Godot Linux executable was not found")
+          executable.chmod(
+              executable.stat().st_mode
+              | stat.S_IXUSR
+              | stat.S_IXGRP
+              | stat.S_IXOTH
+          )
+
+          ci_bin = Path(".ci-bin").resolve()
+          ci_bin.mkdir(exist_ok=True)
+          alias = ci_bin / "godot4"
+          if alias.exists() or alias.is_symlink():
+              alias.unlink()
+          alias.symlink_to(executable.resolve())
+          with open(os.environ["GITHUB_PATH"], "a", encoding="utf-8") as path_file:
+              path_file.write(f"{ci_bin}{os.linesep}")
+
+      - name: Verify Godot
+        run: godot4 --version
+
+      - name: Install repository environment
+        run: python tools/control.py install --yes
+
+      - name: Diagnose environment
+        run: python tools/control.py doctor
+
+      - name: Run repository checks
+        run: python tools/control.py check
