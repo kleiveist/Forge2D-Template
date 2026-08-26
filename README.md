@@ -1,5 +1,7 @@
 # Forge2D Template
 
+[![CI](https://github.com/kleiveist/Forge2D-Template/actions/workflows/ci.yml/badge.svg)](https://github.com/kleiveist/Forge2D-Template/actions/workflows/ci.yml)
+
 Forge2D Template is a minimal Godot 4 + Python repository template with
 repository-local tooling entry points.
 
