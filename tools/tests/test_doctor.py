@@ -76,7 +76,8 @@ class DoctorTests(unittest.TestCase):
         tools = {"git": "fake-git", "godot4": "fake-godot4"}
         venv_bin = self.repository / ".venv" / ("Scripts" if os.name == "nt" else "bin")
         venv_bin.mkdir(parents=True)
-        (venv_bin / "python").write_text("", encoding="utf-8")
+        python_name = "python.exe" if os.name == "nt" else "python"
+        (venv_bin / python_name).write_text("", encoding="utf-8")
 
         def run_command(arguments):
             if str(arguments[0]).endswith("godot4"):

@@ -70,7 +70,7 @@ class GodotTests(unittest.TestCase):
             run_command=run_command,
         )
         self.assertEqual(result.status, PASS)
-        self.assertEqual(calls[0][0], "/godot4-env")
+        self.assertEqual(calls[0][0], str(Path("/godot4-env")))
 
     def test_discovery_parses_prefixed_version_output(self) -> None:
         calls: list[tuple[str, ...]] = []
@@ -155,7 +155,7 @@ class GodotTests(unittest.TestCase):
             run_command=run_command,
         )
         self.assertEqual(result.status, PASS)
-        self.assertEqual(calls[0][0], "/fallback/godot4")
+        self.assertEqual(calls[0][0], str(Path("/fallback/godot4")))
 
     def test_command_construction(self) -> None:
         project_file = REPOSITORY_ROOT / "game" / "project.godot"
@@ -165,19 +165,19 @@ class GodotTests(unittest.TestCase):
 
         self.assertEqual(
             build_godot_editor_command(executable, game),
-            ["/usr/bin/godot", "--editor", "--path", str(game)],
+            [str(executable), "--editor", "--path", str(game)],
         )
         self.assertEqual(
             build_godot_run_command(executable, game, ["--foo"]),
-            ["/usr/bin/godot", "--path", str(game), "--", "--foo"],
+            [str(executable), "--path", str(game), "--", "--foo"],
         )
         self.assertEqual(
             build_godot_run_command(executable, game, ["--", "--foo"]),
-            ["/usr/bin/godot", "--path", str(game), "--", "--foo"],
+            [str(executable), "--path", str(game), "--", "--foo"],
         )
         self.assertEqual(
             build_godot_test_command(executable, game, project_file, ["--foo"]),
-            ["/usr/bin/godot", "--headless", "--path", str(game), "--", test_argument, "--foo"],
+            [str(executable), "--headless", "--path", str(game), "--", test_argument, "--foo"],
         )
 
     def test_detect_project_test_argument(self) -> None:
