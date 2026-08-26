@@ -21,8 +21,8 @@ External tools and CI actions adopted for this release:
 | Dependency | Purpose | License | Maintenance risk | Considered alternative |
 | --- | --- | --- | --- | --- |
 | `pytest>=8,<9` | Standard Python test runner for local gate and CI | MIT | Major upgrades can alter collection or reporting behavior | Keep only `unittest`; rejected because the release gate explicitly requires pytest as a dev dependency |
-| `actions/checkout@v4` | Fetch repository source in CI | MIT | GitHub-hosted action behavior can change between major versions | Manual git clone in CI; rejected as less maintainable |
-| `actions/setup-python@v5` | Install Python 3.11 in CI | MIT | Runner/toolcache behavior can change between major versions | Use runner default Python; rejected because the supported version should be explicit |
+| `actions/checkout@v7` | Fetch repository source in CI | MIT | GitHub-hosted action behavior can change between major versions | Manual git clone in CI; rejected as less maintainable |
+| `actions/setup-python@v7` | Install Python 3.11 and 3.14 in CI | MIT | Runner/toolcache behavior can change between major versions | Use runner default Python; rejected because the supported versions should be explicit |
 | Godot 4.7.2 official Linux binary | Run headless smoke validation | MIT | Large upstream binary download can fail or become unavailable | Distribution packages; rejected because they may not provide the tested release |
 
 Validation evidence:
