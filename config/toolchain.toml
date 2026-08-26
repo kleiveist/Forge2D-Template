@@ -1,0 +1,31 @@
+schema_version = 1
+
+[python]
+minimum_version = "3.11"
+runtime_dependencies = []
+policy = "Use Python 3.11 or newer so standard-library tomllib can parse configuration."
+
+[python.build_backend]
+name = "setuptools.build_meta"
+requirement = "setuptools>=68"
+version_status = "unresolved"
+purpose = "Build an installable wheel with standard Python packaging metadata."
+license = "MIT"
+risk = "An unresolved build-tool version prevents fully reproducible package builds."
+alternative = "An in-tree custom backend was rejected because it would add maintenance code for no M01 runtime benefit."
+
+[godot]
+required_major = 4
+exact_version_resolved = false
+executable_candidates = ["godot4", "godot"]
+addons = []
+policy = "Pin an exact stable Godot 4 editor only after compatibility is verified; use official distributions and record provenance before automating downloads."
+
+[git]
+required = true
+policy = "Use non-destructive commands and never rewrite shared history as part of repository checks."
+
+[validation]
+standard_gate = "g2d check"
+standard_gate_status = "planned"
+policy = "Until the gate exists, run the documented M01 checks directly."
