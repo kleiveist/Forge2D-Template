@@ -124,10 +124,10 @@ def main(arguments: Sequence[str] | None = None, prog: str = "g2d") -> int:
     try:
         options = build_parser(prog=prog).parse_args(arguments)
         return int(options.handler(options))
-    except SystemExit as error:
+    except SystemExit as system_exit_error:
         raise
-    except ProjectConfigError as error:
-        error(f"Error: {error}")
+    except ProjectConfigError as config_error:
+        error(f"Error: {config_error}")
         return EXIT_USAGE
     except KeyboardInterrupt:
         error("Aborted.")

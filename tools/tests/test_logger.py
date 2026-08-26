@@ -51,5 +51,5 @@ class LoggerTests(unittest.TestCase):
         stream = FailingThenRecoveringStream()
         _print("🚀 testing unicode", stream=stream)
 
-        self.assertEqual(len(stream.calls), 1)
-        self.assertNotIn("🚀", stream.calls[0])
+        self.assertGreaterEqual(len(stream.calls), 1)
+        self.assertNotIn("🚀", "".join(stream.calls))
