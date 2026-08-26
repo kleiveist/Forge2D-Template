@@ -132,8 +132,8 @@ def main(arguments: Sequence[str] | None = None, prog: str = "g2d") -> int:
     except KeyboardInterrupt:
         error("Aborted.")
         return EXIT_INTERRUPTED
-    except Exception as error:
-        error(f"Internal error: {error}")
+    except Exception as exc:
+        error(f"Internal error: {exc}")
         return EXIT_USAGE
 
 

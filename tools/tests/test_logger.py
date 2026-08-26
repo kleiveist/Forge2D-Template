@@ -7,6 +7,7 @@ from _source_path import add_source_root
 add_source_root()
 
 from g2dtool.logger import (
+    _print,
     dry_run,
     help_line,
     join_command,
@@ -29,3 +30,26 @@ class LoggerTests(unittest.TestCase):
 
     def test_join_command_handles_objects(self) -> None:
         self.assertEqual(join_command(["python", "-m", "venv"]), "python -m venv")
+
+    def test_print_replaces_unicode_on_encoding_error(self) -> None:
+        class FailingThenRecoveringStream:
+            def __init__(self) -> None:
+                self.encoding = "cp1252"
+                self.calls: list[str] = []
+                self._attempt = 0
+
+            def write(self, _text: str) -> int:
+                if self._attempt == 0:
+                    self._attempt += 1
+                    raise UnicodeEncodeError("cp1252", "💥", 0, 1, "cannot encode")
+                self.calls.append(_text)
+                return len(_text)
+
+            def flush(self) -> None:
+                pass
+
+        stream = FailingThenRecoveringStream()
+        _print("🚀 testing unicode", stream=stream)
+
+        self.assertEqual(len(stream.calls), 1)
+        self.assertNotIn("🚀", stream.calls[0])

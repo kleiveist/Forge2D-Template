@@ -20,7 +20,15 @@ STATUS_ICONS: dict[str, str] = {
 
 
 def _print(message: str, *, stream: object = sys.stdout) -> None:
-    print(message, file=stream, flush=True)  # noqa: T201 - user-facing command output
+    try:
+        print(message, file=stream, flush=True)  # noqa: T201 - user-facing command output
+    except UnicodeEncodeError:
+        encoding = getattr(stream, "encoding", None) or "ascii"
+        safe_message = message.encode(
+            encoding,
+            errors="replace",
+        ).decode(encoding)
+        print(safe_message, file=stream, flush=True)  # noqa: T201
 
 
 def _stream() -> object:

@@ -33,11 +33,14 @@ class RepositoryRootTests(unittest.TestCase):
         with TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory) / "layout"
             (root / ".git").mkdir(parents=True)
+            resolved_root = root.resolve()
             layout = discover_repository_layout(root)
-            self.assertEqual(layout.repository_root, root.resolve())
-            self.assertEqual(layout.project_config, root / "config" / "project.toml")
-            self.assertEqual(layout.toolchain_config, root / "config" / "toolchain.toml")
-            self.assertEqual(layout.venv_directory, root / ".venv")
+            self.assertEqual(layout.repository_root, resolved_root)
+            self.assertEqual(layout.project_config, resolved_root / "config" / "project.toml")
+            self.assertEqual(
+                layout.toolchain_config, resolved_root / "config" / "toolchain.toml"
+            )
+            self.assertEqual(layout.venv_directory, resolved_root / ".venv")
 
     def test_reports_missing_repository(self) -> None:
         with TemporaryDirectory() as temporary_directory:

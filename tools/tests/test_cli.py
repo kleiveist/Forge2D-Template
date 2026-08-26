@@ -5,6 +5,7 @@ from __future__ import annotations
 from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -146,3 +147,22 @@ class CliTests(unittest.TestCase):
         self.assertEqual(exit_code, 1)
         self.assertIn("Godot 4 wurde nicht gefunden.", output.getvalue())
         self.assertIn("python tools/control.py install", output.getvalue())
+
+    def test_generic_exception_is_logged(self) -> None:
+        def handler(_options: object) -> int:
+            raise RuntimeError("unexpected internal failure")
+
+        class FakeParser:
+            def parse_args(self, _arguments: list[str] | None = None, _prog: str | None = None) -> SimpleNamespace:
+                return SimpleNamespace(handler=handler)
+
+        with (
+            patch("g2dtool.cli.build_parser", return_value=FakeParser()),
+            patch("g2dtool.cli.error") as log_error,
+        ):
+            exit_code = main(["version"])
+
+        log_error.assert_called_once_with(
+            "Internal error: unexpected internal failure"
+        )
+        self.assertEqual(exit_code, 1)
