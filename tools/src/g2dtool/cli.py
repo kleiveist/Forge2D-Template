@@ -24,6 +24,7 @@ from g2dtool.install import run_install
 from g2dtool.repository import discover_repository_layout
 
 EXIT_OK = 0
+EXIT_FAILURE = 1
 EXIT_REQUIREMENT_MISSING = 1
 EXIT_USAGE = 2
 EXIT_INTERRUPTED = 130
@@ -134,7 +135,7 @@ def main(arguments: Sequence[str] | None = None, prog: str = "g2d") -> int:
         return EXIT_INTERRUPTED
     except Exception as exc:
         error(f"Internal error: {exc}")
-        return EXIT_USAGE
+        return EXIT_FAILURE
 
 
 def welcome() -> int:
