@@ -8,6 +8,7 @@ This index is the documentation entry point for Forge2D Template.
 - [M02 tooling entrypoint](plans/M02_control_entrypoint.md)
 - [M03 release v0.1.0](plans/M03_release_v0_1_0.md)
 - [M04 CI integrity hardening](plans/M04_ci_integrity.md)
+- [M05 runtime architecture](plans/M05_runtime_architecture.md)
 
 ## Reports
 
@@ -18,6 +19,10 @@ This index is the documentation entry point for Forge2D Template.
 ## Decisions
 
 - [ADR-0001: Repository layout](decisions/ADR-0001-repository-layout.md)
+- [ADR-0002: Runtime folder layout](decisions/ADR-0002-runtime-folder-layout.md)
+- [ADR-0003: Application scenes and navigation](decisions/ADR-0003-application-scenes-and-navigation.md)
+- [ADR-0004: Scoped Autoload services](decisions/ADR-0004-scoped-autoload-services.md)
+- [ADR-0005: Runtime dependency rules](decisions/ADR-0005-runtime-dependency-rules.md)
 
 Forge2D Template is licensed under the MIT License. See `LICENSE`.
 
