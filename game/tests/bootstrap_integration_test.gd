@@ -26,9 +26,15 @@ func _run() -> void:
 	root.add_child(bootstrap)
 	await process_frame
 
-	_expect(bootstrap is Forge2DTemplateBootstrap, "main scene has the bootstrap script")
 	_expect(bootstrap is Control, "main scene is a Control")
 	_expect(bootstrap.get_parent() == root, "main scene remains attached after ready")
+	var bootstrap_script: Script = bootstrap.get_script()
+	_expect(bootstrap_script != null, "main scene has an attached script")
+	if bootstrap_script != null:
+		_expect(
+			bootstrap_script.resource_path == "res://src/bootstrap.gd",
+			"main scene uses the bootstrap script",
+		)
 
 	var background := bootstrap.get_node_or_null("Background") as ColorRect
 	_expect(background != null, "main scene has a Background ColorRect")

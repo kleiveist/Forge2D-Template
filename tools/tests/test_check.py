@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from tempfile import TemporaryDirectory
+import subprocess
 import unittest
 from unittest.mock import patch
 
@@ -9,7 +10,11 @@ from _source_path import add_source_root
 
 add_source_root()
 
-from g2dtool.check import run_check
+from g2dtool.check import (
+    GODOT_TEST_SUCCESS_MARKER,
+    _run_godot_integration_test,
+    run_check,
+)
 from g2dtool.doctor import DoctorReport, DoctorCheck
 from g2dtool.repository import RepositoryLayout
 
@@ -207,6 +212,55 @@ class CheckTests(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertTrue(any(command[1:3] == ("-m", "pytest") for command in executed))
         self.assertFalse(any("--headless" in command for command in executed))
+
+    def test_godot_runner_requires_explicit_success_marker(self) -> None:
+        command = ["/fake/godot4", "--headless"]
+        completed = subprocess.CompletedProcess(command, 0, "", "SCRIPT ERROR: Parse Error")
+
+        with patch("g2dtool.check.subprocess.run", return_value=completed):
+            code = _run_godot_integration_test(command, self.root)
+
+        self.assertEqual(code, 1)
+
+    def test_godot_runner_accepts_explicit_success_marker(self) -> None:
+        command = ["/fake/godot4", "--headless"]
+        completed = subprocess.CompletedProcess(
+            command,
+            0,
+            f"{GODOT_TEST_SUCCESS_MARKER}\n",
+            "",
+        )
+
+        with patch("g2dtool.check.subprocess.run", return_value=completed):
+            code = _run_godot_integration_test(command, self.root)
+
+        self.assertEqual(code, 0)
+
+    def test_release_gate_uses_marker_validating_runner_by_default(self) -> None:
+        with (
+            patch("g2dtool.check.discover_repository_layout", return_value=self.layout),
+            patch(
+                "g2dtool.check.collect_doctor_report",
+                return_value=DoctorReport((DoctorCheck("repository", "pass", "ok"),)),
+            ),
+            patch("g2dtool.check._run_process", return_value=0),
+            patch(
+                "g2dtool.check.discover_godot",
+                return_value=type(
+                    "GodotResult",
+                    (),
+                    {"status": "pass", "executable": Path("/fake/godot4")},
+                )(),
+            ),
+            patch(
+                "g2dtool.check._run_godot_integration_test",
+                return_value=1,
+            ) as godot_runner,
+        ):
+            code = run_check(start=self.root)
+
+        self.assertEqual(code, 1)
+        godot_runner.assert_called_once()
 
 
 if __name__ == "__main__":

@@ -21,6 +21,7 @@ from g2dtool.repository import discover_repository_layout
 
 
 ProcessRunner = Callable[[Sequence[str], Path], int]
+GODOT_TEST_SUCCESS_MARKER = "Forge2D bootstrap integration test: passed"
 
 
 @dataclass(frozen=True, slots=True)
@@ -72,10 +73,15 @@ def run_check(
             print_status_line(
                 "running", "Godot headless integration test", join_command(godot_command)
             )
+            godot_exit_code = (
+                runner(godot_command, layout.repository_root)
+                if run_process is not None
+                else _run_godot_integration_test(godot_command, layout.repository_root)
+            )
             steps.append(
                 GateStep(
                     "Godot headless integration test",
-                    runner(godot_command, layout.repository_root),
+                    godot_exit_code,
                 )
             )
 
@@ -113,3 +119,34 @@ def _run_process(command: Sequence[str], cwd: Path) -> int:
         error(f"Command timed out: {join_command(command)}")
         return 1
     return int(completed.returncode)
+
+
+def _run_godot_integration_test(command: Sequence[str], cwd: Path) -> int:
+    """Run Godot and require the test runner's explicit success marker."""
+
+    try:
+        completed = subprocess.run(
+            list(command),
+            cwd=str(cwd),
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=180,
+        )
+    except FileNotFoundError as exc:
+        error(f"Command not found: {exc.filename}")
+        return 1
+    except subprocess.TimeoutExpired:
+        error(f"Command timed out: {join_command(command)}")
+        return 1
+
+    if completed.stdout:
+        print(completed.stdout, end="")
+    if completed.stderr:
+        print(completed.stderr, end="", file=sys.stderr)
+    if completed.returncode != 0:
+        return int(completed.returncode)
+    if GODOT_TEST_SUCCESS_MARKER not in completed.stdout:
+        error("Godot integration test exited without its success marker.")
+        return 1
+    return 0

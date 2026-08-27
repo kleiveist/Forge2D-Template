@@ -42,7 +42,9 @@ class GodotProjectTests(unittest.TestCase):
         self.assertTrue(runner.is_file())
         runner_text = runner.read_text(encoding="utf-8")
         self.assertIn('ProjectSettings.get_setting("application/run/main_scene"', runner_text)
+        self.assertIn("bootstrap.get_script()", runner_text)
         self.assertIn("bootstrap.get_node_or_null", runner_text)
+        self.assertNotIn("Forge2DTemplateBootstrap", runner_text)
         self.assertIn("quit(1)", runner_text)
 
 
