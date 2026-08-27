@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+.archive
 
 # Python caches, environments, and build output
 __pycache__/
