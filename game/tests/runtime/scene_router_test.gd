@@ -184,27 +184,40 @@ func _test_navigation_contract(tree: SceneTree) -> void:
 	)
 	_expect(failures_seen.size() >= 4, "failed requests emit transition_failed")
 
+	var route_before_unconfigure := router.get_current_route()
+	var unconfigured_route_exit_count := [0]
+	route_before_unconfigure.tree_exiting.connect(
+		func() -> void:
+			unconfigured_route_exit_count[0] += 1
+	)
+	var unconfigured_route_reference: WeakRef = weakref(route_before_unconfigure)
 	_expect(router.unconfigure(host) == OK, "configured host can unconfigure SceneRouter")
+	_expect(host.get_child_count() == 0, "unconfigure removes the active route from a live host")
 	_expect(not router.is_configured(), "unconfigure clears the router host")
 	_expect(router.get_route_host() == null, "unconfigure releases the host reference")
 	_expect(router.get_current_route() == null, "unconfigure releases the route reference")
 	_expect(router.get_current_route_id() == &"", "unconfigure clears the route ID")
 
-	var exiting_host := Node.new()
-	tree.root.add_child(exiting_host)
 	_expect(
-		router.configure(exiting_host, _make_route_table()) == OK,
-		"SceneRouter can be configured again after teardown",
+		router.configure(host, _make_route_table()) == OK,
+		"SceneRouter can reuse the same live host after teardown",
 	)
 	_expect(router.navigate(&"node") == OK, "reconfigured SceneRouter can navigate")
-	exiting_host.queue_free()
+	_expect(host.get_child_count() == 1, "reused host contains only the new active route")
+	await tree.process_frame
+	_expect(unconfigured_route_reference.get_ref() == null, "unconfigured route is freed")
+	_expect(
+		unconfigured_route_exit_count[0] == 1,
+		"unconfigured route exits the tree exactly once",
+	)
+
+	host.queue_free()
 	await tree.process_frame
 	_expect(
 		not router.is_configured() and router.get_current_route() == null,
 		"route-host exit clears application-owned references",
 	)
 
-	host.queue_free()
 	router.queue_free()
 	await tree.process_frame
 

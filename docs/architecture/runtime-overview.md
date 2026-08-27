@@ -48,10 +48,12 @@ flowchart TB
 | Route | `RouteHost` through `SceneRouter` | Owns one full-screen screen, mode, world, or tool view at a time. |
 | Feature/component | Parent scene | Creates and frees local scenes, resources, cameras, and presentation. |
 
-Godot frees application children with their parent. `ApplicationRoot` also calls
-`SceneRouter.unconfigure(RouteHost)` during exit, and the router listens for the
-host's `tree_exiting` signal as a defensive cleanup path. Process-wide code does
-not retain an application node after shutdown.
+Godot frees application children with their parent. An explicit
+`SceneRouter.unconfigure(RouteHost)` detaches and queues the active route before
+clearing router references, so a still-live host is empty and can be reused.
+The router also listens for the host's `tree_exiting` signal as a defensive
+cleanup path. Process-wide code does not retain an application node after
+shutdown.
 
 ## Startup lifecycle
 
@@ -101,7 +103,7 @@ Route IDs belong to application composition. The baseline defines only
 | --- | --- |
 | `configure(route_host, route_table) -> Error` | Validates an in-tree host and the complete table. Repeating the same valid configuration is idempotent; an active configuration cannot be silently replaced. |
 | `navigate(route_id) -> Error` | Validates, instantiates, attaches, and activates one route synchronously. |
-| `unconfigure(route_host) -> Error` | Clears references only when the caller owns the configured host and no transition is active. |
+| `unconfigure(route_host) -> Error` | Detaches and queues the active route, then clears references, only when the caller owns the configured host and no transition is active. |
 | `is_configured()` | Reports whether a live in-tree host and table are available. |
 | `get_route_host()` | Returns the current host or `null`. |
 | `get_current_route()` | Returns the active route or `null`. |

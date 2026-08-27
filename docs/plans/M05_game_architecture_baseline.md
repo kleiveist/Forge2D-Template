@@ -366,8 +366,9 @@ sections.
 - [x] Documentation links resolve and Mermaid fences are balanced.
 - [x] The report records only checks actually run.
 - [x] No generated cache, binary, or machine-specific path is tracked.
-- [ ] The supported remote CI matrix passes; no push or workflow dispatch was
-  authorized for M05, so this remains external confirmation.
+- [x] The supported remote CI matrix passes: all 8 jobs succeeded in
+  [CI run 33106404896](https://github.com/kleiveist/Forge2D-Template/actions/runs/33106404896)
+  for M05 baseline commit `13306f6`.
 
 ## Validation
 
@@ -400,7 +401,7 @@ was exposed as a temporary `godot4` on `PATH`, matching the CI discovery model:
 | `.venv/bin/g2d check` with verified Godot on `PATH` | Passed; installed CLI repeated the full gate. |
 | `godot4 --headless --path game --quit-after 2` | Passed; production main scene started without parser or runtime errors. |
 | `python3 tools/control.py godot4 run` | Not run; this environment has no display. The headless main-scene start above was used instead. |
-| Supported GitHub Actions matrix | Not run; M05 was not authorized to push or dispatch remote workflows. |
+| [GitHub Actions run 33106404896](https://github.com/kleiveist/Forge2D-Template/actions/runs/33106404896) for M05 baseline commit `13306f6` | Passed; 8/8 supported matrix jobs succeeded. |
 
 ## Progress
 
@@ -415,8 +416,10 @@ was exposed as a temporary `godot4` on `PATH`, matching the CI discovery model:
 - [x] 2026-08-27: Implemented and registered RouteTable and SceneRouter.
 - [x] 2026-08-27: Added runtime tests, fixtures, and source-hygiene assertions.
 - [x] 2026-08-27: Ran local validation and resolved all source failures.
-- [x] 2026-08-27: Recorded that the supported remote CI matrix was not run
-  because push and workflow dispatch were outside the authorized scope.
+- [x] 2026-08-27: Confirmed all 8 supported matrix jobs in GitHub Actions run
+  33106404896 succeeded for M05 baseline commit `13306f6`.
+- [x] 2026-08-27: Made explicit router teardown remove and free the active route,
+  with a regression test that immediately reuses the same live RouteHost.
 - [x] 2026-08-27: Published the M05 report and completed the retrospective.
 
 ## Surprises & Discoveries
@@ -461,6 +464,8 @@ was exposed as a temporary `godot4` on `PATH`, matching the CI discovery model:
   `ERR_ALREADY_IN_USE`; the owning ApplicationRoot must unconfigure first.
 - 2026-08-27: Make `unconfigure` ownership-aware and return `ERR_BUSY` during a
   transition so teardown cannot invalidate an in-flight replacement.
+- 2026-08-27: Make `unconfigure` detach and queue the active route before
+  clearing references, so reusing a live RouteHost cannot retain a stale route.
 - 2026-08-27: Keep diagrams as GitHub-native Mermaid Markdown.
 
 ## Recovery / Idempotence
@@ -486,12 +491,15 @@ RouteTable exports typed RouteEntry Resources and provides
 SceneRouter provides ownership-checked `configure`/`unconfigure`, synchronous
 `navigate`, state getters, and typed started/completed/failed signals. A next
 route reaches `_ready` before the prior route is detached and queued exactly
-once; every failure before commit preserves the prior route.
+once; every failure before commit preserves the prior route. Explicit
+unconfiguration also detaches and queues the active route, leaving a live host
+empty and immediately reusable.
 
 No ADR amendment was necessary. Focused Godot suites and Python architecture
 checks were added without a third-party Godot addon. Local Python, Godot,
-source, documentation, installed-CLI, and production-start checks pass. Remote
-CI remains unobserved because no push or workflow dispatch was authorized.
+source, documentation, installed-CLI, and production-start checks pass. All 8
+jobs in [GitHub Actions run 33106404896](https://github.com/kleiveist/Forge2D-Template/actions/runs/33106404896)
+passed for M05 baseline commit `13306f6`.
 
 Settings, save, audio, localization, remapping, pause UI, transition visuals,
 sessions, cameras, physics, gameplay, export packaging, and route history remain

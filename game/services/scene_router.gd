@@ -118,6 +118,7 @@ func unconfigure(route_host: Node) -> Error:
 		return ERR_BUSY
 	if _route_host != route_host:
 		return ERR_INVALID_PARAMETER
+	_release_current_route()
 	_reset_references(true)
 	return OK
 
@@ -155,6 +156,15 @@ func _on_route_host_tree_exiting(route_host: Node) -> void:
 	_current_route_id = &""
 	_transition_in_progress = false
 	_host_exit_callback = Callable()
+
+
+func _release_current_route() -> void:
+	if not is_instance_valid(_current_route):
+		return
+	if is_instance_valid(_route_host) and _current_route.get_parent() == _route_host:
+		_route_host.remove_child(_current_route)
+	if not _current_route.is_queued_for_deletion():
+		_current_route.queue_free()
 
 
 func _reset_references(disconnect_host: bool) -> void:

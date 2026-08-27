@@ -1,7 +1,7 @@
 # M05 Game Architecture Baseline Report
 
 - Date: 2026-08-27
-- Status: Local implementation and release gate complete; remote CI not run
+- Status: Complete; local release gate and all 8 remote CI jobs passed
 
 M05 turns ADR-0002 through ADR-0005 into a running, genre-neutral Godot
 application shell. Bootstrap remains the project entry point and creates one
@@ -27,8 +27,8 @@ SceneTree root
 and `PackedScene`. It reports null entries, empty and duplicate IDs, and missing
 scenes. `SceneRouter` validates configuration, rejects unconfigured or
 re-entrant requests, attaches a replacement before releasing the previous
-route, preserves the active route on failure, and clears application references
-during teardown.
+route, preserves the active route on failure, and detaches and frees the active
+route during explicit teardown before clearing application references.
 
 The application route host and tests accept plain `Node`, `Node2D`, and
 `Control` roots. No camera, physics, gameplay, session, persistence, settings,
@@ -49,7 +49,9 @@ definitions explicit.
 Re-entrant navigation and transition-time unconfiguration return `ERR_BUSY`.
 An active configuration cannot be replaced implicitly; it returns
 `ERR_ALREADY_IN_USE`. These choices keep one transition and one application
-owner deterministic.
+owner deterministic. Explicit unconfiguration empties a still-live route host,
+so that same host can be configured and used again without retaining a stale
+route.
 
 ## Tests
 
@@ -57,8 +59,9 @@ The dependency-free Godot runner still emits the release gate's exact marker
 only after all focused suites complete. The new suites cover route-table
 validation, pre-configuration rejection, safe replacement, one-time cleanup,
 unknown IDs, uninstantiable scenes, re-entrant requests, repeated configuration,
-host exit, application startup/shutdown, failed initial routing, and all three
-supported route-root families.
+explicit teardown and immediate reuse of the same live host, host exit,
+application startup/shutdown, failed initial routing, and all three supported
+route-root families.
 
 Python assertions verify the main scene, composition nodes, sole Autoload,
 required Resources and fixtures, delegated runner, prohibited global scene
@@ -83,7 +86,7 @@ verified against its published SHA-512 manifest, and exposed as a temporary
 | `.venv/bin/g2d check` with verified Godot on `PATH` | Passed; installed CLI repeated the full gate. |
 | `godot4 --headless --path game --quit-after 2` | Passed; production Bootstrap and initial route started without parser/runtime errors. |
 | Display-backed `python3 tools/control.py godot4 run` | Not run because no display is available. |
-| Supported GitHub Actions matrix | Not run; pushing or dispatching a workflow was outside M05 authorization. |
+| [GitHub Actions run 33106404896](https://github.com/kleiveist/Forge2D-Template/actions/runs/33106404896) for M05 baseline commit `13306f6` | Passed; 8/8 supported matrix jobs succeeded. |
 
 Two environment iterations did not count as passes: the first repository
 installer attempt failed because Debian lacked `python3-venv`; after the standard
@@ -94,8 +97,8 @@ as a temporary `godot4` on `PATH`, matching CI, passed all steps. No production
 or test assertion was weakened to obtain the passing result.
 
 The supported CI matrix—Ubuntu, Windows, and macOS on Python 3.11/3.14 plus
-Debian 13 and Arch Linux—still requires remote confirmation after an authorized
-push or workflow dispatch.
+Debian 13 and Arch Linux—was confirmed by the linked run: all 8 jobs completed
+successfully.
 
 ## Deliberate omissions
 
