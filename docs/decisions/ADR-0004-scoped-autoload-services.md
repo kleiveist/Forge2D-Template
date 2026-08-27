@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](decisions.md)
+<!-- AUTO-GENERATED:backlink END -->
 # ADR-0004: Limit Autoloads to Process-Wide Infrastructure
 
 - Status: Accepted

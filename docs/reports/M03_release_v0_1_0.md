@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](reports.md)
+<!-- AUTO-GENERATED:backlink END -->
 # M03 Release v0.1.0 Report
 
 - Date: 2026-08-26

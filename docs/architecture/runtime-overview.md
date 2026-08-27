@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](architecture.md)
+<!-- AUTO-GENERATED:backlink END -->
 # Runtime Architecture Overview
 
 Forge2D Template boots through a small application shell that owns full-screen

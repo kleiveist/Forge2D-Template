@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](plans.md)
+<!-- AUTO-GENERATED:backlink END -->
 # M03 Release v0.1.0 ExecPlan
 
 This document is a living execution plan for publishing Forge2D Template v0.1.0.

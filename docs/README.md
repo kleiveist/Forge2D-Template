@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](index.md)
+<!-- AUTO-GENERATED:backlink END -->
 # Documentation
 
 This index is the documentation entry point for Forge2D Template.

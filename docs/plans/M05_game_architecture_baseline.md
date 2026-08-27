@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](plans.md)
+<!-- AUTO-GENERATED:backlink END -->
 # M05 Game Architecture Baseline ExecPlan
 
 This document is a living execution plan for implementing the first usable,

@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](README.md)
+<!-- AUTO-GENERATED:backlink END -->
 # Forge2D Template Repository Rules
 
 Forge2D Template is a general 2D Godot template with small, repository-local Python

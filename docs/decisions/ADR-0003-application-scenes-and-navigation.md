@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](decisions.md)
+<!-- AUTO-GENERATED:backlink END -->
 # ADR-0003: Centralize Application Composition and Scene Navigation
 
 - Status: Accepted

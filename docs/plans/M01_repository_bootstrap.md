@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](plans.md)
+<!-- AUTO-GENERATED:backlink END -->
 # M01 Repository Bootstrap ExecPlan
 
 This document is a living execution plan. Keep it synchronized with the work so

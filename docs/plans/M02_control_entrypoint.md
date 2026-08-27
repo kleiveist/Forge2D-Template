@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](plans.md)
+<!-- AUTO-GENERATED:backlink END -->
 # M02 Control Entry Point
 
 ## Goal

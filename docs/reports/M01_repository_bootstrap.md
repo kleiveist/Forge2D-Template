@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](reports.md)
+<!-- AUTO-GENERATED:backlink END -->
 # M01 Repository Bootstrap – Abschlussbericht
 
 - Datum: 2026-08-26

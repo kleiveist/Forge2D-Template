@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](decisions.md)
+<!-- AUTO-GENERATED:backlink END -->
 # ADR-0001: Separate Repository Concerns by Top-Level Directory
 
 - Status: Accepted

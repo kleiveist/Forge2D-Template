@@ -1,3 +1,40 @@
+<!-- AUTO-GENERATED:docs-index START -->
+
+## 📄 Files
+- 📝 [Forge2D Template Repository Rules](AGENTS.md)
+- 📝 [Changelog](CHANGELOG.md)
+
+# DOCS
+- 📚 [Docs Home](docs/index.md)
+
+## 📁 Architecture
+- 🗂️ [Overview](docs/architecture/architecture.md)
+- 📝 [Runtime Architecture Overview](docs/architecture/runtime-overview.md)
+
+## 📁 Decisions
+- 🗂️ [Overview](docs/decisions/decisions.md)
+- 📝 [ADR-0001: Separate Repository Concerns by Top-Level Directory](docs/decisions/ADR-0001-repository-layout.md)
+- 📝 [ADR-0002: Organize New Runtime Code by Ownership](docs/decisions/ADR-0002-runtime-folder-layout.md)
+- 📝 [ADR-0003: Centralize Application Composition and Scene Navigation](docs/decisions/ADR-0003-application-scenes-and-navigation.md)
+- 📝 [ADR-0004: Limit Autoloads to Process-Wide Infrastructure](docs/decisions/ADR-0004-scoped-autoload-services.md)
+- 📝 [ADR-0005: Keep Runtime Dependencies One-Way and Explicit](docs/decisions/ADR-0005-runtime-dependency-rules.md)
+
+## 📁 Plans
+- 🗂️ [Overview](docs/plans/plans.md)
+- 📝 [M01 Repository Bootstrap ExecPlan](docs/plans/M01_repository_bootstrap.md)
+- 📝 [M02 Control Entry Point](docs/plans/M02_control_entrypoint.md)
+- 📝 [M03 Release v0.1.0 ExecPlan](docs/plans/M03_release_v0_1_0.md)
+- 📝 [M04 CI Integrity Hardening ExecPlan](docs/plans/M04_ci_integrity.md)
+- 📝 [M05 Game Architecture Baseline ExecPlan](docs/plans/M05_game_architecture_baseline.md)
+
+## 📁 Reports
+- 🗂️ [Overview](docs/reports/reports.md)
+- 📝 [M01 Repository Bootstrap – Abschlussbericht](docs/reports/M01_repository_bootstrap.md)
+- 📝 [M02 Control Entry Point Report](docs/reports/M02_control_entrypoint.md)
+- 📝 [M03 Release v0.1.0 Report](docs/reports/M03_release_v0_1_0.md)
+- 📝 [M05 Game Architecture Baseline Report](docs/reports/M05_game_architecture_baseline.md)
+
+<!-- AUTO-GENERATED:docs-index END -->
 # Forge2D Template
 
 [![CI](https://github.com/kleiveist/Forge2D-Template/actions/workflows/ci.yml/badge.svg)](https://github.com/kleiveist/Forge2D-Template/actions/workflows/ci.yml)

@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](decisions.md)
+<!-- AUTO-GENERATED:backlink END -->
 # ADR-0005: Keep Runtime Dependencies One-Way and Explicit
 
 - Status: Accepted

@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](decisions.md)
+<!-- AUTO-GENERATED:backlink END -->
 # ADR-0002: Organize New Runtime Code by Ownership
 
 - Status: Accepted

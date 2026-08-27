@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](reports.md)
+<!-- AUTO-GENERATED:backlink END -->
 # M05 Game Architecture Baseline Report
 
 - Date: 2026-08-27

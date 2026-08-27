@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](plans.md)
+<!-- AUTO-GENERATED:backlink END -->
 # M04 CI Integrity Hardening ExecPlan
 
 ## Purpose / Big Picture
