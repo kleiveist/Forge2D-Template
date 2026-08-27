@@ -10,7 +10,12 @@ import subprocess
 import sys
 
 from g2dtool.doctor import collect_doctor_report, format_doctor_report
-from g2dtool.godot import PASS, build_godot_test_command, discover_godot
+from g2dtool.godot import (
+    PASS,
+    GodotTestConfigurationError,
+    build_godot_test_command,
+    discover_godot,
+)
 from g2dtool.logger import error, join_command, print_status_line, success
 from g2dtool.repository import discover_repository_layout
 
@@ -29,7 +34,7 @@ def run_check(
     start: Path | None = None,
     run_process: ProcessRunner | None = None,
 ) -> int:
-    """Run Doctor, Python tests, and the Godot headless smoke test."""
+    """Run Doctor, Python tests, and the Godot headless integration test."""
 
     layout = discover_repository_layout(start)
     runner = run_process or _run_process
@@ -52,21 +57,27 @@ def run_check(
 
     godot_result = discover_godot(layout.repository_root)
     if godot_result.status != PASS or godot_result.executable is None:
-        error(f"Godot smoke test skipped as failure: {godot_result.detail}")
-        steps.append(GateStep("Godot headless smoke", 1))
+        error(f"Godot integration test skipped as failure: {godot_result.detail}")
+        steps.append(GateStep("Godot headless integration test", 1))
     else:
-        godot_command = build_godot_test_command(
-            godot_result.executable,
-            layout.game_directory,
-            layout.game_project_path,
-        )
-        print_status_line("running", "Godot headless smoke", join_command(godot_command))
-        steps.append(
-            GateStep(
-                "Godot headless smoke",
-                runner(godot_command, layout.repository_root),
+        try:
+            godot_command = build_godot_test_command(
+                godot_result.executable,
+                layout.game_directory,
             )
-        )
+        except GodotTestConfigurationError as exc:
+            error(f"Godot integration test configuration failed: {exc}")
+            steps.append(GateStep("Godot headless integration test", 1))
+        else:
+            print_status_line(
+                "running", "Godot headless integration test", join_command(godot_command)
+            )
+            steps.append(
+                GateStep(
+                    "Godot headless integration test",
+                    runner(godot_command, layout.repository_root),
+                )
+            )
 
     failures = [step for step in steps if step.exit_code != 0]
     if failures:

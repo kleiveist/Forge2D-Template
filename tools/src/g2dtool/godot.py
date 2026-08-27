@@ -53,12 +53,7 @@ PASS = "pass"
 WARN = "warn"
 FAIL = "fail"
 
-DEFAULT_TEST_MODE_ARGUMENT = "--test-mode"
-
-PROJECT_MAIN_SCENE_RE = re.compile(r'^run/main_scene="res://([^"]+)"', re.MULTILINE)
-SCENE_SCRIPT_RE = re.compile(r'path="res://([^"]+\.gd)"')
-TEST_MODE_RE = re.compile(r'const\s+TEST_MODE_ARGUMENT\s*:\s*"([^"]+)"')
-TEST_MODE_ALT_RE = re.compile(r'const\s+TEST_MODE_ARGUMENT\s*:=\s*"([^"]+)"')
+GODOT_TEST_RUNNER_PATH = Path("tests/bootstrap_integration_test.gd")
 GODOT_LABELED_VERSION_RE = re.compile(
     r"(?i)\bgodot\b.*?\bv?(?P<major>\d+)\.(?P<minor>\d+)"
 )
@@ -66,6 +61,10 @@ GODOT_VERSION_TOKEN_RE = re.compile(r"(?<![A-Za-z0-9_])(v?\d+\.\d+)")
 GODOT_RUNTIME_LOAD_ERROR_RE = re.compile(
     r"(?i)(GLIBC_|libc\.so|libm\.so|libstdc\+\+|cannot open shared object file|not found)"
 )
+
+
+class GodotTestConfigurationError(RuntimeError):
+    """Raised when the repository's dedicated Godot test runner is unavailable."""
 
 
 def discover_godot(
@@ -203,50 +202,26 @@ def build_godot_run_command(
 def build_godot_test_command(
     executable: Path,
     game_directory: Path,
-    project_file: Path,
     user_arguments: Sequence[str] = (),
 ) -> list[str]:
-    test_argument = detect_project_test_argument(project_file)
+    """Build a command for the repository-owned Godot integration test runner."""
+
+    test_runner = game_directory / GODOT_TEST_RUNNER_PATH
+    if not test_runner.is_file():
+        raise GodotTestConfigurationError(
+            "Godot test runner is missing: "
+            f"{test_runner}. Expected {GODOT_TEST_RUNNER_PATH.as_posix()}."
+        )
     return [
         str(executable),
         "--headless",
         "--path",
         str(game_directory),
+        "--script",
+        str(test_runner),
         "--",
-        test_argument,
         *_normalize_user_arguments(user_arguments),
     ]
-
-
-def detect_project_test_argument(project_file: Path) -> str:
-    """Detect the project-specific test argument, with a safe fallback."""
-
-    if not project_file.exists():
-        return DEFAULT_TEST_MODE_ARGUMENT
-
-    project_text = project_file.read_text(encoding="utf-8")
-    main_scene_match = PROJECT_MAIN_SCENE_RE.search(project_text)
-    if main_scene_match is None:
-        return DEFAULT_TEST_MODE_ARGUMENT
-
-    scene_path = _res_path_to_file(project_file.parent, main_scene_match.group(1))
-    if scene_path is None or not scene_path.exists():
-        return DEFAULT_TEST_MODE_ARGUMENT
-
-    scene_text = scene_path.read_text(encoding="utf-8")
-    script_match = SCENE_SCRIPT_RE.search(scene_text)
-    if script_match is None:
-        return DEFAULT_TEST_MODE_ARGUMENT
-
-    script_path = _res_path_to_file(project_file.parent, script_match.group(1))
-    if script_path is None or not script_path.exists():
-        return DEFAULT_TEST_MODE_ARGUMENT
-
-    script_text = script_path.read_text(encoding="utf-8")
-    match = TEST_MODE_RE.search(script_text) or TEST_MODE_ALT_RE.search(script_text)
-    if match is None:
-        return DEFAULT_TEST_MODE_ARGUMENT
-    return match.group(1)
 
 
 def run_godot_command(arguments: Sequence[str]) -> int:
@@ -289,12 +264,6 @@ def _normalize_user_arguments(arguments: Sequence[str]) -> tuple[str, ...]:
     if items and items[0] == "--":
         return items[1:]
     return items
-
-
-def _res_path_to_file(game_root: Path, value: str) -> Path | None:
-    if not value.startswith("res://"):
-        return None
-    return (game_root / value.removeprefix("res://")).resolve()
 
 
 def _run_command(arguments: Sequence[str]) -> CommandResult:

@@ -77,7 +77,7 @@ def build_parser(prog: str = "g2d") -> argparse.ArgumentParser:
     doctor_parser.set_defaults(handler=_run_doctor)
 
     check_parser = commands.add_parser(
-        "check", help="run doctor, Python tests, and Godot smoke test"
+        "check", help="run doctor, Python tests, and a Godot integration test"
     )
     check_parser.set_defaults(handler=_run_check)
 
@@ -169,7 +169,6 @@ def _run_install(options: argparse.Namespace) -> int:
 
 def _run_godot_command(options: argparse.Namespace) -> int:
     layout = discover_repository_layout()
-    project_file = layout.game_directory / "project.godot"
     user_arguments = _normalize_arguments(options.args)
 
     result = discover_godot(layout.repository_root)
@@ -195,7 +194,7 @@ def _run_godot_command(options: argparse.Namespace) -> int:
         )
     elif options.mode == "test":
         command = build_godot_test_command(
-            result.executable, layout.game_directory, project_file, user_arguments
+            result.executable, layout.game_directory, user_arguments
         )
     else:
         raise RuntimeError(f"Unsupported godot mode: {options.mode}")

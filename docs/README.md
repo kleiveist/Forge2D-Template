@@ -7,6 +7,7 @@ This index is the documentation entry point for Forge2D Template.
 - [M01 repository bootstrap](plans/M01_repository_bootstrap.md)
 - [M02 tooling entrypoint](plans/M02_control_entrypoint.md)
 - [M03 release v0.1.0](plans/M03_release_v0_1_0.md)
+- [M04 CI integrity hardening](plans/M04_ci_integrity.md)
 
 ## Reports
 

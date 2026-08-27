@@ -47,6 +47,11 @@ python tools/control.py Forge2D-Template run
 - Do not manually `source .venv/bin/activate` for repository setup. The tooling can
   operate directly from `python tools/control.py`.
 - `python tools/control.py check` runs Doctor, Python tests, and the Godot
-  headless smoke test.
+  headless integration test.
+- `python tools/control.py godot4 test` runs the dedicated test runner at
+  `game/tests/bootstrap_integration_test.gd`. It loads the production bootstrap
+  scene without an application test-mode shortcut and verifies its node contract.
+- CI also builds a wheel, installs it into a fresh virtual environment, and runs
+  the installed `g2d` entry point.
 - Godot 4.7.2 is the version verified for `v0.1.0`.
 - This repository does not currently assume a specific game runtime workflow.

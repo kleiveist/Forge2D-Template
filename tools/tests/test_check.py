@@ -24,6 +24,9 @@ class CheckTests(unittest.TestCase):
         (self.root / "tools" / "src").mkdir(parents=True)
         (self.root / "game").mkdir()
         (self.root / "game" / "project.godot").write_text("", encoding="utf-8")
+        self.test_runner = self.root / "game" / "tests" / "bootstrap_integration_test.gd"
+        self.test_runner.parent.mkdir()
+        self.test_runner.write_text("extends SceneTree\n", encoding="utf-8")
         self.layout = RepositoryLayout(
             repository_root=self.root,
             pyproject_toml=self.root / "pyproject.toml",
@@ -61,7 +64,10 @@ class CheckTests(unittest.TestCase):
 
         self.assertEqual(code, 0)
         self.assertTrue(any(command[1:3] == ("-m", "pytest") for command in executed))
-        self.assertTrue(any("--headless" in command for command in executed))
+        godot_command = next(command for command in executed if "--headless" in command)
+        self.assertIn("--script", godot_command)
+        self.assertIn(str(self.test_runner), godot_command)
+        self.assertNotIn("--test-mode", godot_command)
 
     def test_returns_failure_after_running_python_tests_when_godot_is_missing(self) -> None:
         executed: list[tuple[str, ...]] = []
@@ -82,6 +88,117 @@ class CheckTests(unittest.TestCase):
                     "GodotResult",
                     (),
                     {"status": "fail", "executable": None, "detail": "missing"},
+                )(),
+            ),
+        ):
+            code = run_check(start=self.root, run_process=runner)
+
+        self.assertEqual(code, 1)
+        self.assertTrue(any(command[1:3] == ("-m", "pytest") for command in executed))
+        self.assertFalse(any("--headless" in command for command in executed))
+
+    def test_returns_failure_when_doctor_fails(self) -> None:
+        executed: list[tuple[str, ...]] = []
+
+        def runner(command, _cwd):
+            executed.append(tuple(command))
+            return 0
+
+        with (
+            patch("g2dtool.check.discover_repository_layout", return_value=self.layout),
+            patch(
+                "g2dtool.check.collect_doctor_report",
+                return_value=DoctorReport((DoctorCheck("repository", "fail", "broken"),)),
+            ),
+            patch(
+                "g2dtool.check.discover_godot",
+                return_value=type(
+                    "GodotResult",
+                    (),
+                    {"status": "pass", "executable": Path("/fake/godot4")},
+                )(),
+            ),
+        ):
+            code = run_check(start=self.root, run_process=runner)
+
+        self.assertEqual(code, 1)
+        self.assertTrue(any(command[1:3] == ("-m", "pytest") for command in executed))
+        self.assertTrue(any("--headless" in command for command in executed))
+
+    def test_returns_failure_when_python_tests_fail(self) -> None:
+        executed: list[tuple[str, ...]] = []
+
+        def runner(command, _cwd):
+            executed.append(tuple(command))
+            return 3 if tuple(command[1:3]) == ("-m", "pytest") else 0
+
+        with (
+            patch("g2dtool.check.discover_repository_layout", return_value=self.layout),
+            patch(
+                "g2dtool.check.collect_doctor_report",
+                return_value=DoctorReport((DoctorCheck("repository", "pass", "ok"),)),
+            ),
+            patch(
+                "g2dtool.check.discover_godot",
+                return_value=type(
+                    "GodotResult",
+                    (),
+                    {"status": "pass", "executable": Path("/fake/godot4")},
+                )(),
+            ),
+        ):
+            code = run_check(start=self.root, run_process=runner)
+
+        self.assertEqual(code, 1)
+        self.assertTrue(any("--headless" in command for command in executed))
+
+    def test_returns_failure_when_godot_integration_test_fails(self) -> None:
+        executed: list[tuple[str, ...]] = []
+
+        def runner(command, _cwd):
+            executed.append(tuple(command))
+            return 7 if "--headless" in command else 0
+
+        with (
+            patch("g2dtool.check.discover_repository_layout", return_value=self.layout),
+            patch(
+                "g2dtool.check.collect_doctor_report",
+                return_value=DoctorReport((DoctorCheck("repository", "pass", "ok"),)),
+            ),
+            patch(
+                "g2dtool.check.discover_godot",
+                return_value=type(
+                    "GodotResult",
+                    (),
+                    {"status": "pass", "executable": Path("/fake/godot4")},
+                )(),
+            ),
+        ):
+            code = run_check(start=self.root, run_process=runner)
+
+        self.assertEqual(code, 1)
+        self.assertTrue(any("--headless" in command for command in executed))
+
+    def test_returns_failure_when_godot_test_runner_is_missing(self) -> None:
+        self.test_runner.unlink()
+        executed: list[tuple[str, ...]] = []
+
+        def runner(command, _cwd):
+            executed.append(tuple(command))
+            return 0
+
+        with (
+            patch("g2dtool.check.discover_repository_layout", return_value=self.layout),
+            patch(
+                "g2dtool.check.collect_doctor_report",
+                return_value=DoctorReport((DoctorCheck("repository", "pass", "ok"),)),
+            ),
+            patch(
+                "g2dtool.check.discover_godot",
+                return_value=type(
+                    "GodotResult",
+                    (),
+                    {"status": "pass", "executable": Path("/fake/godot4")},
                 )(),
             ),
         ):

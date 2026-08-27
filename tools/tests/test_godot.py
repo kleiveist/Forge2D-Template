@@ -8,11 +8,11 @@ from g2dtool.godot import (
     PASS,
     FAIL,
     CommandResult,
+    GodotTestConfigurationError,
     discover_godot,
     build_godot_editor_command,
     build_godot_run_command,
     build_godot_test_command,
-    detect_project_test_argument,
 )
 
 from _source_path import add_source_root
@@ -158,10 +158,9 @@ class GodotTests(unittest.TestCase):
         self.assertEqual(calls[0][0], str(Path("/fallback/godot4")))
 
     def test_command_construction(self) -> None:
-        project_file = REPOSITORY_ROOT / "game" / "project.godot"
-        test_argument = detect_project_test_argument(project_file)
         game = REPOSITORY_ROOT / "game"
         executable = Path("/usr/bin/godot")
+        test_runner = game / "tests" / "bootstrap_integration_test.gd"
 
         self.assertEqual(
             build_godot_editor_command(executable, game),
@@ -176,9 +175,22 @@ class GodotTests(unittest.TestCase):
             [str(executable), "--path", str(game), "--", "--foo"],
         )
         self.assertEqual(
-            build_godot_test_command(executable, game, project_file, ["--foo"]),
-            [str(executable), "--headless", "--path", str(game), "--", test_argument, "--foo"],
+            build_godot_test_command(executable, game, ["--foo"]),
+            [
+                str(executable),
+                "--headless",
+                "--path",
+                str(game),
+                "--script",
+                str(test_runner),
+                "--",
+                "--foo",
+            ],
         )
 
-    def test_detect_project_test_argument(self) -> None:
-        self.assertEqual(detect_project_test_argument(REPOSITORY_ROOT / "game" / "project.godot"), "--test-mode")
+    def test_test_command_rejects_missing_runner(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            game = Path(temporary_directory) / "game"
+            game.mkdir()
+            with self.assertRaisesRegex(GodotTestConfigurationError, "test runner is missing"):
+                build_godot_test_command(Path("/usr/bin/godot"), game)

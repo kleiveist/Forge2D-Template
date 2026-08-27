@@ -180,6 +180,68 @@ jobs:
       - name: Run repository checks
         run: python tools/control.py check
 
+      - name: Verify packaged CLI artifact
+        shell: python
+        run: |
+          import os
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          repository = Path.cwd()
+          wheelhouse = repository / ".ci-wheelhouse"
+          artifact_venv = repository / ".ci-artifact-venv"
+          subprocess.run(
+              [
+                  sys.executable,
+                  "-m",
+                  "pip",
+                  "wheel",
+                  "--no-deps",
+                  "--wheel-dir",
+                  str(wheelhouse),
+                  ".",
+              ],
+              check=True,
+          )
+          wheels = sorted(wheelhouse.glob("g2dtool-*.whl"))
+          if len(wheels) != 1:
+              raise SystemExit(f"Expected one g2dtool wheel, found: {wheels}")
+
+          subprocess.run([sys.executable, "-m", "venv", str(artifact_venv)], check=True)
+          artifact_python = artifact_venv / (
+              "Scripts/python.exe" if os.name == "nt" else "bin/python"
+          )
+          subprocess.run(
+              [str(artifact_python), "-m", "pip", "install", "--no-deps", str(wheels[0])],
+              check=True,
+          )
+          g2d = artifact_venv / (
+              "Scripts/g2d.exe" if os.name == "nt" else "bin/g2d"
+          )
+          if not g2d.is_file():
+              raise SystemExit(f"Installed g2d entry point is missing: {g2d}")
+
+          environment = dict(os.environ)
+          environment.pop("PYTHONPATH", None)
+          module_location = subprocess.run(
+              [str(artifact_python), "-c", "import g2dtool; print(g2dtool.__file__)"],
+              check=True,
+              capture_output=True,
+              text=True,
+              env=environment,
+          ).stdout.strip()
+          if Path(module_location).is_relative_to(repository / "tools" / "src"):
+              raise SystemExit(f"Artifact CLI imported checkout source: {module_location}")
+
+          for arguments in (("--help",), ("version",), ("check",)):
+              subprocess.run(
+                  [str(g2d), *arguments],
+                  cwd=repository,
+                  check=True,
+                  env=environment,
+              )
+
   linux-distributions:
     name: Linux / ${{ matrix.distro }}
     runs-on: ubuntu-latest
@@ -359,3 +421,65 @@ jobs:
 
       - name: Run repository checks
         run: python tools/control.py check
+
+      - name: Verify packaged CLI artifact
+        shell: python
+        run: |
+          import os
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          repository = Path.cwd()
+          wheelhouse = repository / ".ci-wheelhouse"
+          artifact_venv = repository / ".ci-artifact-venv"
+          subprocess.run(
+              [
+                  sys.executable,
+                  "-m",
+                  "pip",
+                  "wheel",
+                  "--no-deps",
+                  "--wheel-dir",
+                  str(wheelhouse),
+                  ".",
+              ],
+              check=True,
+          )
+          wheels = sorted(wheelhouse.glob("g2dtool-*.whl"))
+          if len(wheels) != 1:
+              raise SystemExit(f"Expected one g2dtool wheel, found: {wheels}")
+
+          subprocess.run([sys.executable, "-m", "venv", str(artifact_venv)], check=True)
+          artifact_python = artifact_venv / (
+              "Scripts/python.exe" if os.name == "nt" else "bin/python"
+          )
+          subprocess.run(
+              [str(artifact_python), "-m", "pip", "install", "--no-deps", str(wheels[0])],
+              check=True,
+          )
+          g2d = artifact_venv / (
+              "Scripts/g2d.exe" if os.name == "nt" else "bin/g2d"
+          )
+          if not g2d.is_file():
+              raise SystemExit(f"Installed g2d entry point is missing: {g2d}")
+
+          environment = dict(os.environ)
+          environment.pop("PYTHONPATH", None)
+          module_location = subprocess.run(
+              [str(artifact_python), "-c", "import g2dtool; print(g2dtool.__file__)"],
+              check=True,
+              capture_output=True,
+              text=True,
+              env=environment,
+          ).stdout.strip()
+          if Path(module_location).is_relative_to(repository / "tools" / "src"):
+              raise SystemExit(f"Artifact CLI imported checkout source: {module_location}")
+
+          for arguments in (("--help",), ("version",), ("check",)):
+              subprocess.run(
+                  [str(g2d), *arguments],
+                  cwd=repository,
+                  check=True,
+                  env=environment,
+              )
