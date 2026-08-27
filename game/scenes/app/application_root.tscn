@@ -1,0 +1,28 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scenes/app/application_root.gd" id="1_application"]
+[ext_resource type="Script" path="res://shared/resources/route_entry.gd" id="2_entry"]
+[ext_resource type="Script" path="res://shared/resources/route_table.gd" id="3_table"]
+[ext_resource type="PackedScene" path="res://scenes/app/template_home.tscn" id="4_home"]
+
+[sub_resource type="Resource" id="RouteEntry_home"]
+script = ExtResource("2_entry")
+route_id = &"template_home"
+scene = ExtResource("4_home")
+
+[sub_resource type="Resource" id="RouteTable_application"]
+script = ExtResource("3_table")
+entries = Array[ExtResource("2_entry")]([SubResource("RouteEntry_home")])
+
+[node name="ApplicationRoot" type="Node"]
+script = ExtResource("1_application")
+route_table = SubResource("RouteTable_application")
+initial_route_id = &"template_home"
+
+[node name="RouteHost" type="Node" parent="."]
+
+[node name="PersistentUI" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="TransitionLayer" type="CanvasLayer" parent="."]
+layer = 20

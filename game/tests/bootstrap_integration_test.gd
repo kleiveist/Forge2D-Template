@@ -1,6 +1,10 @@
 extends SceneTree
 
 const EXPECTED_MESSAGE := "Forge2D Template\nRepository bootstrap"
+const TEST_SUITES := [
+	"res://tests/runtime/scene_router_test.gd",
+	"res://tests/runtime/application_root_test.gd",
+]
 
 var failures: PackedStringArray = []
 
@@ -10,19 +14,48 @@ func _init() -> void:
 
 
 func _run() -> void:
+	await process_frame
+	for suite_path in TEST_SUITES:
+		await _run_suite(suite_path)
+	await _test_bootstrap_contract()
+	_finish()
+
+
+func _run_suite(suite_path: String) -> void:
+	var completion_sentinel := "runtime suite completes: %s" % suite_path
+	failures.append(completion_sentinel)
+	var suite_script := load(suite_path) as Script
+	_expect(suite_script != null, "runtime suite loads: %s" % suite_path)
+	if suite_script == null:
+		return
+	_expect(suite_script.can_instantiate(), "runtime suite parses: %s" % suite_path)
+	if not suite_script.can_instantiate():
+		return
+	var suite: Variant = suite_script.new()
+	var suite_failures: PackedStringArray = await suite.run(self)
+	var sentinel_index := failures.find(completion_sentinel)
+	if sentinel_index >= 0:
+		failures.remove_at(sentinel_index)
+	failures.append_array(suite_failures)
+
+
+func _test_bootstrap_contract() -> void:
 	var main_scene_path := str(ProjectSettings.get_setting("application/run/main_scene", ""))
 	_expect(not main_scene_path.is_empty(), "project configures a main scene")
 	if main_scene_path.is_empty():
-		_finish()
 		return
 
 	var main_scene := load(main_scene_path) as PackedScene
 	_expect(main_scene != null, "configured main scene can be loaded")
 	if main_scene == null:
-		_finish()
 		return
 
 	var bootstrap := main_scene.instantiate()
+	var composition_failures: Array[Array] = []
+	bootstrap.composition_failed.connect(
+		func(error: Error, message: String) -> void:
+			composition_failures.append([error, message])
+	)
 	root.add_child(bootstrap)
 	await process_frame
 
@@ -36,20 +69,48 @@ func _run() -> void:
 			"main scene uses the bootstrap script",
 		)
 
-	var background := bootstrap.get_node_or_null("Background") as ColorRect
-	_expect(background != null, "main scene has a Background ColorRect")
+	_expect(composition_failures.is_empty(), "Bootstrap reports no composition failure")
+	_expect(bootstrap.get_child_count() == 1, "Bootstrap creates exactly one child")
 
-	var content := bootstrap.get_node_or_null("Content") as CenterContainer
-	_expect(content != null, "main scene has a Content CenterContainer")
+	var application_root := bootstrap.get_node_or_null("ApplicationRoot")
+	_expect(application_root != null, "Bootstrap creates ApplicationRoot")
+	if application_root != null:
+		var application_script: Script = application_root.get_script()
+		_expect(application_script != null, "ApplicationRoot has an attached script")
+		if application_script != null:
+			_expect(
+				application_script.resource_path == "res://scenes/app/application_root.gd",
+				"Bootstrap uses the production ApplicationRoot",
+			)
+		_expect(application_root.is_started(), "ApplicationRoot completes startup")
+		_expect(
+			application_root.get_node_or_null("PersistentUI") is CanvasLayer,
+			"ApplicationRoot has persistent UI CanvasLayer",
+		)
+		_expect(
+			application_root.get_node_or_null("TransitionLayer") is CanvasLayer,
+			"ApplicationRoot has transition CanvasLayer",
+		)
 
-	var message := bootstrap.get_node_or_null("Content/Message") as Label
-	_expect(message != null, "main scene has a Message Label")
+	var route_host := bootstrap.get_node_or_null("ApplicationRoot/RouteHost")
+	_expect(route_host != null, "ApplicationRoot owns RouteHost")
+	if route_host != null:
+		_expect(route_host.get_child_count() == 1, "RouteHost owns one active route")
+
+	var message := bootstrap.get_node_or_null(
+		"ApplicationRoot/RouteHost/TemplateHome/Content/Message"
+	) as Label
+	_expect(message != null, "neutral initial route has a Message Label")
 	if message != null:
-		_expect(message.text == EXPECTED_MESSAGE, "message text matches the bootstrap contract")
+		_expect(message.text == EXPECTED_MESSAGE, "message text matches the route contract")
 
 	bootstrap.queue_free()
 	await process_frame
-	_finish()
+	var scene_router := root.get_node_or_null("SceneRouter")
+	_expect(scene_router != null, "SceneRouter is registered as an Autoload")
+	if scene_router != null:
+		_expect(not scene_router.is_configured(), "Bootstrap shutdown clears SceneRouter")
+		_expect(scene_router.get_current_route() == null, "shutdown releases route reference")
 
 
 func _expect(condition: bool, description: String) -> void:

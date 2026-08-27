@@ -9,6 +9,10 @@ config/name="Forge2D Template"
 config/version="0.1.0"
 run/main_scene="res://scenes/bootstrap.tscn"
 
+[autoload]
+
+SceneRouter="*res://services/scene_router.gd"
+
 [display]
 
 window/size/viewport_width=960
