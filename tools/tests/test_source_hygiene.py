@@ -164,6 +164,7 @@ class SourceHygieneTests(unittest.TestCase):
             "docs/forge2d-template/releases/releases.md",
             "docs/forge2d-template/releases/v0.1.0.md",
             "docs/forge2d-template/reports/reports.md",
+            "docs/forge2d-template/reports/M06_cross_platform_installer.md",
             "docs/developer/index.md",
             "docs/developer/developer.md",
             "docs/developer/features/_feature-template.md",
@@ -204,6 +205,28 @@ class SourceHygieneTests(unittest.TestCase):
         root_readme = (REPOSITORY_ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("- 📚 [Documentation hub](docs/index.md)", root_readme)
         self.assertNotIn("## 📁 Forge2D Template", root_readme)
+
+    def test_installer_completion_report_is_indexed_and_traceable(self) -> None:
+        reports_root = REPOSITORY_ROOT / "docs" / "forge2d-template" / "reports"
+        report_path = reports_root / "M06_cross_platform_installer.md"
+        report = report_path.read_text(encoding="utf-8")
+        reports_index = (reports_root / "reports.md").read_text(encoding="utf-8")
+        template_index = (
+            REPOSITORY_ROOT
+            / "docs"
+            / "forge2d-template"
+            / "forge2d-template.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("(M06_cross_platform_installer.md)", reports_index)
+        self.assertIn(
+            "(reports/M06_cross_platform_installer.md)",
+            template_index,
+        )
+        self.assertIn("../plans/M06_cross_platform_installer.md", report)
+        self.assertIn("../tooling/installation.md", report)
+        self.assertIn("33161920298", report)
+        self.assertIn("## Remaining Limitations and Follow-up", report)
 
     def test_mermaid_fences_are_balanced(self) -> None:
         violations: list[str] = []

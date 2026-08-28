@@ -46,6 +46,7 @@
 - 📝 [M02 Control Entry Point Report](reports/M02_control_entrypoint.md)
 - 📝 [M03 Release v0.1.0 Report](reports/M03_release_v0_1_0.md)
 - 📝 [M05 Game Architecture Baseline Report](reports/M05_game_architecture_baseline.md)
+- 📝 [M06 Cross-Platform Installer Completion Report](reports/M06_cross_platform_installer.md)
 
 ## 📁 Tooling
 - 🗂️ [Overview](tooling/tooling.md)

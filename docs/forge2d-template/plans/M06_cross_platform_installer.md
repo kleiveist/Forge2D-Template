@@ -18,6 +18,10 @@ safe APT, Pacman, Winget, and Homebrew operations, and CI exercises its
 side-effect-free dry run on Linux, Windows, and macOS. The first hosted CI run
 confirmed the dry-run behavior on every host but exposed two unit-test assertions
 that compared equivalent temporary paths as raw strings.
+Commit `e584620` normalized only those test comparisons, and hosted CI run
+`33161920298` then passed all eight jobs. The completed implementation and its
+current limitations are now summarized in the
+[M06 completion report](../reports/M06_cross_platform_installer.md).
 
 ## Scope and Non-Goals
 
@@ -61,6 +65,14 @@ download are out of scope. No new third-party dependency is planned.
 - [x] 2026-08-28: Investigated the first hosted CI run, confirmed all native
   installer dry runs passed, and made two `.venv` pip-path assertions compare
   canonical paths across macOS and Windows.
+- [x] 2026-08-28: Confirmed corrected hosted run `33161920298` passed all eight
+  jobs, including all six native Linux, Windows, and macOS dry-run steps.
+- [x] 2026-08-28: Added the indexed M06 completion report with current behavior,
+  traceable local/hosted evidence, dependency status, recovery, and explicit
+  automation limits for Issue #8.
+- [x] 2026-08-28: Passed the current non-mutating Debian installer dry-run, 46
+  focused installer/CLI tests, 32 installer/report hygiene tests, and the full
+  gate with Doctor 12/12, style 44/44, 172 Python tests, and Godot 4.7.2.
 
 ## Surprises & Discoveries
 
@@ -80,6 +92,10 @@ download are out of scope. No new third-party dependency is planned.
   discovery resolves them below `/private/var`; Windows runners also normalize
   temporary paths. Raw path-string equality therefore produced false failures
   even though every recorded pip command used the same `.venv` executable.
+- 2026-08-28: The protected-main M08 documentation architecture moved the
+  report's canonical path from the issue's historic `docs/reports/` wording to
+  `docs/forge2d-template/reports/`; the generated-style indexes and link tests
+  now enforce that authoritative location.
 
 ## Decision Log
 
@@ -101,6 +117,10 @@ download are out of scope. No new third-party dependency is planned.
   executable paths only in cross-platform test assertions. This retains the
   strict system-pip safety check without treating filesystem aliases as different
   environments.
+- 2026-08-28: Describe hosted native coverage as side-effect-free planning, not
+  privileged end-to-end package installation. Debian and Arch container jobs
+  exercise real local environment setup after CI explicitly supplies system
+  prerequisites.
 
 ## Validation
 
@@ -119,10 +139,13 @@ download are out of scope. No new third-party dependency is planned.
 | Installer tests with a symlink-aliased temporary directory | Passed; both formerly failing `.venv` pip-path cases |
 | Post-CI-fix `.venv/bin/python -m pytest tools/tests -q` | Passed; 90 tests |
 | Post-CI-fix `g2d check` with checksum-verified Godot 4.7.2 | Passed; Doctor 12/12, 90 tests, real headless integration |
+| Hosted CI run `33161920298` for correction commit `e584620` | Passed; all 8 jobs, including all 6 native installer dry-run steps |
+| Current `install --dry-run --yes` on Debian | Passed without changes; healthy `.venv` retained, ambiguous APT Godot refused with manual recovery |
+| Current focused installer, CLI, control, and logger tests | Passed; 46 tests |
+| Current installer/report hygiene tests | Passed; 32 tests |
+| Current `g2d check` with checksum-verified Godot 4.7.2 | Passed; Doctor 12/12, style 44/44, 172 tests, real headless integration |
+| Current pull-request CI run `33179894053` for `cf3ff6b` | Passed; all 8 Linux, Windows, and macOS jobs |
 | `git diff --check` | Passed |
-
-The corrected path assertions still require confirmation by the next
-GitHub-hosted Windows and macOS workflow run.
 
 ## Recovery / Idempotence
 
@@ -139,4 +162,6 @@ host-independent and unit tested, while real system mutations remain delegated
 to established package managers and explicit confirmation. The main remaining
 boundary is package-manager and repository availability on an individual host;
 the installer reports a manual official-download path when it cannot prove a
-safe automated Godot 4 route.
+safe automated Godot 4 route. The indexed
+[completion report](../reports/M06_cross_platform_installer.md) records the
+delivered behavior, verified evidence, recovery model, and remaining limits.
