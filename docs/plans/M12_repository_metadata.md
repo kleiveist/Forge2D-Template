@@ -21,6 +21,9 @@ for Issue #4.
 The live repository now matches the reviewed contract exactly: description and
 seven topics are set, homepage remains `null`, and template/public/`main` state
 is unchanged.
+GitHub Actions run `33175228882` passed all eight required jobs for
+implementation commit `1635354` after a controlled rerun recovered one stalled
+runner cleanup.
 
 ## Scope and Non-Goals
 
@@ -71,7 +74,8 @@ dependencies, and changing the existing template-repository flag.
 - [x] 2026-08-28: Applied the exact description and seven topics through the
   GitHub API, then verified homepage `null`, template `true`, visibility
   `public`, and default branch `main` remained unchanged.
-- [ ] Pass all eight pull-request CI jobs.
+- [x] 2026-08-28: Passed all eight pull-request CI jobs in run `33175228882`
+  for implementation commit `1635354`.
 
 ## Surprises & Discoveries
 
@@ -83,6 +87,11 @@ dependencies, and changing the existing template-repository flag.
 - 2026-08-28: A homepage pointing back to the repository adds no maintained
   destination and falsely implies a separate project site. An explicit `null`
   is more accurate until a canonical external destination exists.
+- 2026-08-28: The first CI attempt completed seven jobs but a macOS runner hung
+  beyond the 35-minute job limit in GitHub's `Post Check out repository` cleanup
+  after repository steps had finished. Cancelling the stalled attempt and
+  rerunning the unchanged commit produced eight green jobs, confirming an
+  infrastructure cleanup fault rather than a repository failure.
 
 ## Decision Log
 
@@ -111,7 +120,7 @@ dependencies, and changing the existing template-repository flag.
 | `python tools/control.py release prepare --dry-run` | Passed; existing v0.1.0 assets verified, no changes |
 | `git diff --check` | Passed |
 | Fresh GitHub repository API response | Passed; exact description/topics, homepage `null`, template `true`, public, `main` |
-| Pull-request CI | Pending |
+| Pull-request CI run `33175228882` for commit `1635354` | Passed on controlled rerun; all eight Linux, Windows, and macOS jobs |
 
 ## Recovery / Idempotence
 
@@ -129,4 +138,5 @@ The local and live metadata baseline is complete without new dependencies or an
 invented homepage. GitHub now describes and classifies the canonical repository
 accurately, the versioned contract makes drift reviewable, and downstream owners
 have an explicit checklist for replacing identity, URLs, and server-side policy.
-Final remote code evidence remains pending the eight-job pull-request matrix.
+Pull-request run `33175228882` provides the final implementation evidence with
+all eight jobs green for commit `1635354`.
