@@ -60,7 +60,8 @@ store packaging, and publishing a GitHub Release are out of scope.
   notarization boundaries, CI retention, limitations, and troubleshooting.
 - [x] 2026-08-28: Passed 132 Python tests, source style, the complete repository
   gate, and real checksum-verified Linux, Windows, and macOS exports.
-- [ ] Pass all protected pull-request checks and record the Issue #3 outcome.
+- [x] 2026-08-28: Passed all eight protected jobs in pull-request CI run
+  `33169226413`, including all three native exports and artifact uploads.
 
 ## Surprises & Discoveries
 
@@ -121,7 +122,7 @@ store packaging, and publishing a GitHub Release are out of scope.
 | Initial gate with `GODOT4_BIN` inherited by unit tests | Failed as expected; 10 discovery fixtures were overridden, so validation switched to CI-equivalent `PATH` discovery |
 | `python tools/control.py check` with verified Godot 4.7.2 on `PATH` | Passed; Doctor 12/12, style 37/37, 132 tests, Godot integration |
 | Pull-request CI run `33168743033` | Failed during hardening; 4 native macOS/Windows jobs exposed path-alias test assumptions, while all 4 Linux jobs passed |
-| Pull-request CI matrix | Pending |
+| [Pull-request CI run `33169226413`](https://github.com/kleiveist/Forge2D-Template/actions/runs/33169226413) | Passed; all 8 required jobs on Ubuntu, Windows, macOS, Debian, and Arch |
 
 ## Recovery / Idempotence
 
@@ -134,7 +135,15 @@ documentation together rather than weakening validation.
 
 ## Outcomes & Retrospective
 
-Pending implementation and validation.
+Issue #3 is implemented without a new runtime dependency. One fixed command now
+validates presets, Godot, matching templates, safe destinations, child-process
+results, and artifact formats before reporting success. Real cross-exports found
+and corrected the universal-macOS texture requirement before CI, while the first
+pull-request run exposed temporary-path aliases that a text comparison could not
+portably represent. The final eight-job matrix proves native exports and bounded
+artifact retention on all supported hosts. Production signing, notarization,
+store packaging, and GitHub Release publication remain deliberately separate
+reviewed work.
 <!-- AUTO-GENERATED:backlink START -->
 [← Back](plans.md)
 <!-- AUTO-GENERATED:backlink END -->
