@@ -10,6 +10,8 @@ reports, configuration, and tests before changing their component.
 - Complex, multi-step, or architectural work requires a living ExecPlan under
   `docs/plans/` that follows `.agent/PLANS.md`.
 - Add or update tests and relevant documentation whenever behavior changes.
+- Follow the mandatory [Python](docs/python-style-guide.md) and
+  [GDScript](docs/gdscript-style-guide.md) coding standards.
 - Run the fastest relevant checks first and report only checks actually run.
 - Never use destructive Git commands, commit secrets, or add an unreviewed
   dependency. Record each dependency's purpose, maintenance risk, license, and

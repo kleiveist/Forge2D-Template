@@ -8,6 +8,8 @@
 ## 📄 Pages
 - 📝 [Cross-Platform Installation](installation.md)
 - 📝 [Main Branch Protection](branch-protection.md)
+- 📝 [Mandatory Python Coding Standard](python-style-guide.md)
+- 📝 [Mandatory GDScript Coding Standard](gdscript-style-guide.md)
 
 ## 📁 Architecture
 - 🗂️ [Overview](architecture/architecture.md)
@@ -30,6 +32,7 @@
 - 📝 [M05 Game Architecture Baseline ExecPlan](plans/M05_game_architecture_baseline.md)
 - 📝 [M06 Cross-Platform Installer ExecPlan](plans/M06_cross_platform_installer.md)
 - 📝 [M07 Main Branch Protection ExecPlan](plans/M07_main_branch_protection.md)
+- 📝 [M08 Coding Standards ExecPlan](plans/M08_coding_standards.md)
 
 ## 📁 Reports
 - 🗂️ [Overview](reports/reports.md)

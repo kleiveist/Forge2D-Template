@@ -8,7 +8,11 @@ from _source_path import add_source_root
 
 add_source_root()
 
-from g2dtool.repository import RepositoryNotFoundError, discover_repository_layout, find_repository_root
+from g2dtool.repository import (
+    RepositoryNotFoundError,
+    discover_repository_layout,
+    find_repository_root,
+)
 
 
 class RepositoryRootTests(unittest.TestCase):

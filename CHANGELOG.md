@@ -7,6 +7,13 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+### Added
+
+- Mandatory repository-wide Python and GDScript coding standards now define
+  formatting, naming, typing, documentation, error, logging, and test rules.
+- `g2d style` provides dependency-free, actionable source validation and is part
+  of the cross-platform `g2d check` release gate.
+
 ### Changed
 
 - `g2d install` now validates Python, venv/pip bootstrap support, Godot 4, and

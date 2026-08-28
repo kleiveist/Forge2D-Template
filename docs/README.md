@@ -14,6 +14,7 @@ This index is the documentation entry point for Forge2D Template.
 - [M05 game architecture baseline](plans/M05_game_architecture_baseline.md)
 - [M06 cross-platform installer](plans/M06_cross_platform_installer.md)
 - [M07 main branch protection](plans/M07_main_branch_protection.md)
+- [M08 coding standards](plans/M08_coding_standards.md)
 
 ## Architecture
 
@@ -40,10 +41,13 @@ Forge2D Template is licensed under the MIT License. See `LICENSE`.
 
 - [Cross-platform installation](installation.md)
 - [Main branch protection and manual GitHub setup](branch-protection.md)
+- [Mandatory Python coding standard](python-style-guide.md)
+- [Mandatory GDScript coding standard](gdscript-style-guide.md)
 - Repository-local control entry point: `python tools/control.py`
 - Common bootstrap flow:
   - `python tools/control.py install --dry-run`
   - `python tools/control.py install --yes`
   - `python tools/control.py doctor`
+  - `python tools/control.py style`
   - `python tools/control.py check`
   - `python tools/control.py forge2d-template run`

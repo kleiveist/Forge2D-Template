@@ -31,6 +31,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(context.exception.code, 0)
         text = output.getvalue()
         self.assertIn("python tools/control.py doctor", text)
+        self.assertIn("python tools/control.py style", text)
         self.assertIn("python tools/control.py godot4 test", text)
         self.assertIn("python tools/control.py Forge2D-Template run", text)
 
@@ -82,6 +83,13 @@ class CliTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 0)
         run_gate.assert_called_once_with()
+
+    def test_style_dispatches_source_gate(self) -> None:
+        with patch("g2dtool.cli.run_style", return_value=1) as run_source_style:
+            exit_code = main(["style"])
+
+        self.assertEqual(exit_code, 1)
+        run_source_style.assert_called_once_with()
 
     def test_template_aliases_run_the_same_mode(self) -> None:
         layout = RepositoryLayout(
@@ -164,7 +172,11 @@ class CliTests(unittest.TestCase):
             raise RuntimeError("unexpected internal failure")
 
         class FakeParser:
-            def parse_args(self, _arguments: list[str] | None = None, _prog: str | None = None) -> SimpleNamespace:
+            def parse_args(
+                self,
+                _arguments: list[str] | None = None,
+                _prog: str | None = None,
+            ) -> SimpleNamespace:
                 return SimpleNamespace(handler=handler)
 
         with (

@@ -17,7 +17,8 @@ from g2dtool.godot import (
     discover_godot,
 )
 from g2dtool.logger import error, join_command, print_status_line, success
-from g2dtool.repository import discover_repository_layout
+from g2dtool.repository import RepositoryLayout, discover_repository_layout
+from g2dtool.style import run_style
 
 
 ProcessRunner = Callable[[Sequence[str], Path], int]
@@ -35,7 +36,7 @@ def run_check(
     start: Path | None = None,
     run_process: ProcessRunner | None = None,
 ) -> int:
-    """Run Doctor, Python tests, and the Godot headless integration test."""
+    """Run Doctor, source style, Python tests, and the Godot integration test."""
 
     layout = discover_repository_layout(start)
     runner = run_process or _run_process
@@ -45,6 +46,9 @@ def run_check(
     doctor_report = collect_doctor_report(start=layout.repository_root)
     print(format_doctor_report(doctor_report))
     steps.append(GateStep("Doctor", doctor_report.exit_code))
+
+    print_status_line("running", "Source style", "checking Python and GDScript")
+    steps.append(GateStep("Source style", run_style(start=layout.repository_root)))
 
     python = _test_python(layout)
     pytest_command = [str(python), "-m", "pytest", "tools/tests"]
@@ -95,7 +99,7 @@ def run_check(
     return 0
 
 
-def _test_python(layout) -> Path:
+def _test_python(layout: RepositoryLayout) -> Path:
     candidate = layout.venv_directory / (
         "Scripts" if os.name == "nt" else "bin"
     ) / ("python.exe" if os.name == "nt" else "python")

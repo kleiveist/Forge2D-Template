@@ -152,7 +152,10 @@ def load_toolchain_config(path: Path) -> ToolchainConfig:
     if godot_binary == "":
         godot_binary = None
 
-    candidates = _normalize_string_list(godot.get("executable_candidates"), default=("godot4", "godot"))
+    candidates = _normalize_string_list(
+        godot.get("executable_candidates"),
+        default=("godot4", "godot"),
+    )
 
     return ToolchainConfig(
         minimum_python_major=minimum_python[0],

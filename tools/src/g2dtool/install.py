@@ -48,7 +48,7 @@ class CommandResult(tuple[int, str, str]):
     stdout: str
     stderr: str
 
-    def __new__(cls, returncode: int, stdout: str, stderr: str):
+    def __new__(cls, returncode: int, stdout: str, stderr: str) -> CommandResult:
         return tuple.__new__(cls, (returncode, stdout, stderr))
 
     @property

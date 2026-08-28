@@ -7,6 +7,10 @@
 # DOCS
 - 📚 [Docs Home](docs/index.md)
 
+## 📄 Coding Standards
+- 📝 [Mandatory Python Coding Standard](docs/python-style-guide.md)
+- 📝 [Mandatory GDScript Coding Standard](docs/gdscript-style-guide.md)
+
 ## 📁 Architecture
 - 🗂️ [Overview](docs/architecture/architecture.md)
 - 📝 [Runtime Architecture Overview](docs/architecture/runtime-overview.md)
@@ -28,6 +32,7 @@
 - 📝 [M05 Game Architecture Baseline ExecPlan](docs/plans/M05_game_architecture_baseline.md)
 - 📝 [M06 Cross-Platform Installer ExecPlan](docs/plans/M06_cross_platform_installer.md)
 - 📝 [M07 Main Branch Protection ExecPlan](docs/plans/M07_main_branch_protection.md)
+- 📝 [M08 Coding Standards ExecPlan](docs/plans/M08_coding_standards.md)
 
 ## 📁 Reports
 - 🗂️ [Overview](docs/reports/reports.md)
@@ -76,6 +81,7 @@ python tools/control.py doctor
 python tools/control.py install
 python tools/control.py install --dry-run
 python tools/control.py install --yes
+python tools/control.py style
 python tools/control.py check
 python tools/control.py godot4
 python tools/control.py godot4 run
@@ -98,8 +104,11 @@ python tools/control.py Forge2D-Template run
 - The installer never invokes system pip. Editable tooling and all dependencies
   declared in `config/toolchain.toml` are installed and verified through the
   `.venv` Python only.
-- `python tools/control.py check` runs Doctor, Python tests, and the Godot
-  headless integration test.
+- `python tools/control.py style` enforces the objective subset of the mandatory
+  [Python](docs/python-style-guide.md) and
+  [GDScript](docs/gdscript-style-guide.md) standards without changing files.
+- `python tools/control.py check` runs Doctor, source style, Python tests, and
+  the Godot headless integration test.
 - The GitHub `main` branch accepts changes only through pull requests and requires
   every CI job to pass. See [Main branch protection](docs/branch-protection.md)
   for the enforced policy and manual setup steps for forks.
@@ -110,3 +119,13 @@ python tools/control.py Forge2D-Template run
   the installed `g2d` entry point.
 - Godot 4.7.2 is the version verified for `v0.1.0`.
 - This repository does not currently assume a specific game runtime workflow.
+
+## Contributing code
+
+All code changes must follow the mandatory
+[Python coding standard](docs/python-style-guide.md) and
+[GDScript coding standard](docs/gdscript-style-guide.md). Run the focused tests
+for the changed component first, then `python tools/control.py style`, and finish
+with `python tools/control.py check` before requesting review. Objective rules are
+CI-enforced; reviewers also verify naming, documentation, error handling,
+logging, and test quality.
