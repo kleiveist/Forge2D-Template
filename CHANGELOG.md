@@ -38,6 +38,9 @@ No changes yet.
 - A semantic Godot InputMap baseline provides keyboard/controller interface,
   movement, accept, cancel, and pause actions plus optional coordinate-free
   touch adaptation and accessibility/remapping guidance.
+- Repository-native contribution and security policies, a pull-request
+  template, focused bug/feature forms, and a deliberate issue chooser align
+  public contributions and private vulnerability reports with protected `main`.
 
 ### Changed
 

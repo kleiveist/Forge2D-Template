@@ -3,6 +3,8 @@
 ## 📄 Files
 - 📝 [Forge2D Template Repository Rules](AGENTS.md)
 - 📝 [Changelog](CHANGELOG.md)
+- 📝 [Contributing Guide](CONTRIBUTING.md)
+- 📝 [Security Policy](SECURITY.md)
 
 # DOCS
 - 📚 [Docs Home](docs/index.md)
@@ -44,6 +46,7 @@
 - 📝 [M08 Coding Standards ExecPlan](docs/plans/M08_coding_standards.md)
 - 📝 [M09 Cross-Platform Export System ExecPlan](docs/plans/M09_export_system.md)
 - 📝 [M10 Semantic Input Baseline ExecPlan](docs/plans/M10_input_baseline.md)
+- 📝 [M11 Community Health ExecPlan](docs/plans/M11_community_health.md)
 
 ## 📁 Reports
 - 🗂️ [Overview](docs/reports/reports.md)
@@ -145,8 +148,11 @@ python tools/control.py Forge2D-Template run
 - Godot 4.7.2 is the version verified for `v0.1.0`.
 - This repository does not currently assume a specific game runtime workflow.
 
-## Contributing code
+## Contributing and security
 
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening an issue or pull request.
+It documents safe setup, focused changes, required validation, protected-main
+review, commit subjects, dependency review, and the active GitHub templates.
 All code changes must follow the mandatory
 [Python coding standard](docs/python-style-guide.md) and
 [GDScript coding standard](docs/gdscript-style-guide.md). Run the focused tests
@@ -154,3 +160,8 @@ for the changed component first, then `python tools/control.py style`, and finis
 with `python tools/control.py check` before requesting review. Objective rules are
 CI-enforced; reviewers also verify naming, documentation, error handling,
 logging, and test quality.
+
+Never report a suspected vulnerability in a public issue. Use the private GitHub
+route and coordinated-disclosure process in [SECURITY.md](SECURITY.md). External
+blank issues are deliberately disabled; focused bug and feature forms are
+available through the repository issue chooser.

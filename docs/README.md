@@ -17,6 +17,7 @@ This index is the documentation entry point for Forge2D Template.
 - [M08 coding standards](plans/M08_coding_standards.md)
 - [M09 cross-platform export system](plans/M09_export_system.md)
 - [M10 semantic input baseline](plans/M10_input_baseline.md)
+- [M11 community health](plans/M11_community_health.md)
 
 ## Architecture
 
@@ -38,6 +39,13 @@ This index is the documentation entry point for Forge2D Template.
 - [ADR-0005: Runtime dependency rules](decisions/ADR-0005-runtime-dependency-rules.md)
 
 Forge2D Template is licensed under the MIT License. See `LICENSE`.
+
+## Community
+
+- [Contribution workflow](../CONTRIBUTING.md)
+- [Security policy and private reporting](../SECURITY.md)
+- GitHub issue chooser: focused bug and feature forms; external blank issues are
+  deliberately disabled.
 
 ## Tooling
 

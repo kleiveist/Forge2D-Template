@@ -16,5 +16,6 @@
 - 📝 [M08 Coding Standards ExecPlan](M08_coding_standards.md)
 - 📝 [M09 Cross-Platform Export System ExecPlan](M09_export_system.md)
 - 📝 [M10 Semantic Input Baseline ExecPlan](M10_input_baseline.md)
+- 📝 [M11 Community Health ExecPlan](M11_community_health.md)
 
 <!-- AUTO-GENERATED:docs-index END -->

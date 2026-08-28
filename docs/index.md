@@ -6,6 +6,8 @@
 <!-- AUTO-GENERATED:docs-index START -->
 
 ## 📄 Pages
+- 📝 [Contribution Workflow](../CONTRIBUTING.md)
+- 📝 [Security Policy and Private Reporting](../SECURITY.md)
 - 📝 [Cross-Platform Installation](installation.md)
 - 📝 [Cross-Platform Exports](exporting.md)
 - 📝 [Semantic Input Baseline](input.md)
@@ -41,6 +43,7 @@
 - 📝 [M08 Coding Standards ExecPlan](plans/M08_coding_standards.md)
 - 📝 [M09 Cross-Platform Export System ExecPlan](plans/M09_export_system.md)
 - 📝 [M10 Semantic Input Baseline ExecPlan](plans/M10_input_baseline.md)
+- 📝 [M11 Community Health ExecPlan](plans/M11_community_health.md)
 
 ## 📁 Reports
 - 🗂️ [Overview](reports/reports.md)
