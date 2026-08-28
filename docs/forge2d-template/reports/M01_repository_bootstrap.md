@@ -45,7 +45,7 @@ deklariert und wurde in diesem Workspace nicht installiert.
 - Repository-Basis: `AGENTS.md`, `README.md`, `CHANGELOG.md`, `.editorconfig`,
   `.gitattributes`, `.gitignore`, `.agent/PLANS.md`, `pyproject.toml`.
 - Zentrale Policy: `config/project.toml`, `config/toolchain.toml`.
-- Dokumentation: `docs/README.md`, der lebende M01-Plan, ADR-0001 und dieser
+- Dokumentation: `docs/index.md`, der lebende M01-Plan, ADR-0001 und dieser
   Bericht.
 - Godot: `game/project.godot`, `game/scenes/bootstrap.tscn`,
   `game/src/bootstrap.gd`.

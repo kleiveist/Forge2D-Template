@@ -160,7 +160,7 @@ The engine smoke was not run because no compatible executable was available:
 
 The install smoke was not run because the system Python lacks `ensurepip`, `pip`,
 and setuptools. Exact evidence and reproduction commands are recorded in
-`docs/reports/M01_repository_bootstrap.md`.
+`docs/forge2d-template/reports/M01_repository_bootstrap.md`.
 
 After the maintainer-authorized sync, the local commit and remote `main` object
 IDs were compared and matched exactly.
@@ -187,4 +187,4 @@ verified Godot 4.7.2 for v0.1.0. The build-backend pin and future export workflo
 remain deliberate follow-up decisions. The baseline commits are synchronized to
 `origin/main`.
 Detailed evidence is in
-`docs/reports/M01_repository_bootstrap.md`.
+`docs/forge2d-template/reports/M01_repository_bootstrap.md`.

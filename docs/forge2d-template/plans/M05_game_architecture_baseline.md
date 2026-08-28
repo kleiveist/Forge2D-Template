@@ -5,8 +5,8 @@
 
 This document is a living execution plan for implementing the first usable,
 genre-neutral 2D runtime architecture of Forge2D Template. It supersedes the
-documentation-only closure formerly recorded in
-`docs/plans/M05_runtime_architecture.md`. ADR-0002 through ADR-0005 remain
+documentation-only closure formerly recorded in the retired
+`M05_runtime_architecture.md` plan. ADR-0002 through ADR-0005 remain
 accepted and are the starting constraints for this milestone.
 
 ## Purpose / Big Picture
@@ -284,9 +284,10 @@ does not implement them.
 
 ### M05.1 — Reconcile architecture documents
 
-1. Replace the old M05 plan and update `docs/README.md`.
+1. Replace the old M05 plan and update the documentation hub.
 2. Keep ADR-0002 through ADR-0005 accepted unless implementation contradicts one.
-3. Add `docs/architecture/runtime-overview.md` with stable diagrams and rules.
+3. Add `docs/forge2d-template/architecture/runtime-overview.md` with stable
+   diagrams and rules.
 4. Validate relative links and balanced Mermaid fences.
 
 ### M05.2 — Implement the composition root
@@ -324,10 +325,10 @@ sections.
 
 | Path | Expected change |
 | --- | --- |
-| `docs/plans/M05_game_architecture_baseline.md` | This replacement living plan. |
-| `docs/architecture/runtime-overview.md` | Stable architecture documentation and Mermaid diagrams. |
-| `docs/README.md` | Links to M05 plan, overview, and report. |
-| `docs/reports/M05_game_architecture_baseline.md` | Exact completed-work and validation record. |
+| `docs/forge2d-template/plans/M05_game_architecture_baseline.md` | This replacement living plan. |
+| `docs/forge2d-template/architecture/runtime-overview.md` | Stable architecture documentation and Mermaid diagrams. |
+| `docs/index.md` | Links to M05 plan, overview, and report. |
+| `docs/forge2d-template/reports/M05_game_architecture_baseline.md` | Exact completed-work and validation record. |
 | `game/project.godot` | `SceneRouter` Autoload; Bootstrap remains main scene. |
 | `game/scenes/bootstrap.tscn`, `game/src/bootstrap.gd` | Thin composition adapter. |
 | `game/scenes/app/*` | ApplicationRoot and neutral route. |

@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](plans.md)
+<!-- AUTO-GENERATED:backlink END -->
 # M06 Cross-Platform Installer ExecPlan
 
 ## Purpose / Big Picture

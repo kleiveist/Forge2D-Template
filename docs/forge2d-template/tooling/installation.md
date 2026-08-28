@@ -1,3 +1,6 @@
+<!-- AUTO-GENERATED:backlink START -->
+[← Back](tooling.md)
+<!-- AUTO-GENERATED:backlink END -->
 # Cross-Platform Installation
 
 `g2d install` validates and prepares a Forge2D Template checkout on Linux,

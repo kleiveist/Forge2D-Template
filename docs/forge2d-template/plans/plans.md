@@ -1,5 +1,5 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../index.md)
+[← Back](../forge2d-template.md)
 <!-- AUTO-GENERATED:backlink END -->
 # Plans
 
@@ -13,5 +13,6 @@
 - 📝 [M05 Game Architecture Baseline ExecPlan](M05_game_architecture_baseline.md)
 - 📝 [M06 Cross-Platform Installer ExecPlan](M06_cross_platform_installer.md)
 - 📝 [M07 Main Branch Protection ExecPlan](M07_main_branch_protection.md)
+- 📝 [M08 Documentation Architecture ExecPlan](M08_documentation_architecture.md)
 
 <!-- AUTO-GENERATED:docs-index END -->

@@ -4,11 +4,12 @@
 # Forge2D Template Repository Rules
 
 Forge2D Template is a general 2D Godot template with small, repository-local Python
-tooling. Start with `docs/README.md`, then read the relevant plans, decisions,
+tooling. Start with `docs/index.md`, then read the relevant plans, decisions,
 reports, configuration, and tests before changing their component.
 
-- Complex, multi-step, or architectural work requires a living ExecPlan under
-  `docs/plans/` that follows `.agent/PLANS.md`.
+- Complex template work requires a living ExecPlan under
+  `docs/forge2d-template/plans/`; complex game work uses
+  `docs/developer/plans/`. Both follow `.agent/PLANS.md`.
 - Add or update tests and relevant documentation whenever behavior changes.
 - Run the fastest relevant checks first and report only checks actually run.
 - Never use destructive Git commands, commit secrets, or add an unreviewed
