@@ -45,7 +45,7 @@ Validation evidence:
 | `python tools/control.py godot4 test` | Passed |
 | `xvfb-run -a python tools/control.py godot4 run -- --test-mode` | Passed |
 | `git diff --check` | Passed |
-| Pull-request CI for Issue #4 repository changes | Pending |
+| [Pull-request CI run `33171491545`](https://github.com/kleiveist/Forge2D-Template/actions/runs/33171491545) | Passed; all eight required jobs for preparation commit `ecc5335` |
 
 Publication identifiers are recorded after the GitHub release is created.
 
@@ -61,5 +61,6 @@ Issue #4 publication boundary:
 Repository-side preparation now includes checked-in v0.1.0 notes, fixed asset
 names, independent ELF/PE/ZIP validation, deterministic SHA-256 sums, atomic
 non-overwriting staging, and the reviewed procedure in `docs/releasing.md`.
-Final command results, commit/tag identifiers, CI run URL, release URL, and
-downloaded checksum evidence remain intentionally pending.
+Preparation commit `ecc5335` passed all eight checks in pull-request run
+`33171491545`. Final protected-main identifiers, release URL, published assets,
+and downloaded checksum evidence remain intentionally pending.

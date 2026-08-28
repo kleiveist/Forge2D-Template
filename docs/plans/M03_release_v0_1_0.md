@@ -76,7 +76,8 @@ platform artifact must be visible in the release notes.
   safe release-asset preparation, focused tests, and operator documentation.
 - [x] 2026-08-28: Passed 150 Python tests, source style, the complete local
   release gate, and real three-platform preparation/checksum validation.
-- [ ] Pass the pull-request validation gate for the Issue #4 commit.
+- [x] 2026-08-28: Passed all eight required jobs in pull-request CI run
+  `33171491545` for Issue #4 preparation commit `ecc5335`.
 - [ ] Merge the complete shared PR only after explicit user approval.
 - [ ] Tag the exact green protected-main commit and publish/verify v0.1.0.
 
@@ -123,7 +124,7 @@ platform artifact must be visible in the release notes.
 | Real three-platform `release prepare --dry-run` | Passed; validated 73,551,432-byte ELF, 109,159,704-byte PE, and 60,484,109-byte ZIP without writing assets |
 | Real preparation, independent SHA-256 audit, and identical rerun | Passed; three versioned assets, 322-byte checksum document, and no rewrite on rerun |
 | `git diff --check` | Passed |
-| Pull-request CI | Pending for the Issue #4 commit |
+| [Pull-request CI run `33171491545`](https://github.com/kleiveist/Forge2D-Template/actions/runs/33171491545) | Passed; all eight Ubuntu, Windows, macOS, Debian, and Arch jobs |
 | Exact protected-main push CI | Blocked until the complete PR is merged |
 | Remote tag, release, and downloaded checksum audit | Blocked until protected-main CI passes |
 
@@ -142,6 +143,7 @@ code or binaries requires a new patch release rather than rewritten history.
 
 ## Outcomes & Retrospective
 
-Repository-side release preparation is in progress. Final publication outcomes,
-main SHA, CI run, tag object, release URL, asset list, and remote checksum results
-are recorded only after the complete shared PR is approved and merged.
+Repository-side release preparation is implemented and validated locally and in
+all eight pull-request jobs. Final protected-main SHA/run, tag object, release
+URL, published asset list, and remote checksum results are recorded only after
+the complete shared PR is approved and merged.
