@@ -14,5 +14,10 @@
 - 📝 [M06 Cross-Platform Installer ExecPlan](M06_cross_platform_installer.md)
 - 📝 [M07 Main Branch Protection ExecPlan](M07_main_branch_protection.md)
 - 📝 [M08 Documentation Architecture ExecPlan](M08_documentation_architecture.md)
+- 📝 [M09 Coding Standards ExecPlan](M09_coding_standards.md)
+- 📝 [M10 Cross-Platform Export System ExecPlan](M10_export_system.md)
+- 📝 [M11 Semantic Input Baseline ExecPlan](M11_input_baseline.md)
+- 📝 [M12 Community Health ExecPlan](M12_community_health.md)
+- 📝 [M13 Repository Metadata ExecPlan](M13_repository_metadata.md)
 
 <!-- AUTO-GENERATED:docs-index END -->

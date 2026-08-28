@@ -17,6 +17,15 @@ build/
 dist/
 htmlcov/
 
+# Repository-local game exports
+/artifacts/
+
+# Local reproductions of CI artifacts
+.ci-artifact-venv/
+.ci-bin/
+.ci-downloads/
+.ci-wheelhouse/
+
 # Godot editor imports and local state
 .godot/
 

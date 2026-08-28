@@ -30,6 +30,15 @@
 - 📝 [M06 Cross-Platform Installer ExecPlan](plans/M06_cross_platform_installer.md)
 - 📝 [M07 Main Branch Protection ExecPlan](plans/M07_main_branch_protection.md)
 - 📝 [M08 Documentation Architecture ExecPlan](plans/M08_documentation_architecture.md)
+- 📝 [M09 Coding Standards ExecPlan](plans/M09_coding_standards.md)
+- 📝 [M10 Cross-Platform Export System ExecPlan](plans/M10_export_system.md)
+- 📝 [M11 Semantic Input Baseline ExecPlan](plans/M11_input_baseline.md)
+- 📝 [M12 Community Health ExecPlan](plans/M12_community_health.md)
+- 📝 [M13 Repository Metadata ExecPlan](plans/M13_repository_metadata.md)
+
+## 📁 Releases
+- 🗂️ [Overview](releases/releases.md)
+- 📝 [Forge2D Template v0.1.0](releases/v0.1.0.md)
 
 ## 📁 Reports
 - 🗂️ [Overview](reports/reports.md)
@@ -37,11 +46,18 @@
 - 📝 [M02 Control Entry Point Report](reports/M02_control_entrypoint.md)
 - 📝 [M03 Release v0.1.0 Report](reports/M03_release_v0_1_0.md)
 - 📝 [M05 Game Architecture Baseline Report](reports/M05_game_architecture_baseline.md)
+- 📝 [M06 Cross-Platform Installer Completion Report](reports/M06_cross_platform_installer.md)
 
 ## 📁 Tooling
 - 🗂️ [Overview](tooling/tooling.md)
 - 📝 [Main Branch Protection](tooling/branch-protection.md)
+- 📝 [Cross-Platform Exports](tooling/exporting.md)
+- 📝 [Mandatory GDScript Coding Standard](tooling/gdscript-style-guide.md)
+- 📝 [Semantic Input Baseline](tooling/input.md)
 - 📝 [Cross-Platform Installation](tooling/installation.md)
+- 📝 [Mandatory Python Coding Standard](tooling/python-style-guide.md)
+- 📝 [Publishing a GitHub Release](tooling/releasing.md)
+- 📝 [GitHub Repository Metadata](tooling/repository-metadata.md)
 
 <!-- AUTO-GENERATED:docs-index END -->
 

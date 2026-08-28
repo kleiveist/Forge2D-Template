@@ -55,6 +55,8 @@ class SourceHygieneTests(unittest.TestCase):
             REPOSITORY_ROOT / "tools" / "src" / "g2dtool" / "doctor.py",
             REPOSITORY_ROOT / "tools" / "src" / "g2dtool" / "install.py",
             REPOSITORY_ROOT / "tools" / "src" / "g2dtool" / "godot.py",
+            REPOSITORY_ROOT / "tools" / "src" / "g2dtool" / "export.py",
+            REPOSITORY_ROOT / "tools" / "src" / "g2dtool" / "release.py",
         )
         for target in targets:
             self.assertNotIn("shell=True", target.read_text(encoding="utf-8"))
@@ -77,8 +79,14 @@ class SourceHygieneTests(unittest.TestCase):
     def test_runtime_has_no_physical_input_codes(self) -> None:
         patterns = (
             re.compile(r"\bInput\.is_(?:key|physical_key)_pressed\s*\("),
-            re.compile(r"\bInputEvent(?:Key|JoypadButton|JoypadMotion)\b"),
-            re.compile(r"\b(?:KEY|JOY_BUTTON|JOY_AXIS)_[A-Z0-9_]+\b"),
+            re.compile(r"\bInput\.is_mouse_button_pressed\s*\("),
+            re.compile(
+                r"\bInputEvent(?:Key|JoypadButton|JoypadMotion|MouseButton|"
+                r"MouseMotion|ScreenTouch|ScreenDrag|MagnifyGesture|PanGesture)\b"
+            ),
+            re.compile(
+                r"\b(?:KEY|JOY_BUTTON|JOY_AXIS|MOUSE_BUTTON)_[A-Z0-9_]+\b"
+            ),
         )
         violations: list[str] = []
         for pattern in patterns:
@@ -138,10 +146,25 @@ class SourceHygieneTests(unittest.TestCase):
             "docs/forge2d-template/forge2d-template.md",
             "docs/forge2d-template/tooling/installation.md",
             "docs/forge2d-template/tooling/branch-protection.md",
+            "docs/forge2d-template/tooling/exporting.md",
+            "docs/forge2d-template/tooling/gdscript-style-guide.md",
+            "docs/forge2d-template/tooling/input.md",
+            "docs/forge2d-template/tooling/python-style-guide.md",
+            "docs/forge2d-template/tooling/releasing.md",
+            "docs/forge2d-template/tooling/repository-metadata.md",
             "docs/forge2d-template/architecture/runtime-overview.md",
             "docs/forge2d-template/decisions/decisions.md",
             "docs/forge2d-template/plans/plans.md",
+            "docs/forge2d-template/plans/M08_documentation_architecture.md",
+            "docs/forge2d-template/plans/M09_coding_standards.md",
+            "docs/forge2d-template/plans/M10_export_system.md",
+            "docs/forge2d-template/plans/M11_input_baseline.md",
+            "docs/forge2d-template/plans/M12_community_health.md",
+            "docs/forge2d-template/plans/M13_repository_metadata.md",
+            "docs/forge2d-template/releases/releases.md",
+            "docs/forge2d-template/releases/v0.1.0.md",
             "docs/forge2d-template/reports/reports.md",
+            "docs/forge2d-template/reports/M06_cross_platform_installer.md",
             "docs/developer/index.md",
             "docs/developer/developer.md",
             "docs/developer/features/_feature-template.md",
@@ -165,6 +188,14 @@ class SourceHygieneTests(unittest.TestCase):
         ]
         self.assertEqual(missing, [])
 
+        root_docs = REPOSITORY_ROOT / "docs"
+        unexpected_root_pages = sorted(
+            path.name
+            for path in root_docs.glob("*.md")
+            if path.name not in {"README.md", "index.md"}
+        )
+        self.assertEqual(unexpected_root_pages, [])
+
         developer_index = (REPOSITORY_ROOT / "docs" / "developer" / "index.md")
         self.assertIn(
             "../forge2d-template/architecture/runtime-overview.md",
@@ -174,6 +205,28 @@ class SourceHygieneTests(unittest.TestCase):
         root_readme = (REPOSITORY_ROOT / "README.md").read_text(encoding="utf-8")
         self.assertIn("- 📚 [Documentation hub](docs/index.md)", root_readme)
         self.assertNotIn("## 📁 Forge2D Template", root_readme)
+
+    def test_installer_completion_report_is_indexed_and_traceable(self) -> None:
+        reports_root = REPOSITORY_ROOT / "docs" / "forge2d-template" / "reports"
+        report_path = reports_root / "M06_cross_platform_installer.md"
+        report = report_path.read_text(encoding="utf-8")
+        reports_index = (reports_root / "reports.md").read_text(encoding="utf-8")
+        template_index = (
+            REPOSITORY_ROOT
+            / "docs"
+            / "forge2d-template"
+            / "forge2d-template.md"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("(M06_cross_platform_installer.md)", reports_index)
+        self.assertIn(
+            "(reports/M06_cross_platform_installer.md)",
+            template_index,
+        )
+        self.assertIn("../plans/M06_cross_platform_installer.md", report)
+        self.assertIn("../tooling/installation.md", report)
+        self.assertIn("33161920298", report)
+        self.assertIn("## Remaining Limitations and Follow-up", report)
 
     def test_mermaid_fences_are_balanced(self) -> None:
         violations: list[str] = []

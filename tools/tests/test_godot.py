@@ -118,7 +118,8 @@ class GodotTests(unittest.TestCase):
             return CommandResult(
                 1,
                 "",
-                "/usr/bin/godot: /usr/lib/libm.so.6: version `GLIBC_2.44' not found (required by /usr/bin/godot)",
+                "/usr/bin/godot: /usr/lib/libm.so.6: version `GLIBC_2.44' "
+                "not found (required by /usr/bin/godot)",
             )
 
         with tempfile.TemporaryDirectory() as temporary_directory:

@@ -31,7 +31,11 @@ class CheckTests(unittest.TestCase):
         (self.root / "game" / "project.godot").write_text("", encoding="utf-8")
         self.test_runner = self.root / "game" / "tests" / "bootstrap_integration_test.gd"
         self.test_runner.parent.mkdir()
-        self.test_runner.write_text("extends SceneTree\n", encoding="utf-8")
+        self.test_runner.write_text(
+            "extends SceneTree\n",
+            encoding="utf-8",
+            newline="\n",
+        )
         self.layout = RepositoryLayout(
             repository_root=self.root,
             pyproject_toml=self.root / "pyproject.toml",
@@ -155,6 +159,36 @@ class CheckTests(unittest.TestCase):
             code = run_check(start=self.root, run_process=runner)
 
         self.assertEqual(code, 1)
+        self.assertTrue(any("--headless" in command for command in executed))
+
+    def test_returns_failure_after_running_remaining_steps_when_style_fails(self) -> None:
+        executed: list[tuple[str, ...]] = []
+
+        def runner(command, _cwd):
+            executed.append(tuple(command))
+            return 0
+
+        with (
+            patch("g2dtool.check.discover_repository_layout", return_value=self.layout),
+            patch(
+                "g2dtool.check.collect_doctor_report",
+                return_value=DoctorReport((DoctorCheck("repository", "pass", "ok"),)),
+            ),
+            patch("g2dtool.check.run_style", return_value=5) as source_style,
+            patch(
+                "g2dtool.check.discover_godot",
+                return_value=type(
+                    "GodotResult",
+                    (),
+                    {"status": "pass", "executable": Path("/fake/godot4")},
+                )(),
+            ),
+        ):
+            code = run_check(start=self.root, run_process=runner)
+
+        self.assertEqual(code, 1)
+        source_style.assert_called_once_with(start=self.root)
+        self.assertTrue(any(command[1:3] == ("-m", "pytest") for command in executed))
         self.assertTrue(any("--headless" in command for command in executed))
 
     def test_returns_failure_when_godot_integration_test_fails(self) -> None:

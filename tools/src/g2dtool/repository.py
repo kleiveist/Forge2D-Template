@@ -27,6 +27,36 @@ class RepositoryLayout:
     def game_project_path(self) -> Path:
         return self.repository_root / "game" / "project.godot"
 
+    @property
+    def export_presets_path(self) -> Path:
+        """Return the version-controlled Godot export preset file."""
+
+        return self.game_directory / "export_presets.cfg"
+
+    @property
+    def export_directory(self) -> Path:
+        """Return the ignored root for locally generated release exports."""
+
+        return self.repository_root / "artifacts" / "exports"
+
+    @property
+    def release_directory(self) -> Path:
+        """Return the ignored root for local GitHub release preparation."""
+
+        return self.repository_root / "artifacts" / "release"
+
+    @property
+    def release_download_directory(self) -> Path:
+        """Return the fixed destination for downloaded workflow artifacts."""
+
+        return self.release_directory / "downloads"
+
+    @property
+    def release_asset_directory(self) -> Path:
+        """Return the fixed destination for publishable release assets."""
+
+        return self.release_directory / "assets"
+
 
 def find_repository_root(start: Path | None = None) -> Path:
     """Return the nearest parent containing a Git worktree marker."""

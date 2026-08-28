@@ -11,6 +11,10 @@ reports, configuration, and tests before changing their component.
   `docs/forge2d-template/plans/`; complex game work uses
   `docs/developer/plans/`. Both follow `.agent/PLANS.md`.
 - Add or update tests and relevant documentation whenever behavior changes.
+- Follow the mandatory
+  [Python](docs/forge2d-template/tooling/python-style-guide.md) and
+  [GDScript](docs/forge2d-template/tooling/gdscript-style-guide.md) coding
+  standards.
 - Run the fastest relevant checks first and report only checks actually run.
 - Never use destructive Git commands, commit secrets, or add an unreviewed
   dependency. Record each dependency's purpose, maintenance risk, license, and

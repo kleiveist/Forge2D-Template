@@ -36,3 +36,6 @@ Template material from documentation owned by a concrete game.
 <!-- AUTO-GENERATED:docs-index END -->
 
 Forge2D Template is licensed under the MIT License. See `../LICENSE`.
+
+Community workflows are repository-wide: see
+[CONTRIBUTING.md](../CONTRIBUTING.md) and [SECURITY.md](../SECURITY.md).

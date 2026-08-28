@@ -195,11 +195,14 @@ display choices.
 
 ## Input, pause, time, and data
 
-- Runtime code reads named InputMap actions and never physical key, controller,
-  mouse, or touch codes.
-- `ui_*` belongs to interface navigation; `app_*` is reserved for application
-  intent such as back or pause; gameplay actions receive a feature/capability
-  prefix only when that feature exists.
+- Runtime code reads the documented
+  [semantic InputMap actions](../tooling/input.md) and
+  never physical key, controller, mouse, or touch codes.
+- `ui_*` belongs to interface navigation, `app_pause` is application intent, and
+  the genre-neutral movement baseline uses `gameplay_move_*`. New gameplay
+  actions still require an owning feature/capability prefix and a real consumer.
+- Optional touch presentation translates its controls into the same actions;
+  coordinates and gestures never cross into gameplay code.
 - Application pause is an application decision, not a router behavior. Feature
   and world nodes pause with the SceneTree by default. Only resume/quit UI may
   opt into always-processing mode.
@@ -209,6 +212,6 @@ display choices.
   and serializable contracts. RefCounted objects hold small runtime logic with
   no tree callbacks. Autoloads hold narrow tested process infrastructure only.
 
-Settings, save, audio, localization, input remapping, session state, and gameplay
-systems remain optional capabilities for later milestones. They do not require
-changing the ownership model above.
+Settings, save, audio, localization, persisted input-remapping UI, session state,
+and gameplay systems remain optional capabilities for later milestones. They do
+not require changing the ownership model above.

@@ -22,7 +22,7 @@ jobs:
   native-platforms:
     name: ${{ matrix.os }} / Python ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 35
     strategy:
       fail-fast: false
       matrix:
@@ -62,6 +62,7 @@ jobs:
       - name: Install verified Godot editor
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          INSTALL_EXPORT_TEMPLATES: ${{ matrix.python-version == '3.11' }}
         shell: python
         run: |
           import hashlib
@@ -185,6 +186,98 @@ jobs:
           with open(os.environ["GITHUB_PATH"], "a", encoding="utf-8") as path_file:
               path_file.write(f"{ci_bin}{os.linesep}")
 
+          if os.environ["INSTALL_EXPORT_TEMPLATES"].lower() != "true":
+              raise SystemExit(0)
+
+          templates_name = f"Godot_v{version}-stable_export_templates.tpz"
+          if templates_name not in assets:
+              raise SystemExit(
+                  f"Godot export-template archive was not found: {templates_name}"
+              )
+          templates_path = downloads / templates_name
+          urllib.request.urlretrieve(assets[templates_name], templates_path)
+
+          templates_expected = None
+          for line in sums.splitlines():
+              parts = line.split()
+              if len(parts) >= 2 and parts[-1].lstrip("*") == templates_name:
+                  templates_expected = parts[0].lower()
+                  break
+          if templates_expected is None:
+              raise SystemExit(f"No SHA-512 entry found for {templates_name}")
+
+          templates_digest = hashlib.sha512()
+          with templates_path.open("rb") as templates_file:
+              for chunk in iter(lambda: templates_file.read(1024 * 1024), b""):
+                  templates_digest.update(chunk)
+          templates_actual = templates_digest.hexdigest().lower()
+          if templates_actual != templates_expected:
+              raise SystemExit(
+                  f"SHA-512 mismatch for {templates_name}: "
+                  f"expected {templates_expected}, got {templates_actual}"
+              )
+
+          extracted_templates = downloads / "export-templates"
+          with zipfile.ZipFile(templates_path) as templates_archive:
+              templates_archive.extractall(extracted_templates)
+          template_source = extracted_templates / "templates"
+          if not template_source.is_dir():
+              raise SystemExit(
+                  f"Template archive has no templates directory: {templates_name}"
+              )
+
+          version_directory = f"{version}.stable"
+          if system == "Linux":
+              data_home = Path(
+                  os.environ.get(
+                      "XDG_DATA_HOME",
+                      str(Path.home() / ".local" / "share"),
+                  )
+              )
+              template_root = data_home / "godot" / "export_templates"
+          elif system == "Windows":
+              app_data = os.environ.get("APPDATA")
+              if not app_data:
+                  raise SystemExit("APPDATA is unavailable on the Windows runner")
+              template_root = Path(app_data) / "Godot" / "export_templates"
+          else:
+              template_root = (
+                  Path.home()
+                  / "Library"
+                  / "Application Support"
+                  / "Godot"
+                  / "export_templates"
+              )
+          template_destination = template_root / version_directory
+          if template_destination.is_symlink() or (
+              template_destination.exists()
+              and not template_destination.is_dir()
+          ):
+              raise SystemExit(
+                  f"Unsafe existing template destination: {template_destination}"
+              )
+          template_destination.parent.mkdir(parents=True, exist_ok=True)
+          if template_destination.exists():
+              shutil.copytree(
+                  template_source,
+                  template_destination,
+                  dirs_exist_ok=True,
+              )
+          else:
+              shutil.move(str(template_source), str(template_destination))
+
+          required_templates = (
+              "linux_release.x86_64",
+              "windows_release_x86_64.exe",
+              "macos.zip",
+          )
+          for required_template in required_templates:
+              template = template_destination / required_template
+              if not template.is_file() or template.stat().st_size == 0:
+                  raise SystemExit(
+                      f"Required export template is missing or empty: {template}"
+                  )
+
       - name: Verify Godot
         run: godot4 --version
 
@@ -196,6 +289,54 @@ jobs:
 
       - name: Run repository checks
         run: python tools/control.py check
+
+      - name: Export and validate native release artifact
+        if: matrix.python-version == '3.11'
+        shell: python
+        run: |
+          import platform
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          system = platform.system()
+          exports = {
+              "Linux": (
+                  "linux",
+                  Path("artifacts/exports/linux/Forge2D-Template.x86_64"),
+              ),
+              "Windows": (
+                  "windows",
+                  Path("artifacts/exports/windows/Forge2D-Template.exe"),
+              ),
+              "Darwin": (
+                  "macos",
+                  Path("artifacts/exports/macos/Forge2D-Template.zip"),
+              ),
+          }
+          try:
+              target, artifact = exports[system]
+          except KeyError as error:
+              raise SystemExit(f"Unsupported export runner: {system}") from error
+
+          subprocess.run(
+              [sys.executable, "tools/control.py", "export", target],
+              check=True,
+          )
+          if not artifact.is_file():
+              raise SystemExit(f"Expected export artifact is missing: {artifact}")
+          if artifact.stat().st_size == 0:
+              raise SystemExit(f"Expected export artifact is empty: {artifact}")
+
+      - name: Upload native release artifact
+        if: matrix.python-version == '3.11'
+        uses: actions/upload-artifact@v7
+        with:
+          name: forge2d-template-${{ runner.os }}
+          path: artifacts/exports/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
 
       - name: Verify packaged CLI artifact
         shell: python

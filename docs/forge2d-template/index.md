@@ -6,10 +6,21 @@
 This area documents the reusable Forge2D Template foundation. A concrete game
 inherits this material but records its own behavior and decisions elsewhere.
 
+## Community
+
+- [Contribution workflow](../../CONTRIBUTING.md)
+- [Security policy and private reporting](../../SECURITY.md)
+
 ## Tooling
 
 - [Cross-platform installation](tooling/installation.md)
+- [Cross-platform exports](tooling/exporting.md)
+- [Semantic input baseline](tooling/input.md)
+- [Publishing a GitHub release](tooling/releasing.md)
+- [GitHub repository metadata](tooling/repository-metadata.md)
 - [Main branch protection](tooling/branch-protection.md)
+- [Mandatory Python coding standard](tooling/python-style-guide.md)
+- [Mandatory GDScript coding standard](tooling/gdscript-style-guide.md)
 
 ## Architecture
 
@@ -27,3 +38,7 @@ inherits this material but records its own behavior and decisions elsewhere.
 ## Reports
 
 - [Milestone reports](reports/reports.md)
+
+## Releases
+
+- [Release notes](releases/releases.md)

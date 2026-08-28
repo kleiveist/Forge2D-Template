@@ -1,0 +1,87 @@
+name: Bug report
+description: Report a reproducible Forge2D Template defect
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve Forge2D Template.
+        Do not report security vulnerabilities here. Use the [private security report](https://github.com/kleiveist/Forge2D-Template/security/advisories/new).
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      description: Select the component that best matches the defect.
+      options:
+        - Installer or Doctor
+        - Python tooling or checks
+        - Godot runtime or input
+        - Export or release tooling
+        - GitHub Actions
+        - Documentation
+        - Other repository component
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Provide a release version or full commit SHA.
+      placeholder: v0.1.0 or 0123456789abcdef...
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS, architecture, Python version, and Godot version when relevant.
+      placeholder: Windows 11 x86-64, Python 3.11.9, Godot 4.7.2
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest deterministic sequence and required fixture or project state.
+      placeholder: |
+        1. Start from a clean checkout...
+        2. Run...
+        3. Observe...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Explain the result you expected and why.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Explain what happened, including stable error text and exit code.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Remove tokens, credentials, personal data, and unrelated secrets before pasting output.
+      render: shell
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add screenshots, suspected causes, workarounds, or regression details.
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Submission checks
+      options:
+        - label: I searched open and closed issues for this defect.
+          required: true
+        - label: I can reproduce this from the version or commit listed above.
+          required: true
+        - label: This public report contains no vulnerability details or secrets.
+          required: true

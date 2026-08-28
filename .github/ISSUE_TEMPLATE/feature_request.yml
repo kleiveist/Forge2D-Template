@@ -1,0 +1,72 @@
+name: Feature request
+description: Propose a focused, reusable Forge2D Template improvement
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the underlying problem before prescribing an implementation.
+        Forge2D Template favors small, cross-platform, dependency-conscious capabilities.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      description: Select the area that would own the capability.
+      options:
+        - Installer or Doctor
+        - Python tooling or checks
+        - Godot runtime or input
+        - Export or release tooling
+        - GitHub Actions
+        - Documentation
+        - Cross-cutting repository policy
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: Explain who is blocked, in what workflow, and why current behavior is insufficient.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed capability
+      description: Describe the smallest reusable outcome rather than a project-specific implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe workarounds, existing tools, or a no-change option and their tradeoffs.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List observable behavior, platforms, tests, and documentation that define completion.
+      placeholder: |
+        - [ ] Observable outcome one
+        - [ ] Linux, Windows, and macOS behavior considered
+        - [ ] Tests and documentation updated
+    validations:
+      required: true
+  - type: textarea
+    id: risk
+    attributes:
+      label: Risks and dependencies
+      description: Note compatibility, security, maintenance, migration, or dependency concerns.
+  - type: checkboxes
+    id: readiness
+    attributes:
+      label: Submission checks
+      options:
+        - label: I searched open and closed issues for this request.
+          required: true
+        - label: The proposal is reusable and not specific to one downstream game.
+          required: true
+        - label: I described alternatives and an observable completion boundary.
+          required: true

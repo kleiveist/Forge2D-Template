@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "description": "Minimal Godot 4 2D game template with repository-local Python tooling for setup, checks, exports, and releases.",
+  "homepage": null,
+  "topics": [
+    "2d-game",
+    "game-development",
+    "game-template",
+    "gdscript",
+    "godot",
+    "godot-4",
+    "python"
+  ]
+}

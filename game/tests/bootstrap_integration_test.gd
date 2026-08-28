@@ -4,6 +4,8 @@ const EXPECTED_MESSAGE := "Forge2D Template\nRepository bootstrap"
 const TEST_SUITES := [
 	"res://tests/runtime/scene_router_test.gd",
 	"res://tests/runtime/application_root_test.gd",
+	"res://tests/runtime/input_map_test.gd",
+	"res://tests/runtime/touch_action_adapter_test.gd",
 ]
 
 var failures: PackedStringArray = []
