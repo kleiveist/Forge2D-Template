@@ -73,6 +73,8 @@ download are out of scope. No new third-party dependency is planned.
 - [x] 2026-08-28: Passed the current non-mutating Debian installer dry-run, 46
   focused installer/CLI tests, 32 installer/report hygiene tests, and the full
   gate with Doctor 12/12, style 44/44, 172 Python tests, and Godot 4.7.2.
+- [x] 2026-08-28: Pull-request run `33180569741` passed all eight jobs for
+  report commit `9901671`, including all six native installer dry-run steps.
 
 ## Surprises & Discoveries
 
@@ -145,6 +147,7 @@ download are out of scope. No new third-party dependency is planned.
 | Current installer/report hygiene tests | Passed; 32 tests |
 | Current `g2d check` with checksum-verified Godot 4.7.2 | Passed; Doctor 12/12, style 44/44, 172 tests, real headless integration |
 | Current pull-request CI run `33179894053` for `cf3ff6b` | Passed; all 8 Linux, Windows, and macOS jobs |
+| Report pull-request CI run `33180569741` for `9901671` | Passed; all 8 jobs and all 6 native installer dry-run steps |
 | `git diff --check` | Passed |
 
 ## Recovery / Idempotence

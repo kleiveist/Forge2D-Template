@@ -117,6 +117,7 @@ end-to-end privileged package installation on every host.
 | Current installer/report hygiene tests | Passed; 32 tests |
 | Current local `python tools/control.py check` with verified Godot 4.7.2 | Passed; Doctor 12/12, style 44/44, 172 Python tests, and Godot integration |
 | [Current PR run `33179894053`](https://github.com/kleiveist/Forge2D-Template/actions/runs/33179894053) for `cf3ff6b` | Passed; all 8 Linux, Windows, and macOS jobs green |
+| [Report run `33180569741`](https://github.com/kleiveist/Forge2D-Template/actions/runs/33180569741) for `9901671` | Passed; all 8 jobs green and all 6 native installer dry-run steps succeeded |
 
 The first hosted failure was diagnostic, not hidden: macOS can expose the same
 temporary directory through `/var` and `/private/var`, and Windows also
