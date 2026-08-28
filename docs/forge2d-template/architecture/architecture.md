@@ -8,4 +8,7 @@
 ## 📄 Pages
 - 📝 [Runtime Architecture Overview](runtime-overview.md)
 
+## 📁 Forge2d architecture animation
+- 🗂️ [Overview](forge2d-architecture-animation/forge2d-architecture-animation.md)
+
 <!-- AUTO-GENERATED:docs-index END -->

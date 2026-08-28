@@ -4,9 +4,30 @@
 - 📝 [Forge2D Template Repository Rules](AGENTS.md)
 - 📝 [Changelog](CHANGELOG.md)
 
-## Documentation
+# DOCS
+- 📚 [Docs Home](docs/index.md)
 
-- 📚 [Documentation hub](docs/index.md)
+## 📁 Case studies
+- 🗂️ [Overview](docs/case-studies/case-studies.md)
+- 📝 [<Case-study title>](docs/case-studies/_case-study-template.md)
+
+## 📁 Developer
+- 🗂️ [Overview](docs/developer/developer.md)
+
+## 📁 Forge2D Template
+- 🗂️ [Overview](docs/forge2d-template/forge2d-template.md)
+
+## 📁 In-game help
+- 🗂️ [Overview](docs/in-game-help/in-game-help.md)
+- 📝 [<Help topic>](docs/in-game-help/_help-topic-template.md)
+
+## 📁 Player guide
+- 🗂️ [Overview](docs/player-guide/player-guide.md)
+- 📝 [<Player-guide topic>](docs/player-guide/_topic-template.md)
+
+## 📁 Release manual
+- 🗂️ [Overview](docs/release-manual/release-manual.md)
+- 📝 [Release <version>](docs/release-manual/_release-template.md)
 
 <!-- AUTO-GENERATED:docs-index END -->
 # Forge2D Template
