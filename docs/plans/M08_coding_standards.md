@@ -16,7 +16,8 @@ The topic branch now contains mandatory Python and GDScript guides, a
 standard-library-only `g2d style` command, and a distinct source-style step in
 `g2d check`. The checker reinforces the existing `.editorconfig` and
 `.gitattributes`, and the complete audited source passes it. Local unit and
-headless Godot validation are green; protected pull-request CI is still pending.
+headless Godot validation are green, as are all eight protected jobs in the
+cross-platform pull-request matrix.
 
 ## Scope and Non-Goals
 
@@ -58,7 +59,8 @@ out of scope. No dependency is added.
   the repository audit with 34 of 34 source files passing.
 - [x] 2026-08-28: Passed 105 Python tests and the full local release gate with a
   SHA-512-verified official Godot 4.7.2 binary.
-- [ ] Complete protected pull-request CI and record the remote evidence.
+- [x] 2026-08-28: Passed all eight protected jobs in pull-request CI run
+  `33166426109` after hardening the Windows fixture and artifact boundary.
 
 ## Surprises & Discoveries
 
@@ -98,7 +100,7 @@ out of scope. No dependency is added.
 | Official Godot 4.7.2 archive SHA-512 verification | Passed against release `SHA512-SUMS.txt` |
 | `python3 tools/control.py check` with verified Godot 4.7.2 on `PATH` | Passed; Doctor 12/12, style 34/34, 105 Python tests, marker-validated Godot test |
 | Pull-request CI run `33166091454` | Failed during hardening; Windows exposed a CRLF test fixture and all artifact checks exposed generated `.ci-artifact-venv` source |
-| Protected pull-request CI after fixes | Pending; all 8 jobs required |
+| [Pull-request CI run `33166426109`](https://github.com/kleiveist/Forge2D-Template/actions/runs/33166426109) | Passed; all 8 jobs on Ubuntu, Windows, macOS, Debian, and Arch |
 
 ## Recovery / Idempotence
 
@@ -109,8 +111,9 @@ step in CI.
 
 ## Outcomes & Retrospective
 
-The implementation is locally complete without a new dependency. Objective
-rules fail early with actionable diagnostics, while the guides explicitly keep
-subjective quality decisions in human review. Remote cross-platform confirmation
-and Issue #2 evidence remain pending until the branch is pushed and all eight
-protected checks pass.
+The implementation is complete without a new dependency. Objective rules fail
+early with actionable diagnostics, while the guides explicitly keep subjective
+quality decisions in human review. Pull-request CI confirms the same command and
+packaged CLI behavior across the complete protected matrix. Because Issues #2
+through #8 share draft pull request #9, later issue commits will rerun that matrix
+before the combined pull request is ready to merge.
