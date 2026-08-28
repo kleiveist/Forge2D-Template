@@ -1,28 +1,37 @@
 <!-- AUTO-GENERATED:backlink START -->
 [← Back](../README.md)
 <!-- AUTO-GENERATED:backlink END -->
-# Docs
+# Documentation
 
 This is the authoritative documentation hub. It separates reusable Forge2D
 Template material from documentation owned by a concrete game.
 
 <!-- AUTO-GENERATED:docs-index START -->
 
-## Forge2D Template
+## 📄 Pages
+- ⏭️ (keine Seiten)
 
-- 🧱 [Template documentation](forge2d-template/index.md) — reusable tooling,
-  runtime architecture, decisions, plans, and reports inherited by a game.
+## 📁 Case studies
+- 🗂️ [Overview](case-studies/case-studies.md)
+- 📝 [<Case-study title>](case-studies/_case-study-template.md)
 
-## Game documentation
+## 📁 Developer
+- 🗂️ [Overview](developer/developer.md)
 
-- 🛠️ [Developer](developer/index.md) — technical documentation of a concrete
-  game.
-- 🎮 [Player guide](player-guide/index.md) — public player-facing guidance.
-- 💡 [In-game help](in-game-help/index.md) — content and guidance for help shown
-  in the game.
-- 🔎 [Case studies](case-studies/index.md) — technical and design learnings.
-- 🚀 [Release manual](release-manual/index.md) — version-specific release
-  documentation.
+## 📁 Forge2D Template
+- 🗂️ [Overview](forge2d-template/forge2d-template.md)
+
+## 📁 In-game help
+- 🗂️ [Overview](in-game-help/in-game-help.md)
+- 📝 [<Help topic>](in-game-help/_help-topic-template.md)
+
+## 📁 Player guide
+- 🗂️ [Overview](player-guide/player-guide.md)
+- 📝 [<Player-guide topic>](player-guide/_topic-template.md)
+
+## 📁 Release manual
+- 🗂️ [Overview](release-manual/release-manual.md)
+- 📝 [Release <version>](release-manual/_release-template.md)
 
 <!-- AUTO-GENERATED:docs-index END -->
 

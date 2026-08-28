@@ -1,11 +1,13 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../forge2d-template.md)
+[← Back](../index.md)
 <!-- AUTO-GENERATED:backlink END -->
-# Architecture
+# Case studies
 
 <!-- AUTO-GENERATED:docs-index START -->
 
 ## 📄 Pages
-- 📝 [Runtime Architecture Overview](runtime-overview.md)
+- 📝 [<Case-study title>](_case-study-template.md)
 
 <!-- AUTO-GENERATED:docs-index END -->
+
+The canonical entry point for this area is [Case studies](index.md).

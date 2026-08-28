@@ -47,13 +47,15 @@ is reserved for M09.
 - [x] Moved template documentation and established the hubs.
 - [x] Added game-area indexes and neutral templates.
 - [x] Repaired links and updated repository rules.
-- [x] Ran focused and full dependency-free validation; review, commit, and push
-  remain.
+- [x] Ran focused and full dependency-free validation, reviewed the migration,
+  committed it, and pushed it to the M08 branch.
 
 ## Surprises & Discoveries
 
-- The existing `AUTO-GENERATED:docs-index` blocks have no repository-local
-  generator. They are maintained markup and must be updated with the move.
+- The supplied `PyGitIndex.py` generator expects a lightweight
+  `<directory>/<directory>.md` overview for non-root folders. These generated
+  overview pages point to the canonical `index.md` entry in each new area; the
+  temporary generator itself is removed after use.
 - `g2d check` already runs the Python source-hygiene test that validates links
   inside `docs/`; root-level Markdown links require explicit coverage.
 
@@ -64,6 +66,9 @@ is reserved for M09.
   historic churn. `docs/forge2d-template/index.md` is the template entry point.
 - 2026-08-28: Keep the five game areas neutral. Their templates provide shape
   without asserting facts about a game that does not exist yet.
+- 2026-08-28: Retain the generated non-root overview pages as compatibility
+  navigation for future index regeneration while keeping `index.md` as each
+  area’s canonical entry point.
 
 ## Validation
 
@@ -82,6 +87,15 @@ ignored `.venv` cannot supply them: its `g2d` launcher has a stale machine-local
 Python path. No environment packages or system software were changed solely to
 make the check appear to pass.
 
+The automatic documentation index was also allowed to refresh after the final
+directory move. Its generated overview now contains only the six intended
+documentation areas, and all of its relative links are covered by the focused
+link test.
+
+`python3 PyGitIndex.py` completed successfully, generating or updating 16
+documentation indexes and 53 documentation backlinks. The script was then
+removed at the maintainer’s request; its generated output remains tracked.
+
 ## Recovery / Idempotence
 
 The migration consists only of tracked Markdown moves and additions. Re-running
@@ -93,5 +107,6 @@ renames rather than deleting documents.
 M08 moved all existing template material below `docs/forge2d-template/` and
 created a single documentation hub plus five neutral game-documentation areas.
 The developer area links to the inherited runtime overview rather than copying
-it. The next documentation milestone can add a publishing pipeline without
-changing this information architecture.
+it. The migration was committed as `421d53a` and pushed to
+`origin/m08-documentation-architecture`. The next documentation milestone can
+add a publishing pipeline without changing this information architecture.

@@ -1,5 +1,5 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](index.md)
+[← Back](architecture.md)
 <!-- AUTO-GENERATED:backlink END -->
 # <Game area> architecture
 

@@ -1,5 +1,5 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../index.md)
+[← Back](../forge2d-template.md)
 <!-- AUTO-GENERATED:backlink END -->
 # Plans
 

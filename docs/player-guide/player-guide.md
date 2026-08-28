@@ -1,11 +1,13 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../forge2d-template.md)
+[← Back](../index.md)
 <!-- AUTO-GENERATED:backlink END -->
-# Architecture
+# Player guide
 
 <!-- AUTO-GENERATED:docs-index START -->
 
 ## 📄 Pages
-- 📝 [Runtime Architecture Overview](runtime-overview.md)
+- 📝 [<Player-guide topic>](_topic-template.md)
 
 <!-- AUTO-GENERATED:docs-index END -->
+
+The canonical entry point for this area is [Player guide](index.md).

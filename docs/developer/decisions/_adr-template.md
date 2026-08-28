@@ -1,5 +1,5 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../index.md)
+[← Back](decisions.md)
 <!-- AUTO-GENERATED:backlink END -->
 # ADR-<number>: <decision title>
 

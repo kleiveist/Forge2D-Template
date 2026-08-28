@@ -1,5 +1,5 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../index.md)
+[← Back](in-game-help.md)
 <!-- AUTO-GENERATED:backlink END -->
 # In-game help
 

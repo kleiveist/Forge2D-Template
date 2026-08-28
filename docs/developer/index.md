@@ -1,5 +1,5 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../index.md)
+[← Back](developer.md)
 <!-- AUTO-GENERATED:backlink END -->
 # Developer documentation
 

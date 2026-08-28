@@ -1,11 +1,12 @@
 <!-- AUTO-GENERATED:backlink START -->
 [← Back](../forge2d-template.md)
 <!-- AUTO-GENERATED:backlink END -->
-# Architecture
+# Tooling
 
 <!-- AUTO-GENERATED:docs-index START -->
 
 ## 📄 Pages
-- 📝 [Runtime Architecture Overview](runtime-overview.md)
+- 📝 [Main Branch Protection](branch-protection.md)
+- 📝 [Cross-Platform Installation](installation.md)
 
 <!-- AUTO-GENERATED:docs-index END -->

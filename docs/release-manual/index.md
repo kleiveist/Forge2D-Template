@@ -1,5 +1,5 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../index.md)
+[← Back](release-manual.md)
 <!-- AUTO-GENERATED:backlink END -->
 # Release manual
 

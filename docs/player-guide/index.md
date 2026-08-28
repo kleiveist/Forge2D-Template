@@ -1,5 +1,5 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../index.md)
+[← Back](player-guide.md)
 <!-- AUTO-GENERATED:backlink END -->
 # Player guide
 

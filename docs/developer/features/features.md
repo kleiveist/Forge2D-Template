@@ -1,11 +1,11 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../forge2d-template.md)
+[← Back](../developer.md)
 <!-- AUTO-GENERATED:backlink END -->
-# Architecture
+# Features
 
 <!-- AUTO-GENERATED:docs-index START -->
 
 ## 📄 Pages
-- 📝 [Runtime Architecture Overview](runtime-overview.md)
+- 📝 [Feature: <name>](_feature-template.md)
 
 <!-- AUTO-GENERATED:docs-index END -->

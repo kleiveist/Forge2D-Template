@@ -1,5 +1,5 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../index.md)
+[← Back](tooling.md)
 <!-- AUTO-GENERATED:backlink END -->
 # Main Branch Protection
 

@@ -1,11 +1,13 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../forge2d-template.md)
+[← Back](../index.md)
 <!-- AUTO-GENERATED:backlink END -->
-# Architecture
+# Release manual
 
 <!-- AUTO-GENERATED:docs-index START -->
 
 ## 📄 Pages
-- 📝 [Runtime Architecture Overview](runtime-overview.md)
+- 📝 [Release <version>](_release-template.md)
 
 <!-- AUTO-GENERATED:docs-index END -->
+
+The canonical entry point for this area is [Release manual](index.md).

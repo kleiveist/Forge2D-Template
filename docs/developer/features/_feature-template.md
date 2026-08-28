@@ -1,5 +1,5 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../index.md)
+[← Back](features.md)
 <!-- AUTO-GENERATED:backlink END -->
 # Feature: <name>
 

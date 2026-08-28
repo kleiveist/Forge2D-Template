@@ -1,11 +1,11 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](../forge2d-template.md)
+[← Back](../developer.md)
 <!-- AUTO-GENERATED:backlink END -->
-# Architecture
+# Plans
 
 <!-- AUTO-GENERATED:docs-index START -->
 
 ## 📄 Pages
-- 📝 [Runtime Architecture Overview](runtime-overview.md)
+- 📝 [<Milestone> ExecPlan](_execplan-template.md)
 
 <!-- AUTO-GENERATED:docs-index END -->

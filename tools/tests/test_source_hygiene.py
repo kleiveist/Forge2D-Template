@@ -135,6 +135,7 @@ class SourceHygieneTests(unittest.TestCase):
             "docs/index.md",
             "docs/README.md",
             "docs/forge2d-template/index.md",
+            "docs/forge2d-template/forge2d-template.md",
             "docs/forge2d-template/tooling/installation.md",
             "docs/forge2d-template/tooling/branch-protection.md",
             "docs/forge2d-template/architecture/runtime-overview.md",
@@ -142,16 +143,21 @@ class SourceHygieneTests(unittest.TestCase):
             "docs/forge2d-template/plans/plans.md",
             "docs/forge2d-template/reports/reports.md",
             "docs/developer/index.md",
+            "docs/developer/developer.md",
             "docs/developer/features/_feature-template.md",
             "docs/developer/decisions/_adr-template.md",
             "docs/developer/plans/_execplan-template.md",
             "docs/player-guide/index.md",
+            "docs/player-guide/player-guide.md",
             "docs/player-guide/_topic-template.md",
             "docs/in-game-help/index.md",
+            "docs/in-game-help/in-game-help.md",
             "docs/in-game-help/_help-topic-template.md",
             "docs/case-studies/index.md",
+            "docs/case-studies/case-studies.md",
             "docs/case-studies/_case-study-template.md",
             "docs/release-manual/index.md",
+            "docs/release-manual/release-manual.md",
             "docs/release-manual/_release-template.md",
         )
         missing = [
@@ -164,6 +170,10 @@ class SourceHygieneTests(unittest.TestCase):
             "../forge2d-template/architecture/runtime-overview.md",
             developer_index.read_text(encoding="utf-8"),
         )
+
+        root_readme = (REPOSITORY_ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("- 📚 [Documentation hub](docs/index.md)", root_readme)
+        self.assertNotIn("## 📁 Forge2D Template", root_readme)
 
     def test_mermaid_fences_are_balanced(self) -> None:
         violations: list[str] = []
