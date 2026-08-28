@@ -8,9 +8,13 @@
 ## 📄 Pages
 - 📝 [Cross-Platform Installation](installation.md)
 - 📝 [Cross-Platform Exports](exporting.md)
+- 📝 [Publishing a GitHub Release](releasing.md)
 - 📝 [Main Branch Protection](branch-protection.md)
 - 📝 [Mandatory Python Coding Standard](python-style-guide.md)
 - 📝 [Mandatory GDScript Coding Standard](gdscript-style-guide.md)
+
+## 📁 Releases
+- 📝 [Forge2D Template v0.1.0](releases/v0.1.0.md)
 
 ## 📁 Architecture
 - 🗂️ [Overview](architecture/architecture.md)

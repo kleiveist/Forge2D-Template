@@ -118,8 +118,10 @@ Linux artifact, run:
 chmod +x Forge2D-Template.x86_64
 ```
 
-Uploaded workflow artifacts are temporary validation evidence. Creating a tag
-or GitHub Release is a separate reviewed task.
+Uploaded workflow artifacts are temporary validation evidence. The reviewed
+[GitHub release procedure](releasing.md) explains how to select the exact green
+protected-main run, revalidate and checksum all three exports, create an
+annotated immutable tag, publish, and independently verify the assets.
 
 ## Troubleshooting
 

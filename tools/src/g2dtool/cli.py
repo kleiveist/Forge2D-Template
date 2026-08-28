@@ -22,6 +22,7 @@ from g2dtool.godot import (
     run_godot_command,
 )
 from g2dtool.install import run_install
+from g2dtool.release import run_release_prepare
 from g2dtool.repository import discover_repository_layout
 from g2dtool.style import run_style
 
@@ -42,6 +43,7 @@ WELCOME_TEXT = textwrap.dedent(
       python tools/control.py style
       python tools/control.py check
       python tools/control.py export linux --dry-run
+      python tools/control.py release prepare --dry-run
 
     🎮 Run or test the project
       python tools/control.py godot4
@@ -66,6 +68,7 @@ def build_parser(prog: str = "g2d") -> argparse.ArgumentParser:
               python tools/control.py style
               python tools/control.py check
               python tools/control.py export linux --dry-run
+              python tools/control.py release prepare --dry-run
               python tools/control.py godot4 test
               python tools/control.py forge2d-template run
               python tools/control.py Forge2D-Template run
@@ -121,6 +124,23 @@ def build_parser(prog: str = "g2d") -> argparse.ArgumentParser:
         help="validate inputs and show the command without making changes",
     )
     export_parser.set_defaults(handler=_run_export)
+
+    release_parser = commands.add_parser(
+        "release", help="prepare verified assets for a reviewed GitHub release"
+    )
+    release_commands = release_parser.add_subparsers(
+        dest="release_command",
+        required=True,
+    )
+    release_prepare_parser = release_commands.add_parser(
+        "prepare", help="verify downloaded CI exports and create checksums"
+    )
+    release_prepare_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="validate inputs and show fixed outputs without making changes",
+    )
+    release_prepare_parser.set_defaults(handler=_run_release_prepare)
 
     godot_parser = commands.add_parser(
         "godot4", aliases=["godot"], help="run godot commands for this repository"
@@ -207,6 +227,10 @@ def _run_install(options: argparse.Namespace) -> int:
 
 def _run_export(options: argparse.Namespace) -> int:
     return run_export(options.target, dry_run=options.dry_run)
+
+
+def _run_release_prepare(options: argparse.Namespace) -> int:
+    return run_release_prepare(dry_run=options.dry_run)
 
 
 def _run_godot_command(options: argparse.Namespace) -> int:

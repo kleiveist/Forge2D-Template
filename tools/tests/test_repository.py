@@ -45,6 +45,14 @@ class RepositoryRootTests(unittest.TestCase):
                 layout.toolchain_config, resolved_root / "config" / "toolchain.toml"
             )
             self.assertEqual(layout.venv_directory, resolved_root / ".venv")
+            self.assertEqual(
+                layout.release_download_directory,
+                resolved_root / "artifacts" / "release" / "downloads",
+            )
+            self.assertEqual(
+                layout.release_asset_directory,
+                resolved_root / "artifacts" / "release" / "assets",
+            )
 
     def test_reports_missing_repository(self) -> None:
         with TemporaryDirectory() as temporary_directory:

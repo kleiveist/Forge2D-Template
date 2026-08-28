@@ -33,6 +33,7 @@ class CliTests(unittest.TestCase):
         self.assertIn("python tools/control.py doctor", text)
         self.assertIn("python tools/control.py style", text)
         self.assertIn("python tools/control.py export linux --dry-run", text)
+        self.assertIn("python tools/control.py release prepare --dry-run", text)
         self.assertIn("python tools/control.py godot4 test", text)
         self.assertIn("python tools/control.py Forge2D-Template run", text)
 
@@ -113,6 +114,31 @@ class CliTests(unittest.TestCase):
     def test_export_rejects_unknown_target_as_usage_error(self) -> None:
         with self.assertRaises(SystemExit) as context:
             main(["export", "android"])
+
+        self.assertEqual(context.exception.code, 2)
+
+    def test_release_prepare_help_describes_side_effect_free_dry_run(self) -> None:
+        output = StringIO()
+        with redirect_stdout(output):
+            with self.assertRaises(SystemExit) as context:
+                main(["release", "prepare", "--help"])
+
+        self.assertEqual(context.exception.code, 0)
+        self.assertIn("without making changes", output.getvalue())
+
+    def test_release_prepare_dispatches_dry_run(self) -> None:
+        with patch(
+            "g2dtool.cli.run_release_prepare",
+            return_value=1,
+        ) as release_prepare:
+            exit_code = main(["release", "prepare", "--dry-run"])
+
+        self.assertEqual(exit_code, 1)
+        release_prepare.assert_called_once_with(dry_run=True)
+
+    def test_release_requires_a_subcommand(self) -> None:
+        with self.assertRaises(SystemExit) as context:
+            main(["release"])
 
         self.assertEqual(context.exception.code, 2)
 

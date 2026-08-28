@@ -14,6 +14,10 @@
 ## 📄 Tooling
 - 📝 [Cross-Platform Installation](docs/installation.md)
 - 📝 [Cross-Platform Exports](docs/exporting.md)
+- 📝 [Publishing a GitHub Release](docs/releasing.md)
+
+## 📄 Releases
+- 📝 [Forge2D Template v0.1.0](docs/releases/v0.1.0.md)
 
 ## 📁 Architecture
 - 🗂️ [Overview](docs/architecture/architecture.md)
@@ -90,6 +94,7 @@ python tools/control.py style
 python tools/control.py check
 python tools/control.py export linux --dry-run
 python tools/control.py export linux
+python tools/control.py release prepare --dry-run
 python tools/control.py godot4
 python tools/control.py godot4 run
 python tools/control.py godot4 test
@@ -119,6 +124,10 @@ python tools/control.py Forge2D-Template run
 - `python tools/control.py export {linux,windows,macos}` creates a validated
   release artifact below ignored `artifacts/exports/`. Start with `--dry-run` and
   see [Cross-platform exports](docs/exporting.md) for templates, CI, and signing.
+- Maintainers use `python tools/control.py release prepare --dry-run` only after
+  downloading all three artifacts from the exact successful protected-main CI
+  run. See [Publishing a GitHub release](docs/releasing.md) for the immutable-tag
+  gate, checksums, publication, independent verification, and recovery.
 - The GitHub `main` branch accepts changes only through pull requests and requires
   every CI job to pass. See [Main branch protection](docs/branch-protection.md)
   for the enforced policy and manual setup steps for forks.

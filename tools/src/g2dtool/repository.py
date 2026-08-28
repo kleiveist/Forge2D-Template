@@ -39,6 +39,24 @@ class RepositoryLayout:
 
         return self.repository_root / "artifacts" / "exports"
 
+    @property
+    def release_directory(self) -> Path:
+        """Return the ignored root for local GitHub release preparation."""
+
+        return self.repository_root / "artifacts" / "release"
+
+    @property
+    def release_download_directory(self) -> Path:
+        """Return the fixed destination for downloaded workflow artifacts."""
+
+        return self.release_directory / "downloads"
+
+    @property
+    def release_asset_directory(self) -> Path:
+        """Return the fixed destination for publishable release assets."""
+
+        return self.release_directory / "assets"
+
 
 def find_repository_root(start: Path | None = None) -> Path:
     """Return the nearest parent containing a Git worktree marker."""

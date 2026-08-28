@@ -42,6 +42,8 @@ Forge2D Template is licensed under the MIT License. See `LICENSE`.
 
 - [Cross-platform installation](installation.md)
 - [Cross-platform exports](exporting.md)
+- [Publishing a GitHub release](releasing.md)
+- [Forge2D Template v0.1.0 release notes](releases/v0.1.0.md)
 - [Main branch protection and manual GitHub setup](branch-protection.md)
 - [Mandatory Python coding standard](python-style-guide.md)
 - [Mandatory GDScript coding standard](gdscript-style-guide.md)
@@ -53,4 +55,5 @@ Forge2D Template is licensed under the MIT License. See `LICENSE`.
   - `python tools/control.py style`
   - `python tools/control.py check`
   - `python tools/control.py export linux --dry-run`
+  - `python tools/control.py release prepare --dry-run`
   - `python tools/control.py forge2d-template run`

@@ -275,7 +275,7 @@ def _run_export(
             ),
         )
 
-    size = _validate_artifact(output_path, target)
+    size = validate_export_artifact(output_path, target)
     success(
         f"{target.preset_name} release export created: "
         f"{target.output_relative.as_posix()} ({size} bytes)."
@@ -403,7 +403,9 @@ def _prepare_output(output_path: Path, repository_root: Path) -> None:
         ) from exc
 
 
-def _validate_artifact(output_path: Path, target: ExportTarget) -> int:
+def validate_export_artifact(output_path: Path, target: ExportTarget) -> int:
+    """Validate one exact export file and return its non-zero size."""
+
     try:
         if output_path.is_symlink() or not output_path.is_file():
             raise ExportError(
