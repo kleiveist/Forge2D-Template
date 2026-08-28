@@ -33,8 +33,9 @@ Use `python3` where `python` is unavailable, or `py -3.11` on Windows. The
 installer must not modify system Python: editable tooling and declared packages
 belong in the repository-local `.venv`. It may use an existing APT, Pacman,
 Winget, or Homebrew installation for missing system requirements after applying
-its confirmation rules. See [cross-platform installation](docs/installation.md)
-for supported paths, dry-run guarantees, and recovery steps.
+its confirmation rules. See
+[cross-platform installation](docs/forge2d-template/tooling/installation.md) for
+supported paths, dry-run guarantees, and recovery steps.
 
 Activation is optional. Repository commands can continue to use
 `python tools/control.py`; the full check automatically prefers `.venv` for
@@ -47,8 +48,9 @@ Python tests.
 2. Keep the change focused on one agreed problem. Preserve unrelated local work
    and do not commit generated caches, export artifacts, local binaries,
    credentials, tokens, or machine-specific paths.
-3. Follow the mandatory [Python](docs/python-style-guide.md) and
-   [GDScript](docs/gdscript-style-guide.md) standards.
+3. Follow the mandatory
+   [Python](docs/forge2d-template/tooling/python-style-guide.md) and
+   [GDScript](docs/forge2d-template/tooling/gdscript-style-guide.md) standards.
 4. Add or update tests and relevant documentation whenever behavior changes.
 5. Start each commit subject with a relevant emoji followed by a concise,
    imperative English summary.
@@ -96,7 +98,8 @@ resolved conversations, and all eight Linux, Windows, and macOS CI jobs to pass.
 Administrators cannot bypass those gates. Independent approval is not currently
 required for solo maintenance; reviewers still assess scope, naming, tests,
 documentation, failure handling, security, compatibility, and recovery. See
-[main branch protection](docs/branch-protection.md) for the exact policy.
+[main branch protection](docs/forge2d-template/tooling/branch-protection.md) for
+the exact policy.
 
 Maintainers decide the final merge method and release timing. Do not merge,
 tag, publish a release, or push additional scope without the requested review

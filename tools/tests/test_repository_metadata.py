@@ -10,7 +10,13 @@ import unittest
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 METADATA_PATH = REPOSITORY_ROOT / ".github" / "repository-metadata.json"
-GUIDE_PATH = REPOSITORY_ROOT / "docs" / "repository-metadata.md"
+GUIDE_PATH = (
+    REPOSITORY_ROOT
+    / "docs"
+    / "forge2d-template"
+    / "tooling"
+    / "repository-metadata.md"
+)
 EXPECTED_DESCRIPTION = (
     "Minimal Godot 4 2D game template with repository-local Python tooling "
     "for setup, checks, exports, and releases."
@@ -90,8 +96,12 @@ class RepositoryMetadataTests(unittest.TestCase):
     def test_documentation_entry_points_link_the_metadata_guide(self) -> None:
         entry_points = (
             REPOSITORY_ROOT / "README.md",
-            REPOSITORY_ROOT / "docs" / "README.md",
-            REPOSITORY_ROOT / "docs" / "index.md",
+            REPOSITORY_ROOT / "docs" / "forge2d-template" / "index.md",
+            REPOSITORY_ROOT
+            / "docs"
+            / "forge2d-template"
+            / "tooling"
+            / "tooling.md",
         )
         for path in entry_points:
             with self.subTest(path=path.relative_to(REPOSITORY_ROOT)):

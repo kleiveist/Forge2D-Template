@@ -178,7 +178,13 @@ def validate_release_metadata(layout: RepositoryLayout) -> ReleaseMetadata:
             f"CHANGELOG.md has an invalid release date: {release_date}.",
             ("Use a real calendar date in YYYY-MM-DD format.",),
         ) from exc
-    notes_path = layout.repository_root / "docs" / "releases" / f"v{version}.md"
+    notes_path = (
+        layout.repository_root
+        / "docs"
+        / "forge2d-template"
+        / "releases"
+        / f"v{version}.md"
+    )
     notes = _read_text(notes_path, "release notes")
     expected_title = f"# Forge2D Template v{version}"
     expected_date = f"Release date: {release_date}"

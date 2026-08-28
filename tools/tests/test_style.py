@@ -140,7 +140,10 @@ class StyleTests(unittest.TestCase):
         self.assertEqual(exit_code, 1)
         self.assertIn("tools/tests/no_docstring.py:1:1 [PY003]", output.getvalue())
         self.assertIn("Fix:", output.getvalue())
-        self.assertIn("docs/python-style-guide.md", output.getvalue())
+        self.assertIn(
+            "docs/forge2d-template/tooling/python-style-guide.md",
+            output.getvalue(),
+        )
 
     def test_violation_format_is_stable_and_compiler_friendly(self) -> None:
         violation = StyleViolation(

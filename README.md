@@ -6,56 +6,9 @@
 - 📝 [Contributing Guide](CONTRIBUTING.md)
 - 📝 [Security Policy](SECURITY.md)
 
-# DOCS
-- 📚 [Docs Home](docs/index.md)
+## Documentation
 
-## 📄 Coding Standards
-- 📝 [Mandatory Python Coding Standard](docs/python-style-guide.md)
-- 📝 [Mandatory GDScript Coding Standard](docs/gdscript-style-guide.md)
-
-## 📄 Tooling
-- 📝 [Cross-Platform Installation](docs/installation.md)
-- 📝 [Cross-Platform Exports](docs/exporting.md)
-- 📝 [GitHub Repository Metadata](docs/repository-metadata.md)
-- 📝 [Semantic Input Baseline](docs/input.md)
-- 📝 [Publishing a GitHub Release](docs/releasing.md)
-
-## 📄 Releases
-- 📝 [Forge2D Template v0.1.0](docs/releases/v0.1.0.md)
-
-## 📁 Architecture
-- 🗂️ [Overview](docs/architecture/architecture.md)
-- 📝 [Runtime Architecture Overview](docs/architecture/runtime-overview.md)
-
-## 📁 Decisions
-- 🗂️ [Overview](docs/decisions/decisions.md)
-- 📝 [ADR-0001: Separate Repository Concerns by Top-Level Directory](docs/decisions/ADR-0001-repository-layout.md)
-- 📝 [ADR-0002: Organize New Runtime Code by Ownership](docs/decisions/ADR-0002-runtime-folder-layout.md)
-- 📝 [ADR-0003: Centralize Application Composition and Scene Navigation](docs/decisions/ADR-0003-application-scenes-and-navigation.md)
-- 📝 [ADR-0004: Limit Autoloads to Process-Wide Infrastructure](docs/decisions/ADR-0004-scoped-autoload-services.md)
-- 📝 [ADR-0005: Keep Runtime Dependencies One-Way and Explicit](docs/decisions/ADR-0005-runtime-dependency-rules.md)
-
-## 📁 Plans
-- 🗂️ [Overview](docs/plans/plans.md)
-- 📝 [M01 Repository Bootstrap ExecPlan](docs/plans/M01_repository_bootstrap.md)
-- 📝 [M02 Control Entry Point](docs/plans/M02_control_entrypoint.md)
-- 📝 [M03 Release v0.1.0 ExecPlan](docs/plans/M03_release_v0_1_0.md)
-- 📝 [M04 CI Integrity Hardening ExecPlan](docs/plans/M04_ci_integrity.md)
-- 📝 [M05 Game Architecture Baseline ExecPlan](docs/plans/M05_game_architecture_baseline.md)
-- 📝 [M06 Cross-Platform Installer ExecPlan](docs/plans/M06_cross_platform_installer.md)
-- 📝 [M07 Main Branch Protection ExecPlan](docs/plans/M07_main_branch_protection.md)
-- 📝 [M08 Coding Standards ExecPlan](docs/plans/M08_coding_standards.md)
-- 📝 [M09 Cross-Platform Export System ExecPlan](docs/plans/M09_export_system.md)
-- 📝 [M10 Semantic Input Baseline ExecPlan](docs/plans/M10_input_baseline.md)
-- 📝 [M11 Community Health ExecPlan](docs/plans/M11_community_health.md)
-- 📝 [M12 Repository Metadata ExecPlan](docs/plans/M12_repository_metadata.md)
-
-## 📁 Reports
-- 🗂️ [Overview](docs/reports/reports.md)
-- 📝 [M01 Repository Bootstrap – Abschlussbericht](docs/reports/M01_repository_bootstrap.md)
-- 📝 [M02 Control Entry Point Report](docs/reports/M02_control_entrypoint.md)
-- 📝 [M03 Release v0.1.0 Report](docs/reports/M03_release_v0_1_0.md)
-- 📝 [M05 Game Architecture Baseline Report](docs/reports/M05_game_architecture_baseline.md)
+- 📚 [Documentation hub](docs/index.md)
 
 <!-- AUTO-GENERATED:docs-index END -->
 # Forge2D Template
@@ -85,7 +38,7 @@ python tools/control.py forge2d-template run
 Use `python3` on systems where Python is not exposed as `python`, or
 `py -3.11` on Windows. The installer requires Python 3.11 or newer, inspects
 Python `venv`/pip support and Godot 4, and keeps all Python packages inside the
-repository-local `.venv`. See [Installation](docs/installation.md) for supported
+repository-local `.venv`. See [Installation](docs/forge2d-template/tooling/installation.md) for supported
 package managers, confirmation behavior, and recovery steps.
 
 ## Useful commands
@@ -124,28 +77,32 @@ python tools/control.py Forge2D-Template run
   declared in `config/toolchain.toml` are installed and verified through the
   `.venv` Python only.
 - `python tools/control.py style` enforces the objective subset of the mandatory
-  [Python](docs/python-style-guide.md) and
-  [GDScript](docs/gdscript-style-guide.md) standards without changing files.
+  [Python](docs/forge2d-template/tooling/python-style-guide.md) and
+  [GDScript](docs/forge2d-template/tooling/gdscript-style-guide.md) standards
+  without changing files.
 - `python tools/control.py check` runs Doctor, source style, Python tests, and
   the Godot headless integration test.
 - The project defines keyboard/controller `ui_*`, `gameplay_move_*`, and
   `app_pause` actions plus an optional coordinate-free touch adapter. See the
-  [semantic input baseline](docs/input.md) for mappings, remapping, deadzones,
-  contexts, and accessibility.
+  [semantic input baseline](docs/forge2d-template/tooling/input.md) for mappings,
+  remapping, deadzones, contexts, and accessibility.
 - `python tools/control.py export {linux,windows,macos}` creates a validated
   release artifact below ignored `artifacts/exports/`. Start with `--dry-run` and
-  see [Cross-platform exports](docs/exporting.md) for templates, CI, and signing.
+  see [Cross-platform exports](docs/forge2d-template/tooling/exporting.md) for
+  templates, CI, and signing.
 - Maintainers use `python tools/control.py release prepare --dry-run` only after
   downloading all three artifacts from the exact successful protected-main CI
-  run. See [Publishing a GitHub release](docs/releasing.md) for the immutable-tag
-  gate, checksums, publication, independent verification, and recovery.
+  run. See [Publishing a GitHub release](docs/forge2d-template/tooling/releasing.md)
+  for the immutable-tag gate, checksums, publication, independent verification,
+  and recovery.
 - The GitHub `main` branch accepts changes only through pull requests and requires
-  every CI job to pass. See [Main branch protection](docs/branch-protection.md)
+  every CI job to pass. See [Main branch protection](docs/forge2d-template/tooling/branch-protection.md)
   for the enforced policy and manual setup steps for forks.
 - GitHub description and topics follow the versioned
-  [repository metadata contract](docs/repository-metadata.md). No homepage is
-  configured until a maintained canonical destination exists; repositories
-  created from this template must replace Forge2D-specific metadata and URLs.
+  [repository metadata contract](docs/forge2d-template/tooling/repository-metadata.md).
+  No homepage is configured until a maintained canonical destination exists;
+  repositories created from this template must replace Forge2D-specific
+  metadata and URLs.
 - `python tools/control.py godot4 test` runs the dedicated test runner at
   `game/tests/bootstrap_integration_test.gd`. It loads the production bootstrap
   scene without an application test-mode shortcut and verifies its node contract.
@@ -160,12 +117,12 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening an issue or pull request.
 It documents safe setup, focused changes, required validation, protected-main
 review, commit subjects, dependency review, and the active GitHub templates.
 All code changes must follow the mandatory
-[Python coding standard](docs/python-style-guide.md) and
-[GDScript coding standard](docs/gdscript-style-guide.md). Run the focused tests
-for the changed component first, then `python tools/control.py style`, and finish
-with `python tools/control.py check` before requesting review. Objective rules are
-CI-enforced; reviewers also verify naming, documentation, error handling,
-logging, and test quality.
+[Python coding standard](docs/forge2d-template/tooling/python-style-guide.md) and
+[GDScript coding standard](docs/forge2d-template/tooling/gdscript-style-guide.md).
+Run the focused tests for the changed component first, then
+`python tools/control.py style`, and finish with `python tools/control.py check`
+before requesting review. Objective rules are CI-enforced; reviewers also verify
+naming, documentation, error handling, logging, and test quality.
 
 Never report a suspected vulnerability in a public issue. Use the private GitHub
 route and coordinated-disclosure process in [SECURITY.md](SECURITY.md). External

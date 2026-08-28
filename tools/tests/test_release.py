@@ -39,13 +39,21 @@ class ReleaseRepositoryContractTests(unittest.TestCase):
         self.assertEqual(metadata.release_date, "2026-08-28")
         self.assertEqual(
             metadata.notes_path,
-            REPOSITORY_ROOT / "docs" / "releases" / "v0.1.0.md",
+            REPOSITORY_ROOT
+            / "docs"
+            / "forge2d-template"
+            / "releases"
+            / "v0.1.0.md",
         )
 
     def test_publication_guide_preserves_tag_and_asset_audit_boundaries(self) -> None:
-        guide = (REPOSITORY_ROOT / "docs" / "releasing.md").read_text(
-            encoding="utf-8"
-        )
+        guide = (
+            REPOSITORY_ROOT
+            / "docs"
+            / "forge2d-template"
+            / "tooling"
+            / "releasing.md"
+        ).read_text(encoding="utf-8")
 
         required = (
             "push CI run for that exact commit",
@@ -61,9 +69,13 @@ class ReleaseRepositoryContractTests(unittest.TestCase):
                 self.assertIn(text, guide)
 
     def test_release_notes_name_every_asset_and_signing_limitation(self) -> None:
-        notes = (REPOSITORY_ROOT / "docs" / "releases" / "v0.1.0.md").read_text(
-            encoding="utf-8"
-        )
+        notes = (
+            REPOSITORY_ROOT
+            / "docs"
+            / "forge2d-template"
+            / "releases"
+            / "v0.1.0.md"
+        ).read_text(encoding="utf-8")
 
         for asset in RELEASE_ASSETS:
             with self.subTest(target=asset.target.key):
@@ -80,7 +92,10 @@ class ReleasePreparationTests(unittest.TestCase):
         (self.root / ".git").mkdir(parents=True)
         (self.root / "config").mkdir()
         (self.root / "game").mkdir()
-        (self.root / "docs" / "releases").mkdir(parents=True)
+        self.release_docs = (
+            self.root / "docs" / "forge2d-template" / "releases"
+        )
+        self.release_docs.mkdir(parents=True)
         (self.root / "config" / "project.toml").write_text(
             """schema_version = 1
 
@@ -118,7 +133,7 @@ No changes yet.
 """,
             encoding="utf-8",
         )
-        (self.root / "docs" / "releases" / "v0.1.0.md").write_text(
+        (self.release_docs / "v0.1.0.md").write_text(
             """# Forge2D Template v0.1.0
 
 Release date: 2026-08-28
@@ -258,7 +273,7 @@ Release date: 2026-08-28
         self.assertIn("Set the README version line", output)
 
     def test_release_notes_must_match_version_and_date(self) -> None:
-        notes = self.root / "docs" / "releases" / "v0.1.0.md"
+        notes = self.release_docs / "v0.1.0.md"
         notes.write_text("# Forge2D Template v0.1.0\n", encoding="utf-8")
 
         code, output = self._run(dry_run=True)
