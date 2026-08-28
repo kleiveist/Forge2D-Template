@@ -10,6 +10,82 @@ GODOT_ROOT = REPOSITORY_ROOT / "game"
 
 
 class GodotProjectTests(unittest.TestCase):
+    def test_reviewed_export_presets_cover_all_desktop_targets(self) -> None:
+        presets = (GODOT_ROOT / "export_presets.cfg").read_text(encoding="utf-8")
+        expected = (
+            (
+                "Linux",
+                "Linux",
+                "../artifacts/exports/linux/Forge2D-Template.x86_64",
+            ),
+            (
+                "Windows",
+                "Windows Desktop",
+                "../artifacts/exports/windows/Forge2D-Template.exe",
+            ),
+            (
+                "macOS",
+                "macOS",
+                "../artifacts/exports/macos/Forge2D-Template.zip",
+            ),
+        )
+
+        self.assertEqual(presets.count("[preset."), 6)
+        for name, platform, output in expected:
+            with self.subTest(name=name):
+                self.assertIn(f'name="{name}"', presets)
+                self.assertIn(f'platform="{platform}"', presets)
+                self.assertIn(f'export_path="{output}"', presets)
+
+    def test_export_presets_keep_credentials_and_machine_paths_out_of_git(self) -> None:
+        presets = (GODOT_ROOT / "export_presets.cfg").read_text(encoding="utf-8")
+        forbidden = (
+            "codesign/identity=",
+            "codesign/password=",
+            "codesign/certificate_file=",
+            "codesign/certificate_password=",
+            "codesign/apple_team_id=",
+            "notarization/apple_id_name=",
+            "notarization/apple_id_password=",
+            "notarization/api_key=",
+        )
+
+        for setting in forbidden:
+            self.assertNotIn(setting, presets)
+        self.assertNotRegex(presets, r'export_path="(?:/|[A-Za-z]:[\\/])')
+        self.assertEqual(presets.count('custom_template/release=""'), 3)
+        self.assertIn("codesign/enable=false", presets)
+        self.assertIn("codesign/codesign=1", presets)
+        self.assertIn("notarization/notarization=0", presets)
+
+    def test_universal_macos_export_has_required_texture_format(self) -> None:
+        project = (GODOT_ROOT / "project.godot").read_text(encoding="utf-8")
+        presets = (GODOT_ROOT / "export_presets.cfg").read_text(encoding="utf-8")
+
+        self.assertIn('binary_format/architecture="universal"', presets)
+        self.assertIn(
+            "textures/vram_compression/import_etc2_astc=true",
+            project,
+        )
+
+    def test_generated_export_root_is_ignored(self) -> None:
+        ignore = (REPOSITORY_ROOT / ".gitignore").read_text(encoding="utf-8")
+
+        self.assertIn("\n/artifacts/\n", ignore)
+
+    def test_every_gdscript_has_a_unique_versioned_uid(self) -> None:
+        scripts = sorted(GODOT_ROOT.rglob("*.gd"))
+        uid_values: list[str] = []
+
+        for script in scripts:
+            sidecar = script.with_suffix(".gd.uid")
+            with self.subTest(script=script.relative_to(GODOT_ROOT)):
+                self.assertTrue(sidecar.is_file())
+                value = sidecar.read_text(encoding="utf-8").strip()
+                self.assertRegex(value, r"^uid://[a-z0-9]+$")
+                uid_values.append(value)
+        self.assertEqual(len(uid_values), len(set(uid_values)))
+
     def test_project_has_existing_main_scene(self) -> None:
         project_text = (GODOT_ROOT / "project.godot").read_text(encoding="utf-8")
         match = re.search(r'run/main_scene="res://([^\"]+)"', project_text)

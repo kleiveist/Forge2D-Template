@@ -15,6 +15,7 @@ This index is the documentation entry point for Forge2D Template.
 - [M06 cross-platform installer](plans/M06_cross_platform_installer.md)
 - [M07 main branch protection](plans/M07_main_branch_protection.md)
 - [M08 coding standards](plans/M08_coding_standards.md)
+- [M09 cross-platform export system](plans/M09_export_system.md)
 
 ## Architecture
 
@@ -40,6 +41,7 @@ Forge2D Template is licensed under the MIT License. See `LICENSE`.
 ## Tooling
 
 - [Cross-platform installation](installation.md)
+- [Cross-platform exports](exporting.md)
 - [Main branch protection and manual GitHub setup](branch-protection.md)
 - [Mandatory Python coding standard](python-style-guide.md)
 - [Mandatory GDScript coding standard](gdscript-style-guide.md)
@@ -50,4 +52,5 @@ Forge2D Template is licensed under the MIT License. See `LICENSE`.
   - `python tools/control.py doctor`
   - `python tools/control.py style`
   - `python tools/control.py check`
+  - `python tools/control.py export linux --dry-run`
   - `python tools/control.py forge2d-template run`

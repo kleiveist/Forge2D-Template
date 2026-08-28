@@ -130,3 +130,18 @@ The installer does not directly download executables, add repositories or taps,
 modify shell profiles, bypass package-manager agreements, or promise Godot's
 tested patch version. It accepts a compatible Godot 4.x; CI and release notes
 record the exact version currently validated by the repository.
+
+## Export Templates
+
+Godot editor installation and Godot export-template installation are separate.
+The installer verifies the editor but deliberately does not download the
+approximately 1.2 GB cross-platform template archive. Install templates matching
+the exact editor version through **Editor > Manage Export Templates**, then use:
+
+```text
+python tools/control.py export linux --dry-run
+```
+
+The export dry-run verifies the selected release template without writing to the
+checkout. See [Cross-platform exports](exporting.md) for all targets, fixed output
+paths, CI artifacts, signing limitations, and recovery steps.

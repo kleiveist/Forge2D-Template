@@ -32,6 +32,7 @@ class CliTests(unittest.TestCase):
         text = output.getvalue()
         self.assertIn("python tools/control.py doctor", text)
         self.assertIn("python tools/control.py style", text)
+        self.assertIn("python tools/control.py export linux --dry-run", text)
         self.assertIn("python tools/control.py godot4 test", text)
         self.assertIn("python tools/control.py Forge2D-Template run", text)
 
@@ -53,6 +54,17 @@ class CliTests(unittest.TestCase):
         text = output.getvalue()
         self.assertIn("without making changes", text)
         self.assertIn("unattended setup", text)
+
+    def test_export_help_lists_targets_and_side_effect_free_dry_run(self) -> None:
+        output = StringIO()
+        with redirect_stdout(output):
+            with self.assertRaises(SystemExit) as context:
+                main(["export", "--help"])
+
+        self.assertEqual(context.exception.code, 0)
+        text = " ".join(output.getvalue().split())
+        self.assertIn("{linux,windows,macos}", text)
+        self.assertIn("without making changes", text)
 
     def test_invalid_command_uses_cli_error_code(self) -> None:
         with self.assertRaises(SystemExit) as context:
@@ -90,6 +102,19 @@ class CliTests(unittest.TestCase):
 
         self.assertEqual(exit_code, 1)
         run_source_style.assert_called_once_with()
+
+    def test_export_dispatches_selected_target_and_dry_run(self) -> None:
+        with patch("g2dtool.cli.run_export", return_value=1) as export_command:
+            exit_code = main(["export", "macos", "--dry-run"])
+
+        self.assertEqual(exit_code, 1)
+        export_command.assert_called_once_with("macos", dry_run=True)
+
+    def test_export_rejects_unknown_target_as_usage_error(self) -> None:
+        with self.assertRaises(SystemExit) as context:
+            main(["export", "android"])
+
+        self.assertEqual(context.exception.code, 2)
 
     def test_template_aliases_run_the_same_mode(self) -> None:
         layout = RepositoryLayout(

@@ -11,6 +11,10 @@
 - 📝 [Mandatory Python Coding Standard](docs/python-style-guide.md)
 - 📝 [Mandatory GDScript Coding Standard](docs/gdscript-style-guide.md)
 
+## 📄 Tooling
+- 📝 [Cross-Platform Installation](docs/installation.md)
+- 📝 [Cross-Platform Exports](docs/exporting.md)
+
 ## 📁 Architecture
 - 🗂️ [Overview](docs/architecture/architecture.md)
 - 📝 [Runtime Architecture Overview](docs/architecture/runtime-overview.md)
@@ -33,6 +37,7 @@
 - 📝 [M06 Cross-Platform Installer ExecPlan](docs/plans/M06_cross_platform_installer.md)
 - 📝 [M07 Main Branch Protection ExecPlan](docs/plans/M07_main_branch_protection.md)
 - 📝 [M08 Coding Standards ExecPlan](docs/plans/M08_coding_standards.md)
+- 📝 [M09 Cross-Platform Export System ExecPlan](docs/plans/M09_export_system.md)
 
 ## 📁 Reports
 - 🗂️ [Overview](docs/reports/reports.md)
@@ -83,6 +88,8 @@ python tools/control.py install --dry-run
 python tools/control.py install --yes
 python tools/control.py style
 python tools/control.py check
+python tools/control.py export linux --dry-run
+python tools/control.py export linux
 python tools/control.py godot4
 python tools/control.py godot4 run
 python tools/control.py godot4 test
@@ -109,14 +116,17 @@ python tools/control.py Forge2D-Template run
   [GDScript](docs/gdscript-style-guide.md) standards without changing files.
 - `python tools/control.py check` runs Doctor, source style, Python tests, and
   the Godot headless integration test.
+- `python tools/control.py export {linux,windows,macos}` creates a validated
+  release artifact below ignored `artifacts/exports/`. Start with `--dry-run` and
+  see [Cross-platform exports](docs/exporting.md) for templates, CI, and signing.
 - The GitHub `main` branch accepts changes only through pull requests and requires
   every CI job to pass. See [Main branch protection](docs/branch-protection.md)
   for the enforced policy and manual setup steps for forks.
 - `python tools/control.py godot4 test` runs the dedicated test runner at
   `game/tests/bootstrap_integration_test.gd`. It loads the production bootstrap
   scene without an application test-mode shortcut and verifies its node contract.
-- CI also builds a wheel, installs it into a fresh virtual environment, and runs
-  the installed `g2d` entry point.
+- CI builds and validates a wheel, runs the installed `g2d` entry point, and
+  produces a short-lived native release artifact on Linux, Windows, and macOS.
 - Godot 4.7.2 is the version verified for `v0.1.0`.
 - This repository does not currently assume a specific game runtime workflow.
 

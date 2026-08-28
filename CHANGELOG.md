@@ -13,6 +13,11 @@ All notable changes to this project will be documented in this file.
   formatting, naming, typing, documentation, error, logging, and test rules.
 - `g2d style` provides dependency-free, actionable source validation and is part
   of the cross-platform `g2d check` release gate.
+- Reviewed Linux, Windows, and macOS Godot presets plus `g2d export` provide
+  fixed repository-local outputs, a side-effect-free dry-run, and actionable
+  template, process, and artifact failures.
+- Native CI jobs verify official export-template checksums, produce non-empty
+  platform exports, and retain validated workflow artifacts for seven days.
 
 ### Changed
 

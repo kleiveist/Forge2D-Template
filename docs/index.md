@@ -7,6 +7,7 @@
 
 ## 📄 Pages
 - 📝 [Cross-Platform Installation](installation.md)
+- 📝 [Cross-Platform Exports](exporting.md)
 - 📝 [Main Branch Protection](branch-protection.md)
 - 📝 [Mandatory Python Coding Standard](python-style-guide.md)
 - 📝 [Mandatory GDScript Coding Standard](gdscript-style-guide.md)
@@ -33,6 +34,7 @@
 - 📝 [M06 Cross-Platform Installer ExecPlan](plans/M06_cross_platform_installer.md)
 - 📝 [M07 Main Branch Protection ExecPlan](plans/M07_main_branch_protection.md)
 - 📝 [M08 Coding Standards ExecPlan](plans/M08_coding_standards.md)
+- 📝 [M09 Cross-Platform Export System ExecPlan](plans/M09_export_system.md)
 
 ## 📁 Reports
 - 🗂️ [Overview](reports/reports.md)
