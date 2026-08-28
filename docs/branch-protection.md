@@ -70,6 +70,7 @@ policy without copying credentials into the repository:
 ```text
 gh auth status --hostname github.com
 gh api --method PUT \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
   repos/kleiveist/Forge2D-Template/branches/main/protection \
   --input .github/branch-protection-main.json
 ```
@@ -80,6 +81,12 @@ elsewhere. Audit the effective server-side rule with:
 ```text
 gh api repos/kleiveist/Forge2D-Template/branches/main/protection
 ```
+
+The payload deliberately uses the app-bound `checks` form without the legacy
+`contexts` field. With API version `2022-11-28`, sending both forms together was
+rejected with HTTP 422 as conflicting schema alternatives, while the checked-in
+`checks`-only form applied successfully. Keep that distinction when editing the
+policy.
 
 Never commit a token, `hosts.yml`, or another GitHub authentication file.
 

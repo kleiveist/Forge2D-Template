@@ -65,6 +65,10 @@ supporting workflows. No dependency is added.
   review would make every pull request unmergeable when admin bypass is disabled.
 - 2026-08-28: The CI workflow exposes eight matrix job contexts rather than one
   aggregate check, so every context is part of the current protection contract.
+- 2026-08-28: The rendered REST reference marks legacy `contexts` as required,
+  but the live `2022-11-28` endpoint rejected `contexts` together with `checks`
+  as conflicting `oneOf` alternatives. The app-bound `checks` form alone applied
+  successfully and remains the reproducible payload.
 
 ## Decision Log
 
@@ -77,6 +81,9 @@ supporting workflows. No dependency is added.
   resolved conversations, and disallow force pushes and deletion.
 - 2026-08-28: Keep the exact API payload under `.github/` but leave credentials
   and execution outside Git so external state changes remain explicit.
+- 2026-08-28: Deliberately omit legacy `contexts` from the JSON policy and test
+  that omission; adding it alongside app-bound `checks` makes the live update
+  endpoint reject the otherwise valid policy with HTTP 422.
 
 ## Validation
 
@@ -85,6 +92,7 @@ supporting workflows. No dependency is added.
 | GitHub Actions workflow `33161920298` | Passed; all 8 jobs |
 | Pre-change protection query | Confirmed `main` returned `404 Branch not protected` |
 | Protection API update | Passed; strict checks, PR rule, admin enforcement, linear history, conversation resolution, force-push/deletion prevention returned enabled |
+| API compatibility probe with both `contexts` and `checks` | Expected failure; live version `2022-11-28` returned HTTP 422, confirming the forms are alternatives |
 | `.venv/bin/python -m pytest tools/tests/test_branch_protection.py tools/tests/test_source_hygiene.py -q` | Passed; 13 tests |
 | `.venv/bin/python -m pytest tools/tests -q` | Passed; 93 tests |
 | `g2d check` with checksum-verified Godot 4.7.2 | Passed; Doctor 12/12, 93 tests, real headless integration |

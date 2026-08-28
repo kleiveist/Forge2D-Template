@@ -38,6 +38,7 @@ class BranchProtectionPolicyTests(unittest.TestCase):
         checks = status_checks["checks"]
 
         self.assertTrue(status_checks["strict"])
+        self.assertNotIn("contexts", status_checks)
         self.assertEqual({check["context"] for check in checks}, REQUIRED_CHECKS)
         self.assertEqual(
             {check["app_id"] for check in checks},
