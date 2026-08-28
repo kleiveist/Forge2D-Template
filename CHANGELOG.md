@@ -5,6 +5,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+### Changed
+
+- `g2d install` now validates Python, venv/pip bootstrap support, Godot 4, and
+  declared Python packages; uses APT, Pacman, Winget, or Homebrew when safe; and
+  confines all pip changes to the repository-local `.venv`.
+- Installer dry runs are side-effect free, unattended confirmation is available
+  through `--yes`, and expected failures include recovery steps.
+- Native Linux, Windows, and macOS CI jobs verify the installer dry run without
+  creating `.venv`.
+
 ## Forge2D-Template v0.1.0 - 2026-08-26
 
 ### Added

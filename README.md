@@ -53,11 +53,17 @@ repository-local tooling entry points.
 ```text
 git clone <repository-url>
 cd Forge2D-Template
-python tools/control.py doctor
-python tools/control.py install
+python tools/control.py install --dry-run
+python tools/control.py install --yes
 python tools/control.py check
 python tools/control.py forge2d-template run
 ```
+
+Use `python3` on systems where Python is not exposed as `python`, or
+`py -3.11` on Windows. The installer requires Python 3.11 or newer, inspects
+Python `venv`/pip support and Godot 4, and keeps all Python packages inside the
+repository-local `.venv`. See [Installation](docs/installation.md) for supported
+package managers, confirmation behavior, and recovery steps.
 
 ## Useful commands
 
@@ -83,6 +89,13 @@ python tools/control.py Forge2D-Template run
   onboarding entry point when installed.
 - Do not manually `source .venv/bin/activate` for repository setup. The tooling can
   operate directly from `python tools/control.py`.
+- `install --dry-run` performs read-only probes and prints the package-manager,
+  `.venv`, and pip commands it would use without creating `.venv` or installing
+  anything. `install --yes` accepts installer prompts; operating-system privilege
+  controls such as sudo passwords or Windows UAC may still apply.
+- The installer never invokes system pip. Editable tooling and all dependencies
+  declared in `config/toolchain.toml` are installed and verified through the
+  `.venv` Python only.
 - `python tools/control.py check` runs Doctor, Python tests, and the Godot
   headless integration test.
 - `python tools/control.py godot4 test` runs the dedicated test runner at

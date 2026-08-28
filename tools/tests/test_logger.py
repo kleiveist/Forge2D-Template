@@ -1,6 +1,7 @@
 """Tests for emoji output helpers."""
 
 import unittest
+from unittest.mock import patch
 
 from _source_path import add_source_root
 
@@ -30,6 +31,20 @@ class LoggerTests(unittest.TestCase):
 
     def test_join_command_handles_objects(self) -> None:
         self.assertEqual(join_command(["python", "-m", "venv"]), "python -m venv")
+
+    def test_join_command_quotes_posix_shell_metacharacters(self) -> None:
+        with patch("g2dtool.logger.os.name", "posix"):
+            command = join_command(
+                ["python", "-m", "pip", "install", "pytest>=8,<9"]
+            )
+
+        self.assertEqual(command, "python -m pip install 'pytest>=8,<9'")
+
+    def test_join_command_quotes_windows_paths_with_spaces(self) -> None:
+        with patch("g2dtool.logger.os.name", "nt"):
+            command = join_command([r"C:\Program Files\Python\python.exe", "-m", "pip"])
+
+        self.assertEqual(command, r'"C:\Program Files\Python\python.exe" -m pip')
 
     def test_print_replaces_unicode_on_encoding_error(self) -> None:
         class FailingThenRecoveringStream:

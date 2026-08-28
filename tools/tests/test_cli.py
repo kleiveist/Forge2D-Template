@@ -42,6 +42,17 @@ class CliTests(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         self.assertEqual(output.getvalue().strip(), f"g2d {__version__}")
 
+    def test_install_help_describes_dry_run_and_unattended_confirmation(self) -> None:
+        output = StringIO()
+        with redirect_stdout(output):
+            with self.assertRaises(SystemExit) as context:
+                main(["install", "--help"])
+
+        self.assertEqual(context.exception.code, 0)
+        text = output.getvalue()
+        self.assertIn("without making changes", text)
+        self.assertIn("unattended setup", text)
+
     def test_invalid_command_uses_cli_error_code(self) -> None:
         with self.assertRaises(SystemExit) as context:
             main(["unknown"])

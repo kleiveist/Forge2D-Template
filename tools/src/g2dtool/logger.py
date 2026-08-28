@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+import os
+import shlex
+import subprocess
 import sys
 
 
@@ -94,4 +97,7 @@ def print_help_line(text: str) -> None:
 
 
 def join_command(command: Sequence[str] | Sequence[object]) -> str:
-    return " ".join(map(str, command))
+    arguments = list(map(str, command))
+    if os.name == "nt":
+        return subprocess.list2cmdline(arguments)
+    return shlex.join(arguments)

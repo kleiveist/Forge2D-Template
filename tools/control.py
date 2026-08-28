@@ -7,6 +7,9 @@ from typing import Sequence
 import sys
 
 
+MINIMUM_PYTHON = (3, 11)
+
+
 def _repository_root() -> Path:
     """Return the repository root without relying on the current working directory."""
 
@@ -24,6 +27,22 @@ def _bootstrap_python_path() -> None:
 
 def main(arguments: Sequence[str] | None = None) -> int:
     """Execute the local CLI through a stable repository-local bootstrap."""
+
+    observed = (sys.version_info.major, sys.version_info.minor)
+    if observed < MINIMUM_PYTHON:
+        print(
+            "Error: Forge2D Template requires Python "
+            f">= {MINIMUM_PYTHON[0]}.{MINIMUM_PYTHON[1]}; "
+            f"this interpreter is {observed[0]}.{observed[1]}.",
+            file=sys.stderr,
+        )
+        print(
+            f"Install Python {MINIMUM_PYTHON[0]}.{MINIMUM_PYTHON[1]} or newer "
+            "with your operating-system package manager, then re-run "
+            "tools/control.py with that interpreter.",
+            file=sys.stderr,
+        )
+        return 1
 
     _bootstrap_python_path()
     from g2dtool.cli import main as cli_main

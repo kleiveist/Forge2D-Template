@@ -42,6 +42,23 @@ jobs:
       - name: Verify Python
         run: python --version
 
+      - name: Verify side-effect-free installer dry run
+        shell: python
+        run: |
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          venv = Path(".venv")
+          if venv.exists():
+              raise SystemExit(f"Unexpected pre-existing virtual environment: {venv}")
+          subprocess.run(
+              [sys.executable, "tools/control.py", "install", "--dry-run", "--yes"],
+              check=True,
+          )
+          if venv.exists():
+              raise SystemExit("Installer dry-run created .venv")
+
       - name: Install verified Godot editor
         env:
           GITHUB_TOKEN: ${{ github.token }}

@@ -82,10 +82,18 @@ def build_parser(prog: str = "g2d") -> argparse.ArgumentParser:
     check_parser.set_defaults(handler=_run_check)
 
     install_parser = commands.add_parser(
-        "install", help="prepare a local development environment"
+        "install", help="validate and prepare a local development environment"
     )
-    install_parser.add_argument("--dry-run", action="store_true", help="show planned steps")
-    install_parser.add_argument("--yes", action="store_true", help="auto-accept prompts")
+    install_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="validate and show planned commands without making changes",
+    )
+    install_parser.add_argument(
+        "--yes",
+        action="store_true",
+        help="accept installer confirmations for unattended setup",
+    )
     install_parser.set_defaults(handler=_run_install)
 
     godot_parser = commands.add_parser(
