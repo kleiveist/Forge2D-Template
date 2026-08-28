@@ -12,10 +12,10 @@ policy payload so forks can reproduce them safely.
 
 ## Current State
 
-The previous installer CI repair is green in all eight jobs. The repository had
-no branch protection rule, and `kleiveist` is its only collaborator. The `main`
-rule is now active through the GitHub API while policy documentation and its
-local validation are being completed on `chore/main-branch-protection`.
+The previous installer CI repair and pull request #1 are green in all eight jobs.
+The repository had no branch protection rule, and `kleiveist` is its only
+collaborator. The documented `main` rule is active through the GitHub API and the
+topic branch contains its reviewable policy, tests, and manual setup guide.
 
 ## Scope and Non-Goals
 
@@ -54,8 +54,10 @@ supporting workflows. No dependency is added.
   maintenance guide, documentation indexes, and policy unit tests.
 - [x] 2026-08-28: Passed focused tests, all 93 Python tests, and the standard
   release gate with checksum-verified Godot 4.7.2.
-- [ ] Pass the pull-request CI loop.
-- [ ] Audit final GitHub protection and clean worktree state.
+- [x] 2026-08-28: Opened pull request #1, waited at least three minutes before
+  polling, and confirmed all eight jobs passed on the first CI iteration.
+- [x] 2026-08-28: Audited the live protection rule and confirmed the topic branch
+  was clean and synchronized before recording the final result.
 
 ## Surprises & Discoveries
 
@@ -86,8 +88,8 @@ supporting workflows. No dependency is added.
 | `.venv/bin/python -m pytest tools/tests/test_branch_protection.py tools/tests/test_source_hygiene.py -q` | Passed; 13 tests |
 | `.venv/bin/python -m pytest tools/tests -q` | Passed; 93 tests |
 | `g2d check` with checksum-verified Godot 4.7.2 | Passed; Doctor 12/12, 93 tests, real headless integration |
-| Pull-request CI | Pending; poll no more frequently than every 3 minutes |
-| Final protection audit | Pending |
+| Pull-request CI workflow `33162485719` | Passed; all 8 jobs, first poll after at least 3 minutes |
+| Final protection audit | Passed; policy has 8 strict GitHub Actions checks, required PRs, admin enforcement, linear history, conversation resolution, and no force pushes/deletions |
 
 ## Recovery / Idempotence
 
@@ -99,4 +101,9 @@ Removing protection is intentionally not part of normal recovery.
 
 ## Outcomes & Retrospective
 
-Pending pull-request CI and final server-side audit.
+`main` is protected and pull request #1 proves that the documented policy can be
+satisfied on Linux, Windows, and macOS with Python 3.11 and 3.14. Keeping every
+matrix job as a required context provides strong coverage but makes job names a
+manual GitHub configuration contract. Approval remains at zero only because the
+repository has no independent reviewer; raising it to one is the next hardening
+step when a second trusted collaborator joins.
