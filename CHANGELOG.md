@@ -16,6 +16,9 @@ All notable changes to this project will be documented in this file.
   through `--yes`, and expected failures include recovery steps.
 - Native Linux, Windows, and macOS CI jobs verify the installer dry run without
   creating `.venv`.
+- GitHub `main` branch protection now requires pull requests, an up-to-date
+  successful eight-job CI matrix, linear history, and resolved conversations;
+  administrators cannot bypass the rule or force-push/delete the branch.
 
 ## Forge2D-Template v0.1.0 - 2026-08-26
 
