@@ -3,7 +3,8 @@
 ExecPlans are living documents for complex repository work. Keep them concise,
 current, and useful to someone resuming the task from only the worktree.
 
-Each plan under `docs/plans/` should include:
+Each template-work plan under `docs/forge2d-template/plans/` and each game-work
+plan under `docs/developer/plans/` should include:
 
 - Purpose / Big Picture
 - Current State

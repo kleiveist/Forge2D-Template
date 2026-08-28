@@ -24,6 +24,10 @@ RUNTIME_PATHS = (
     REPOSITORY_ROOT / "game" / "shared",
     REPOSITORY_ROOT / "game" / "src",
 )
+DOCUMENTATION_ENTRY_POINTS = (
+    REPOSITORY_ROOT / "README.md",
+    REPOSITORY_ROOT / "AGENTS.md",
+)
 
 
 class SourceHygieneTests(unittest.TestCase):
@@ -112,7 +116,10 @@ class SourceHygieneTests(unittest.TestCase):
         violations: list[str] = []
         docs_root = REPOSITORY_ROOT / "docs"
         link_pattern = re.compile(r"(?<!!)\[[^]]+\]\(([^)]+)\)")
-        for path in docs_root.rglob("*.md"):
+        paths = sorted(docs_root.rglob("*.md")) + [
+            path for path in DOCUMENTATION_ENTRY_POINTS if path.exists()
+        ]
+        for path in paths:
             for target in link_pattern.findall(path.read_text(encoding="utf-8")):
                 target = target.strip().strip("<>").split("#", 1)[0]
                 if not target or "://" in target or target.startswith("mailto:"):
@@ -122,6 +129,41 @@ class SourceHygieneTests(unittest.TestCase):
                     relative_path = path.relative_to(REPOSITORY_ROOT).as_posix()
                     violations.append(f"{relative_path} -> {target}")
         self.assertEqual(violations, [])
+
+    def test_documentation_architecture_separates_template_and_game_areas(self) -> None:
+        required_paths = (
+            "docs/index.md",
+            "docs/README.md",
+            "docs/forge2d-template/index.md",
+            "docs/forge2d-template/tooling/installation.md",
+            "docs/forge2d-template/tooling/branch-protection.md",
+            "docs/forge2d-template/architecture/runtime-overview.md",
+            "docs/forge2d-template/decisions/decisions.md",
+            "docs/forge2d-template/plans/plans.md",
+            "docs/forge2d-template/reports/reports.md",
+            "docs/developer/index.md",
+            "docs/developer/features/_feature-template.md",
+            "docs/developer/decisions/_adr-template.md",
+            "docs/developer/plans/_execplan-template.md",
+            "docs/player-guide/index.md",
+            "docs/player-guide/_topic-template.md",
+            "docs/in-game-help/index.md",
+            "docs/in-game-help/_help-topic-template.md",
+            "docs/case-studies/index.md",
+            "docs/case-studies/_case-study-template.md",
+            "docs/release-manual/index.md",
+            "docs/release-manual/_release-template.md",
+        )
+        missing = [
+            path for path in required_paths if not (REPOSITORY_ROOT / path).is_file()
+        ]
+        self.assertEqual(missing, [])
+
+        developer_index = (REPOSITORY_ROOT / "docs" / "developer" / "index.md")
+        self.assertIn(
+            "../forge2d-template/architecture/runtime-overview.md",
+            developer_index.read_text(encoding="utf-8"),
+        )
 
     def test_mermaid_fences_are_balanced(self) -> None:
         violations: list[str] = []

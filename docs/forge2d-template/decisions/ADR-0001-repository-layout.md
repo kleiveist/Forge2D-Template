@@ -20,7 +20,7 @@ Use these top-level boundaries:
 | --- | --- |
 | `game/` | Godot project source, scenes, and project settings |
 | `tools/` | Installable Python package source and its Python tests |
-| `docs/` | Plans, milestone reports, and architectural decisions |
+| `docs/` | Documentation hub, reusable template material, and game-facing documentation |
 | `config/` | Project identity and toolchain policy shared across components |
 
 Repository-wide metadata and contributor rules remain at the root. Generated

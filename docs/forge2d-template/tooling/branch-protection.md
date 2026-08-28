@@ -1,5 +1,5 @@
 <!-- AUTO-GENERATED:backlink START -->
-[← Back](README.md)
+[← Back](../index.md)
 <!-- AUTO-GENERATED:backlink END -->
 # Main Branch Protection
 
@@ -9,7 +9,7 @@ merge it. These controls live in GitHub, not in a clone, so maintainers of forks
 and repositories created from this template must configure them separately.
 
 The repository-owned policy payload is
-[`../.github/branch-protection-main.json`](../.github/branch-protection-main.json).
+[`../../../.github/branch-protection-main.json`](../../../.github/branch-protection-main.json).
 It contains no credentials and is the reviewable reference for the live rule.
 
 ## Enforced Policy
