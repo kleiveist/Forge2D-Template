@@ -10,6 +10,96 @@ GODOT_ROOT = REPOSITORY_ROOT / "game"
 
 
 class GodotProjectTests(unittest.TestCase):
+    def test_input_map_defines_semantic_actions_and_reviewed_deadzones(self) -> None:
+        project = (GODOT_ROOT / "project.godot").read_text(encoding="utf-8")
+        actions = {
+            "ui_up": 0.5,
+            "ui_down": 0.5,
+            "ui_left": 0.5,
+            "ui_right": 0.5,
+            "ui_accept": 0.5,
+            "ui_cancel": 0.5,
+            "gameplay_move_up": 0.2,
+            "gameplay_move_down": 0.2,
+            "gameplay_move_left": 0.2,
+            "gameplay_move_right": 0.2,
+            "app_pause": 0.5,
+        }
+
+        self.assertIn("\n[input]\n", project)
+        for action, deadzone in actions.items():
+            with self.subTest(action=action):
+                body = self._input_action(project, action)
+                self.assertIn(f'"deadzone": {deadzone}', body)
+                self.assertIn("InputEventKey", body)
+                self.assertIn("InputEventJoypadButton", body)
+                events = re.findall(r"Object\(InputEvent[^)]+\)", body)
+                self.assertTrue(events)
+                self.assertTrue(
+                    all('"device":-1' in event for event in events),
+                    f"{action} must accept any matching input device",
+                )
+
+    def test_direction_actions_map_keyboard_dpad_and_left_stick(self) -> None:
+        project = (GODOT_ROOT / "project.godot").read_text(encoding="utf-8")
+        mappings = {
+            "gameplay_move_up": (87, 4194320, 11, 1, -1.0),
+            "gameplay_move_down": (83, 4194322, 12, 1, 1.0),
+            "gameplay_move_left": (65, 4194319, 13, 0, -1.0),
+            "gameplay_move_right": (68, 4194321, 14, 0, 1.0),
+        }
+
+        for action, mapping in mappings.items():
+            physical_key, arrow_key, button, axis, axis_value = mapping
+            with self.subTest(action=action):
+                body = self._input_action(project, action)
+                self.assertIn(f'"physical_keycode":{physical_key}', body)
+                self.assertIn(f'"keycode":{arrow_key}', body)
+                self.assertIn(f'"button_index":{button}', body)
+                self.assertIn(
+                    f'"axis":{axis},"axis_value":{axis_value}',
+                    body,
+                )
+
+        ui_actions = ("ui_up", "ui_down", "ui_left", "ui_right")
+        for action in ui_actions:
+            with self.subTest(action=action):
+                body = self._input_action(project, action)
+                self.assertIn("InputEventKey", body)
+                self.assertIn("InputEventJoypadButton", body)
+                self.assertIn("InputEventJoypadMotion", body)
+
+    def test_accept_cancel_and_pause_have_keyboard_and_controller_bindings(self) -> None:
+        project = (GODOT_ROOT / "project.godot").read_text(encoding="utf-8")
+        expected = {
+            "ui_accept": ('"keycode":4194309', '"keycode":32', '"button_index":0'),
+            "ui_cancel": ('"keycode":4194305', '"button_index":1'),
+            "app_pause": (
+                '"keycode":4194305',
+                '"physical_keycode":80',
+                '"button_index":6',
+            ),
+        }
+
+        for action, fragments in expected.items():
+            with self.subTest(action=action):
+                body = self._input_action(project, action)
+                for fragment in fragments:
+                    self.assertIn(fragment, body)
+
+    def test_touch_adapter_uses_only_semantic_action_boundaries(self) -> None:
+        adapter = (
+            GODOT_ROOT / "shared" / "input" / "touch_action_adapter.gd"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn("InputMap.has_action(action)", adapter)
+        self.assertIn("Input.action_press(action, normalized_strength)", adapter)
+        self.assertIn("Input.action_release(action)", adapter)
+        self.assertIn("func _exit_tree() -> void:", adapter)
+        for forbidden in ("InputEvent", "Vector2", "func _input(", "event.position"):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, adapter)
+
     def test_reviewed_export_presets_cover_all_desktop_targets(self) -> None:
         presets = (GODOT_ROOT / "export_presets.cfg").read_text(encoding="utf-8")
         expected = (
@@ -179,9 +269,20 @@ class GodotProjectTests(unittest.TestCase):
         self.assertNotIn("Forge2DTemplateBootstrap", runner_text)
         self.assertIn("res://tests/runtime/scene_router_test.gd", runner_text)
         self.assertIn("res://tests/runtime/application_root_test.gd", runner_text)
+        self.assertIn("res://tests/runtime/input_map_test.gd", runner_text)
+        self.assertIn("res://tests/runtime/touch_action_adapter_test.gd", runner_text)
         self.assertIn("ApplicationRoot/RouteHost/TemplateHome", runner_text)
         self.assertIn("Forge2D bootstrap integration test: passed", runner_text)
         self.assertIn("quit(1)", runner_text)
+
+    def _input_action(self, project: str, action: str) -> str:
+        match = re.search(
+            rf"(?ms)^{re.escape(action)}=\{{\n(?P<body>.*?)^\}}$",
+            project,
+        )
+        self.assertIsNotNone(match, f"InputMap action is missing: {action}")
+        assert match is not None
+        return match.group("body")
 
 
 if __name__ == "__main__":

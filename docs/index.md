@@ -8,6 +8,7 @@
 ## 📄 Pages
 - 📝 [Cross-Platform Installation](installation.md)
 - 📝 [Cross-Platform Exports](exporting.md)
+- 📝 [Semantic Input Baseline](input.md)
 - 📝 [Publishing a GitHub Release](releasing.md)
 - 📝 [Main Branch Protection](branch-protection.md)
 - 📝 [Mandatory Python Coding Standard](python-style-guide.md)
@@ -39,6 +40,7 @@
 - 📝 [M07 Main Branch Protection ExecPlan](plans/M07_main_branch_protection.md)
 - 📝 [M08 Coding Standards ExecPlan](plans/M08_coding_standards.md)
 - 📝 [M09 Cross-Platform Export System ExecPlan](plans/M09_export_system.md)
+- 📝 [M10 Semantic Input Baseline ExecPlan](plans/M10_input_baseline.md)
 
 ## 📁 Reports
 - 🗂️ [Overview](reports/reports.md)

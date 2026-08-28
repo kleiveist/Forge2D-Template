@@ -14,6 +14,7 @@
 ## 📄 Tooling
 - 📝 [Cross-Platform Installation](docs/installation.md)
 - 📝 [Cross-Platform Exports](docs/exporting.md)
+- 📝 [Semantic Input Baseline](docs/input.md)
 - 📝 [Publishing a GitHub Release](docs/releasing.md)
 
 ## 📄 Releases
@@ -42,6 +43,7 @@
 - 📝 [M07 Main Branch Protection ExecPlan](docs/plans/M07_main_branch_protection.md)
 - 📝 [M08 Coding Standards ExecPlan](docs/plans/M08_coding_standards.md)
 - 📝 [M09 Cross-Platform Export System ExecPlan](docs/plans/M09_export_system.md)
+- 📝 [M10 Semantic Input Baseline ExecPlan](docs/plans/M10_input_baseline.md)
 
 ## 📁 Reports
 - 🗂️ [Overview](docs/reports/reports.md)
@@ -121,6 +123,10 @@ python tools/control.py Forge2D-Template run
   [GDScript](docs/gdscript-style-guide.md) standards without changing files.
 - `python tools/control.py check` runs Doctor, source style, Python tests, and
   the Godot headless integration test.
+- The project defines keyboard/controller `ui_*`, `gameplay_move_*`, and
+  `app_pause` actions plus an optional coordinate-free touch adapter. See the
+  [semantic input baseline](docs/input.md) for mappings, remapping, deadzones,
+  contexts, and accessibility.
 - `python tools/control.py export {linux,windows,macos}` creates a validated
   release artifact below ignored `artifacts/exports/`. Start with `--dry-run` and
   see [Cross-platform exports](docs/exporting.md) for templates, CI, and signing.

@@ -35,6 +35,9 @@ No changes yet.
   platform exports, and retain validated workflow artifacts for seven days.
 - `g2d release prepare` verifies downloaded main-branch CI exports, gives them
   versioned public names, and creates a deterministic SHA-256 checksum document.
+- A semantic Godot InputMap baseline provides keyboard/controller interface,
+  movement, accept, cancel, and pause actions plus optional coordinate-free
+  touch adaptation and accessibility/remapping guidance.
 
 ### Changed
 

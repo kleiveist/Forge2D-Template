@@ -16,6 +16,7 @@ This index is the documentation entry point for Forge2D Template.
 - [M07 main branch protection](plans/M07_main_branch_protection.md)
 - [M08 coding standards](plans/M08_coding_standards.md)
 - [M09 cross-platform export system](plans/M09_export_system.md)
+- [M10 semantic input baseline](plans/M10_input_baseline.md)
 
 ## Architecture
 
@@ -42,6 +43,7 @@ Forge2D Template is licensed under the MIT License. See `LICENSE`.
 
 - [Cross-platform installation](installation.md)
 - [Cross-platform exports](exporting.md)
+- [Semantic input baseline](input.md)
 - [Publishing a GitHub release](releasing.md)
 - [Forge2D Template v0.1.0 release notes](releases/v0.1.0.md)
 - [Main branch protection and manual GitHub setup](branch-protection.md)

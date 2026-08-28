@@ -75,8 +75,14 @@ class SourceHygieneTests(unittest.TestCase):
     def test_runtime_has_no_physical_input_codes(self) -> None:
         patterns = (
             re.compile(r"\bInput\.is_(?:key|physical_key)_pressed\s*\("),
-            re.compile(r"\bInputEvent(?:Key|JoypadButton|JoypadMotion)\b"),
-            re.compile(r"\b(?:KEY|JOY_BUTTON|JOY_AXIS)_[A-Z0-9_]+\b"),
+            re.compile(r"\bInput\.is_mouse_button_pressed\s*\("),
+            re.compile(
+                r"\bInputEvent(?:Key|JoypadButton|JoypadMotion|MouseButton|"
+                r"MouseMotion|ScreenTouch|ScreenDrag|MagnifyGesture|PanGesture)\b"
+            ),
+            re.compile(
+                r"\b(?:KEY|JOY_BUTTON|JOY_AXIS|MOUSE_BUTTON)_[A-Z0-9_]+\b"
+            ),
         )
         violations: list[str] = []
         for pattern in patterns:
