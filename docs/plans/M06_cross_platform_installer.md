@@ -9,12 +9,12 @@ with all Python tooling isolated inside the repository's `.venv`.
 
 ## Current State
 
-The installer can create `.venv`, install the local package and declared Python
-dependencies, and optionally install Godot with Pacman on Arch Linux. It does not
-validate the running Python version or bootstrap capabilities, does not support
-APT, Winget, or Homebrew, and reports command failures without tailored recovery
-steps. CI runs the real installer on three host platforms but does not explicitly
-exercise the mutation-free installer plan on each host.
+The installer validates Python, bootstrap support, Godot, and declared Python
+packages before creating or reusing the repository-local `.venv`. It can plan
+safe APT, Pacman, Winget, and Homebrew operations, and CI exercises its
+side-effect-free dry run on Linux, Windows, and macOS. The first hosted CI run
+confirmed the dry-run behavior on every host but exposed two unit-test assertions
+that compared equivalent temporary paths as raw strings.
 
 ## Scope and Non-Goals
 
@@ -55,6 +55,9 @@ download are out of scope. No new third-party dependency is planned.
   dry-run coverage, README, installation guide, changelog, and CLI help updates.
 - [x] 2026-08-28: Passed all available local tests, the standard release gate,
   a checksum-verified real Godot integration test, and isolated wheel validation.
+- [x] 2026-08-28: Investigated the first hosted CI run, confirmed all native
+  installer dry runs passed, and made two `.venv` pip-path assertions compare
+  canonical paths across macOS and Windows.
 
 ## Surprises & Discoveries
 
@@ -70,6 +73,10 @@ download are out of scope. No new third-party dependency is planned.
 - 2026-08-28: Passing an explicit `GODOT4_BIN` into the entire test suite
   overrides unit-test discovery doubles. The full gate instead used a temporary
   `godot4` command on `PATH`, matching the CI discovery model.
+- 2026-08-28: macOS temporary paths may be created below `/var` while repository
+  discovery resolves them below `/private/var`; Windows runners also normalize
+  temporary paths. Raw path-string equality therefore produced false failures
+  even though every recorded pip command used the same `.venv` executable.
 
 ## Decision Log
 
@@ -87,6 +94,10 @@ download are out of scope. No new third-party dependency is planned.
 - 2026-08-28: Existing broken `.venv` contents are cleared only after a dedicated
   confirmation or `--yes`; a new environment and normal local package refresh
   remain automatic installer work.
+- 2026-08-28: Preserve canonical repository paths in production and normalize
+  executable paths only in cross-platform test assertions. This retains the
+  strict system-pip safety check without treating filesystem aliases as different
+  environments.
 
 ## Validation
 
@@ -101,11 +112,14 @@ download are out of scope. No new third-party dependency is planned.
 | Python source compilation | Passed for bootstrap, package, and tests |
 | Temporary wheel build and isolated install | Passed; installed `g2d version`, `--help`, and installer dry-run |
 | CI contract unit test | Passed; native Linux/Windows/macOS matrix contains side-effect-free installer dry-run verification |
+| Hosted CI run `33161384474` investigation | All 8 installer dry runs passed; 4 native jobs later failed only in two raw path-string assertions |
+| Installer tests with a symlink-aliased temporary directory | Passed; both formerly failing `.venv` pip-path cases |
+| Post-CI-fix `.venv/bin/python -m pytest tools/tests -q` | Passed; 90 tests |
+| Post-CI-fix `g2d check` with checksum-verified Godot 4.7.2 | Passed; Doctor 12/12, 90 tests, real headless integration |
 | `git diff --check` | Passed |
 
-The GitHub-hosted Windows and macOS jobs were not triggered locally because the
-work was neither committed nor pushed. Their native dry runs will execute when
-the workflow is next run on GitHub.
+The corrected path assertions still require confirmation by the next
+GitHub-hosted Windows and macOS workflow run.
 
 ## Recovery / Idempotence
 

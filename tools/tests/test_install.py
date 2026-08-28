@@ -368,10 +368,12 @@ class InstallTests(unittest.TestCase):
         self.assertEqual(code, 0, output.getvalue())
         venv_command = next(command for command in runner.executed if "venv" in command)
         self.assertIn("--clear", venv_command)
-        venv_python = str(self.root / ".venv" / "bin" / "python")
+        venv_python = (self.root / ".venv" / "bin" / "python").resolve()
         pip_commands = [command for command in runner.executed if "pip" in command]
         self.assertTrue(pip_commands)
-        self.assertTrue(all(command[0] == venv_python for command in pip_commands))
+        self.assertTrue(
+            all(Path(command[0]).resolve() == venv_python for command in pip_commands)
+        )
         self.assertTrue(any("show" in command and "pytest" in command for command in pip_commands))
         self.assertNotIn(("/fake/python", "-m", "pip"), pip_commands)
 
@@ -473,7 +475,12 @@ class InstallTests(unittest.TestCase):
         self.assertIn("Install declared Python packages into .venv", text)
         self.assertIn("package index is unavailable", text)
         pip_commands = [command for command in runner.executed if "pip" in command]
-        self.assertTrue(all(command[0] == str(venv_python) for command in pip_commands))
+        self.assertTrue(
+            all(
+                Path(command[0]).resolve() == venv_python.resolve()
+                for command in pip_commands
+            )
+        )
 
     def test_missing_bootstrap_without_manager_has_actionable_error(self) -> None:
         runner = FakeRunner(bootstrap_ready=False)
