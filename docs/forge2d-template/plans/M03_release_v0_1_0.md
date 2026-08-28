@@ -15,17 +15,15 @@ recorded evidence for another maintainer to verify the commit and downloads.
 
 ## Current State
 
-Repository identity, the local release gate, cross-platform installer, mandatory
-coding standards, protected-main policy, and native export CI are implemented.
-The shared draft PR is `#9` on `feat/release-readiness`; its head is not yet a
-commit on protected `main`. The current `main` commit therefore cannot satisfy
-Issue #4's dependency on the export system in Issue #3. No `v0.1.0` tag or GitHub
-Release exists.
+Forge2D Template v0.1.0 is published from protected `main` commit `e0c53ce`.
+All eight jobs in exact-commit push run `33201281319` passed. The immutable
+annotated tag points to that commit, and the latest GitHub Release contains the
+validated Linux, Windows, and macOS exports plus `SHA256SUMS.txt`.
 
-Release notes and safe asset preparation can be reviewed within PR #9. The
-annotated tag and public release must wait until the complete PR is merged and a
-new push CI run for the exact resulting `main` commit passes all eight required
-checks.
+The four published files were downloaded into a fresh temporary directory and
+independently verified against the published checksum document. Repository
+metadata also matches the versioned description, topics, empty homepage, and
+template-status contract.
 
 ## Scope and Non-Goals
 
@@ -78,8 +76,10 @@ platform artifact must be visible in the release notes.
   release gate, and real three-platform preparation/checksum validation.
 - [x] 2026-08-28: Passed all eight required jobs in pull-request CI run
   `33171491545` for Issue #4 preparation commit `ecc5335`.
-- [ ] Merge the complete shared PR only after explicit user approval.
-- [ ] Tag the exact green protected-main commit and publish/verify v0.1.0.
+- [x] 2026-08-28: Merged the approved shared PR as protected-main commit
+  `e0c53ce` and passed all eight jobs in push run `33201281319`.
+- [x] 2026-08-28: Created the annotated immutable `v0.1.0` tag, published all
+  four release assets, and independently downloaded and verified every asset.
 
 ## Surprises & Discoveries
 
@@ -95,6 +95,10 @@ platform artifact must be visible in the release notes.
 - 2026-08-28: The three native outputs total roughly 232 MB. Reusing the exact
   already-validated main CI outputs avoids a second release workflow and a
   duplicated 1.2 GB export-template download on every platform.
+- 2026-08-28: Exact-main exports differed from the earlier PR exports. The
+  non-overwriting preparation gate rejected the stale asset directory as
+  designed, so both PR download/assets directories were moved aside before the
+  exact-main set was prepared.
 
 ## Decision Log
 
@@ -112,21 +116,24 @@ platform artifact must be visible in the release notes.
 - 2026-08-28: Make preparation atomic and non-overwriting. An identical second
   run is accepted, but any mismatch requires the operator to move the existing
   asset directory aside and investigate.
+- 2026-08-28: Keep the published `v0.1.0` tag permanently on `e0c53ce`; any
+  released-code correction requires a later patch version rather than tag or
+  asset replacement.
 
 ## Validation
 
 | Command / check | Result |
 | --- | --- |
 | Focused release contract and failure tests | Passed; 15 tests |
-| `python tools/control.py style` | Passed; 39 source files |
-| `.venv/bin/python -m pytest tools/tests -q` | Passed; 150 tests |
-| `python tools/control.py check` with verified Godot 4.7.2 on `PATH` | Passed; Doctor 12/12, style 39/39, 150 tests, Godot integration |
-| Real three-platform `release prepare --dry-run` | Passed; validated 73,551,432-byte ELF, 109,159,704-byte PE, and 60,484,109-byte ZIP without writing assets |
+| `python tools/control.py style` | Passed; 44 source files on final `main` |
+| `.venv/bin/python -m pytest tools/tests -q` | Passed; 172 tests on final `main` |
+| `python tools/control.py check` with verified Godot 4.7.2 on `PATH` | Passed on `e0c53ce`; Doctor 12/12, style 44/44, 172 tests, Godot integration |
+| Real exact-main three-platform `release prepare --dry-run` | Passed; validated 73,569,392-byte ELF, 109,177,664-byte PE, and 60,490,683-byte ZIP without writing assets |
 | Real preparation, independent SHA-256 audit, and identical rerun | Passed; three versioned assets, 322-byte checksum document, and no rewrite on rerun |
 | `git diff --check` | Passed |
 | [Pull-request CI run `33171491545`](https://github.com/kleiveist/Forge2D-Template/actions/runs/33171491545) | Passed; all eight Ubuntu, Windows, macOS, Debian, and Arch jobs |
-| Exact protected-main push CI | Blocked until the complete PR is merged |
-| Remote tag, release, and downloaded checksum audit | Blocked until protected-main CI passes |
+| [Exact protected-main push run `33201281319`](https://github.com/kleiveist/Forge2D-Template/actions/runs/33201281319) | Passed; all eight jobs for `e0c53ce` |
+| [Remote tag and release](https://github.com/kleiveist/Forge2D-Template/releases/tag/v0.1.0) | Passed; annotated tag targets `e0c53ce`, four assets published, downloaded hashes verified |
 
 ## Recovery / Idempotence
 
@@ -143,7 +150,7 @@ code or binaries requires a new patch release rather than rewritten history.
 
 ## Outcomes & Retrospective
 
-Repository-side release preparation is implemented and validated locally and in
-all eight pull-request jobs. Final protected-main SHA/run, tag object, release
-URL, published asset list, and remote checksum results are recorded only after
-the complete shared PR is approved and merged.
+Forge2D Template v0.1.0 is published and independently verifiable. The final
+protected-main SHA, exact push run, annotated tag object, release URL, complete
+asset list, sizes, and downloaded checksum results are recorded in the M03
+report and Issue #4 evidence comment.
