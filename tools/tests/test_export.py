@@ -101,7 +101,7 @@ class ExportTests(unittest.TestCase):
                 arguments, timeout_seconds = runner.executed[0]
                 self.assertEqual(arguments[1:3], ("--headless", "--path"))
                 self.assertEqual(arguments[4:6], ("--export-release", target.preset_name))
-                self.assertEqual(Path(arguments[-1]), artifact)
+                self.assertTrue(os.path.samefile(arguments[-1], artifact))
                 self.assertGreater(timeout_seconds, 0)
 
     def test_dry_run_validates_inputs_without_writing_or_running_godot(self) -> None:

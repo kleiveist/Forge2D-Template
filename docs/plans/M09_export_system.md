@@ -79,6 +79,10 @@ store packaging, and publishing a GitHub Release are out of scope.
 - 2026-08-28: Real exports generated the missing Godot 4.4+ script UID sidecars.
   Official guidance requires committing these stable source identifiers, so all
   eight unique files are versioned and a project-contract test protects them.
+- 2026-08-28: The first pull-request run passed Linux but exposed equivalent
+  temporary-path aliases in one test: macOS `/var` versus `/private/var`, and
+  Windows 8.3 versus long user-directory names. Comparing filesystem identity
+  preserves the exact-artifact assertion across all supported hosts.
 
 ## Decision Log
 
@@ -116,6 +120,7 @@ store packaging, and publishing a GitHub Release are out of scope.
 | Real macOS export | Passed; valid 60,484,109-byte universal ZIP |
 | Initial gate with `GODOT4_BIN` inherited by unit tests | Failed as expected; 10 discovery fixtures were overridden, so validation switched to CI-equivalent `PATH` discovery |
 | `python tools/control.py check` with verified Godot 4.7.2 on `PATH` | Passed; Doctor 12/12, style 37/37, 132 tests, Godot integration |
+| Pull-request CI run `33168743033` | Failed during hardening; 4 native macOS/Windows jobs exposed path-alias test assumptions, while all 4 Linux jobs passed |
 | Pull-request CI matrix | Pending |
 
 ## Recovery / Idempotence
