@@ -10,6 +10,7 @@
 - 📝 [Security Policy and Private Reporting](../SECURITY.md)
 - 📝 [Cross-Platform Installation](installation.md)
 - 📝 [Cross-Platform Exports](exporting.md)
+- 📝 [GitHub Repository Metadata](repository-metadata.md)
 - 📝 [Semantic Input Baseline](input.md)
 - 📝 [Publishing a GitHub Release](releasing.md)
 - 📝 [Main Branch Protection](branch-protection.md)
@@ -44,6 +45,7 @@
 - 📝 [M09 Cross-Platform Export System ExecPlan](plans/M09_export_system.md)
 - 📝 [M10 Semantic Input Baseline ExecPlan](plans/M10_input_baseline.md)
 - 📝 [M11 Community Health ExecPlan](plans/M11_community_health.md)
+- 📝 [M12 Repository Metadata ExecPlan](plans/M12_repository_metadata.md)
 
 ## 📁 Reports
 - 🗂️ [Overview](reports/reports.md)

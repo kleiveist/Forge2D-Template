@@ -41,6 +41,9 @@ No changes yet.
 - Repository-native contribution and security policies, a pull-request
   template, focused bug/feature forms, and a deliberate issue chooser align
   public contributions and private vulnerability reports with protected `main`.
+- A versioned GitHub metadata contract, focused discovery topics, and downstream
+  customization guidance keep the canonical template discoverable without a
+  stale homepage or inherited identity claims.
 
 ### Changed
 

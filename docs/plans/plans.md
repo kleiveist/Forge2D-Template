@@ -17,5 +17,6 @@
 - 📝 [M09 Cross-Platform Export System ExecPlan](M09_export_system.md)
 - 📝 [M10 Semantic Input Baseline ExecPlan](M10_input_baseline.md)
 - 📝 [M11 Community Health ExecPlan](M11_community_health.md)
+- 📝 [M12 Repository Metadata ExecPlan](M12_repository_metadata.md)
 
 <!-- AUTO-GENERATED:docs-index END -->

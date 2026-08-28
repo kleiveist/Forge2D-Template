@@ -16,6 +16,7 @@
 ## 📄 Tooling
 - 📝 [Cross-Platform Installation](docs/installation.md)
 - 📝 [Cross-Platform Exports](docs/exporting.md)
+- 📝 [GitHub Repository Metadata](docs/repository-metadata.md)
 - 📝 [Semantic Input Baseline](docs/input.md)
 - 📝 [Publishing a GitHub Release](docs/releasing.md)
 
@@ -47,6 +48,7 @@
 - 📝 [M09 Cross-Platform Export System ExecPlan](docs/plans/M09_export_system.md)
 - 📝 [M10 Semantic Input Baseline ExecPlan](docs/plans/M10_input_baseline.md)
 - 📝 [M11 Community Health ExecPlan](docs/plans/M11_community_health.md)
+- 📝 [M12 Repository Metadata ExecPlan](docs/plans/M12_repository_metadata.md)
 
 ## 📁 Reports
 - 🗂️ [Overview](docs/reports/reports.md)
@@ -60,8 +62,8 @@
 
 [![CI](https://github.com/kleiveist/Forge2D-Template/actions/workflows/ci.yml/badge.svg)](https://github.com/kleiveist/Forge2D-Template/actions/workflows/ci.yml)
 
-Forge2D Template is a minimal Godot 4 + Python repository template with
-repository-local tooling entry points.
+Forge2D Template is a minimal Godot 4 2D game template with repository-local
+Python tooling for setup, checks, exports, and releases.
 
 - Repository: `Forge2D-Template`
 - Template ID: `forge2d-template`
@@ -140,6 +142,10 @@ python tools/control.py Forge2D-Template run
 - The GitHub `main` branch accepts changes only through pull requests and requires
   every CI job to pass. See [Main branch protection](docs/branch-protection.md)
   for the enforced policy and manual setup steps for forks.
+- GitHub description and topics follow the versioned
+  [repository metadata contract](docs/repository-metadata.md). No homepage is
+  configured until a maintained canonical destination exists; repositories
+  created from this template must replace Forge2D-specific metadata and URLs.
 - `python tools/control.py godot4 test` runs the dedicated test runner at
   `game/tests/bootstrap_integration_test.gd`. It loads the production bootstrap
   scene without an application test-mode shortcut and verifies its node contract.
