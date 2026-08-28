@@ -18,7 +18,9 @@ but the repository had no `CONTRIBUTING.md`, `SECURITY.md`, pull-request
 template, issue forms, or issue-chooser policy. GitHub private vulnerability
 reporting was disabled, so the desired private reporter route was not yet
 available. Draft PR #9 contains completed Issues #2, #3, and #5 plus the
-repository-side preparation for Issue #4.
+repository-side preparation for Issue #4. Private reporting is now enabled, and
+CI run `33174259832` passed all eight required jobs for implementation commit
+`21c3308`.
 
 ## Scope and Non-Goals
 
@@ -74,7 +76,8 @@ private reporting route.
   repository gate.
 - [x] 2026-08-28: Enabled private vulnerability reporting through the GitHub
   API and verified the live setting reports `enabled: true`.
-- [ ] Pass all eight pull-request CI jobs.
+- [x] 2026-08-28: Passed all eight pull-request CI jobs in run `33174259832`
+  for implementation commit `21c3308`.
 
 ## Surprises & Discoveries
 
@@ -120,7 +123,7 @@ private reporting route.
 | `python tools/control.py release prepare --dry-run` | Passed; existing v0.1.0 assets verified, no changes |
 | `git diff --check` | Passed |
 | GitHub private vulnerability reporting API audit | Passed; `enabled: true` |
-| Pull-request CI | Pending |
+| Pull-request CI run `33174259832` for commit `21c3308` | Passed; all eight Linux, Windows, and macOS jobs |
 
 ## Recovery / Idempotence
 
@@ -139,4 +142,5 @@ validation, pull-request, review, and recovery guidance; public reports collect
 focused bug or feature information; external blank issues are deliberately
 disabled; and security reporters have a verified private GitHub route. Native
 issue-form rendering becomes observable only after these files reach the default
-branch. Final remote evidence remains pending the eight-job PR matrix.
+branch. Pull-request run `33174259832` provides the remote implementation
+evidence with all eight jobs green for commit `21c3308`.
