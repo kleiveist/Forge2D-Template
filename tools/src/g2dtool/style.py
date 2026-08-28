@@ -16,6 +16,7 @@ MAX_LINE_LENGTH = 100
 SOURCE_SUFFIXES = frozenset({".gd", ".py"})
 EXCLUDED_DIRECTORIES = frozenset(
     {
+        ".ci-artifact-venv",
         ".git",
         ".godot",
         ".mypy_cache",

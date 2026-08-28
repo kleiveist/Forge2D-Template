@@ -70,6 +70,10 @@ out of scope. No dependency is added.
 - 2026-08-28: Masking GDScript strings with spaces made quoted content look like
   indentation. A focused real-repository run exposed the false positives; using
   non-whitespace placeholders preserves code positions without inventing indent.
+- 2026-08-28: The first pull-request run exposed two generated-input boundaries:
+  Windows wrote CRLF into a temporary test fixture, and the packaged CLI check
+  created `.ci-artifact-venv` before invoking `g2d check`. The fixture now writes
+  explicit LF, and only that known generated CI environment is excluded.
 
 ## Decision Log
 
@@ -93,7 +97,8 @@ out of scope. No dependency is added.
 | Initial `python3 tools/control.py check` without Godot on `PATH` | Expected environment failure; style and 104 then-current tests passed, Doctor identified only missing Godot |
 | Official Godot 4.7.2 archive SHA-512 verification | Passed against release `SHA512-SUMS.txt` |
 | `python3 tools/control.py check` with verified Godot 4.7.2 on `PATH` | Passed; Doctor 12/12, style 34/34, 105 Python tests, marker-validated Godot test |
-| Protected pull-request CI | Pending push; all 8 jobs required |
+| Pull-request CI run `33166091454` | Failed during hardening; Windows exposed a CRLF test fixture and all artifact checks exposed generated `.ci-artifact-venv` source |
+| Protected pull-request CI after fixes | Pending; all 8 jobs required |
 
 ## Recovery / Idempotence
 

@@ -46,6 +46,7 @@ class StyleTests(unittest.TestCase):
     def test_source_discovery_excludes_generated_directories(self) -> None:
         source = self._write("tools/source.py", '"""Tracked source."""\n')
         self._write(".venv/generated.py", "not valid python")
+        self._write(".ci-artifact-venv/generated.py", "not valid python")
         self._write("build/generated.gd", " invalid")
 
         discovered = discover_source_files(self.root)

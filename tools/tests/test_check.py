@@ -31,7 +31,11 @@ class CheckTests(unittest.TestCase):
         (self.root / "game" / "project.godot").write_text("", encoding="utf-8")
         self.test_runner = self.root / "game" / "tests" / "bootstrap_integration_test.gd"
         self.test_runner.parent.mkdir()
-        self.test_runner.write_text("extends SceneTree\n", encoding="utf-8")
+        self.test_runner.write_text(
+            "extends SceneTree\n",
+            encoding="utf-8",
+            newline="\n",
+        )
         self.layout = RepositoryLayout(
             repository_root=self.root,
             pyproject_toml=self.root / "pyproject.toml",

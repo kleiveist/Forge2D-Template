@@ -29,8 +29,9 @@ The checker requires:
 - parameter and return annotations on every function in production tooling under
   `tools/control.py` and `tools/src` (`self` and `cls` are exempt).
 
-Generated environments and outputs such as `.venv`, caches, `build`, and `dist`
-are excluded. Do not move source into an excluded path to evade the check.
+Generated environments and outputs such as `.venv`, `.ci-artifact-venv`, caches,
+`build`, and `dist` are excluded. Do not move source into an excluded path to
+evade the check.
 
 ## Formatting and imports
 
