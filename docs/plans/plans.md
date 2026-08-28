@@ -11,5 +11,7 @@
 - 📝 [M03 Release v0.1.0 ExecPlan](M03_release_v0_1_0.md)
 - 📝 [M04 CI Integrity Hardening ExecPlan](M04_ci_integrity.md)
 - 📝 [M05 Game Architecture Baseline ExecPlan](M05_game_architecture_baseline.md)
+- 📝 [M06 Cross-Platform Installer ExecPlan](M06_cross_platform_installer.md)
+- 📝 [M07 Main Branch Protection ExecPlan](M07_main_branch_protection.md)
 
 <!-- AUTO-GENERATED:docs-index END -->

@@ -6,7 +6,8 @@
 <!-- AUTO-GENERATED:docs-index START -->
 
 ## 📄 Pages
-- ⏭️ (keine Seiten)
+- 📝 [Cross-Platform Installation](installation.md)
+- 📝 [Main Branch Protection](branch-protection.md)
 
 ## 📁 Architecture
 - 🗂️ [Overview](architecture/architecture.md)
@@ -27,6 +28,8 @@
 - 📝 [M03 Release v0.1.0 ExecPlan](plans/M03_release_v0_1_0.md)
 - 📝 [M04 CI Integrity Hardening ExecPlan](plans/M04_ci_integrity.md)
 - 📝 [M05 Game Architecture Baseline ExecPlan](plans/M05_game_architecture_baseline.md)
+- 📝 [M06 Cross-Platform Installer ExecPlan](plans/M06_cross_platform_installer.md)
+- 📝 [M07 Main Branch Protection ExecPlan](plans/M07_main_branch_protection.md)
 
 ## 📁 Reports
 - 🗂️ [Overview](reports/reports.md)

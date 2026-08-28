@@ -26,6 +26,8 @@
 - 📝 [M03 Release v0.1.0 ExecPlan](docs/plans/M03_release_v0_1_0.md)
 - 📝 [M04 CI Integrity Hardening ExecPlan](docs/plans/M04_ci_integrity.md)
 - 📝 [M05 Game Architecture Baseline ExecPlan](docs/plans/M05_game_architecture_baseline.md)
+- 📝 [M06 Cross-Platform Installer ExecPlan](docs/plans/M06_cross_platform_installer.md)
+- 📝 [M07 Main Branch Protection ExecPlan](docs/plans/M07_main_branch_protection.md)
 
 ## 📁 Reports
 - 🗂️ [Overview](docs/reports/reports.md)
@@ -98,6 +100,9 @@ python tools/control.py Forge2D-Template run
   `.venv` Python only.
 - `python tools/control.py check` runs Doctor, Python tests, and the Godot
   headless integration test.
+- The GitHub `main` branch accepts changes only through pull requests and requires
+  every CI job to pass. See [Main branch protection](docs/branch-protection.md)
+  for the enforced policy and manual setup steps for forks.
 - `python tools/control.py godot4 test` runs the dedicated test runner at
   `game/tests/bootstrap_integration_test.gd`. It loads the production bootstrap
   scene without an application test-mode shortcut and verifies its node contract.
