@@ -18,7 +18,8 @@ runtime input, but no versioned InputMap, device mappings, touch adapter, or
 guide existed. Draft PR #9 now contains eleven configured semantic actions,
 coordinate-free optional touch adaptation, tests, and documentation alongside
 completed Issues #2/#3 and repository-side Issue #4 release preparation. Remote
-CI validation remains before the Issue #5 implementation is complete.
+CI run `33172796968` passed all eight required jobs for implementation commit
+`df551ee`.
 
 ## Scope and Non-Goals
 
@@ -74,7 +75,8 @@ controller databases, and new dependencies.
   semantics, contexts, remapping, touch wiring, accessibility, and recovery.
 - [x] 2026-08-28: Passed 154 Python tests, style for 42 source files, the real
   Godot 4.7.2 suite, and the complete local repository gate.
-- [ ] Pass all eight pull-request CI jobs.
+- [x] 2026-08-28: Passed all eight pull-request CI jobs in run `33172796968`
+  for implementation commit `df551ee`.
 
 ## Surprises & Discoveries
 
@@ -124,7 +126,7 @@ controller databases, and new dependencies.
 | `python tools/control.py check` with verified Godot 4.7.2 on `PATH` | Passed; Doctor 12/12, style 42/42, 154 tests, Godot integration |
 | `python tools/control.py release prepare --dry-run` | Passed; v0.1.0 changelog and release notes remain consistent, no writes |
 | `git diff --check` | Passed |
-| Pull-request CI | Pending |
+| Pull-request CI run `33172796968` for commit `df551ee` | Passed; all eight Linux, Windows, and macOS jobs |
 
 ## Recovery / Idempotence
 
@@ -141,4 +143,5 @@ The local baseline is complete: one reviewed InputMap supplies eleven semantic
 actions across keyboard and controller, while optional touch presentation can
 reuse them without device-aware gameplay code. Automated contracts cover exact
 mappings, deadzones, input families, error/lifecycle behavior, and the physical-
-code boundary. Final remote evidence is added after the eight-job PR matrix.
+code boundary. Pull-request run `33172796968` provides the final remote evidence
+with all eight jobs green for implementation commit `df551ee`.
