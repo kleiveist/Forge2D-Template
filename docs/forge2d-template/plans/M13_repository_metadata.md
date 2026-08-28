@@ -88,6 +88,8 @@ dependencies, and changing the existing template-repository flag.
 - [x] 2026-08-28: Re-ran the complete post-merge local gate: Doctor 12/12,
   style for 44 files, 171 Python tests, Godot 4.7.2 integration, release
   preparation dry-run, and Git whitespace checks all passed.
+- [x] 2026-08-28: Pull-request CI run `33179564019` passed all eight jobs for
+  post-merge commit `5059a42` on Linux, Windows, and macOS.
 
 ## Surprises & Discoveries
 
@@ -144,6 +146,7 @@ dependencies, and changing the existing template-repository flag.
 | Post-merge `python tools/control.py check` with verified Godot 4.7.2 on `PATH` | Passed; Doctor 12/12, style 44/44, 171 tests, Godot integration |
 | Post-merge `python tools/control.py release prepare --dry-run` | Passed; existing v0.1.0 assets verified, no changes |
 | Post-merge `git diff --cached --check` and `git diff --check` | Passed |
+| Pull-request CI run `33179564019` for commit `5059a42` | Passed; all eight Linux, Windows, and macOS jobs |
 
 ## Recovery / Idempotence
 
@@ -161,5 +164,7 @@ The local and live metadata baseline is complete without new dependencies or an
 invented homepage. GitHub now describes and classifies the canonical repository
 accurately, the versioned contract makes drift reviewable, and downstream owners
 have an explicit checklist for replacing identity, URLs, and server-side policy.
-Pull-request run `33175228882` provides the final implementation evidence with
-all eight jobs green for commit `1635354`.
+Pull-request run `33175228882` validates the metadata implementation itself, and
+run `33179564019` validates the conflict-resolved integration with protected
+`main`. Both completed with all eight jobs green; the latter covers commit
+`5059a42` and the authoritative documentation hierarchy.
